@@ -14,26 +14,24 @@ body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body
 }
 
 .btn-primary {
-  background-color: #D66967 !important;
-  border-color: #D66967 !important;
+  background-color: #1897a0 !important;
+  border-color: #1897a0 !important;
   color: #fff !important;
 }
 
 .btn-primary:hover {
-  background-color: #c25755 !important;
-  border-color: #c25755 !important;
+  background-color: #147d84 !important;
+  border-color: #147d84 !important;
 }
 
 .btn-outline-primary {
-  color: #D66967 !important;
-  border-color: #D66967 !important;
+  color: #1897a0 !important;
+  border-color: #1897a0 !important;
   background: transparent !important;
 }
 
 .btn-outline-primary:hover {
-  background: rgba(214, 105, 103, 0.08) !important;
-  border-color: #D66967 !important;
-  color: #D66967 !important;
+  background: rgba(186, 252, 255, 0.321) !important;
 }
 
 body.dark-mode {
@@ -256,27 +254,19 @@ body.dark-mode .auth-page::after {
   background: rgba(7, 30, 38, 0.6);
 }
 
-body.dark-mode .btn-primary {
-  background-color: #4da8da !important;
-  border-color: #4da8da !important;
-  color: #0f172a !important;
-}
-
 body.dark-mode .btn-primary:hover {
-  background-color: #7dd3fc !important;
-  border-color: #7dd3fc !important;
+  background-color: #1db4bf !important;
+  border-color: #1db4bf !important;
 }
 
 body.dark-mode .btn-outline-primary {
-  color: #7dd3fc !important;
-  border-color: #7dd3fc !important;
+  color: #1db4bf !important;
+  border-color: #1db4bf !important;
   background: transparent !important;
 }
 
 body.dark-mode .btn-outline-primary:hover {
   background: rgba(125, 211, 252, 0.12) !important;
-  border-color: #7dd3fc !important;
-  color: #7dd3fc !important;
 }
 
 body.dark-mode .filter-panel {

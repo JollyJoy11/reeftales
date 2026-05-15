@@ -251,7 +251,7 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .segment-btn.active {
-  background: #d66967;
+  background: #1897a0;
   color: white;
 }
 
@@ -269,8 +269,8 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .form-check-input:checked {
-  background-color: #d66967;
-  border-color: #d66967;
+  background-color: #1897a0;
+  border-color: #1897a0;
 }
 
 @media (max-width: 991px) {

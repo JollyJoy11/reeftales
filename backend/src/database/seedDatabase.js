@@ -142,65 +142,163 @@ async function seedDatabase(connection) {
 
     // ---------------- SPECIES ----------------
     await connection.query(`
-    INSERT IGNORE INTO species
-    (
-      id,
-      name,
-      category,
-      scientific_name,
-      conservation_status,
-      habitats,
-      depth_range,
-      description,
-      image_url,
-      tags,
-      api_source,
-      external_id
-    )
-    VALUES
-    (
-      1,
-      'Green Sea Turtle',
-      'turtle',
-      'Chelonia mydas',
-      'Endangered',
-      'Sipadan, Maldives, Fiji',
-      '1-30m',
-      'A gentle marine turtle commonly seen around coral reefs and seagrass beds.',
-      '/images/species-turtle.jpg',
-      'Herbivore,Friendly,Reef',
-      'manual',
-      NULL
-    ),
-    (
-      2,
-      'Whale Shark',
-      'shark',
-      'Rhincodon typus',
-      'Vulnerable',
-      'Maldives, Philippines, Ningaloo Reef',
-      '0-50m',
-      'The largest fish in the ocean, often seen in warm tropical waters.',
-      '/images/species-whaleshark.jpg',
-      'Gentle Giant,Pelagic,Filter Feeder',
-      'manual',
-      NULL
-    ),
-    (
-      3,
-      'Clownfish',
-      'fish',
-      'Amphiprioninae',
-      'Least Concern',
-      'Great Barrier Reef, Maldives',
-      '1-15m',
-      'A small reef fish commonly found living among sea anemones.',
-      '/images/species-clownfish.jpg',
-      'Reef,Small Fish,Anemone',
-      'manual',
-      NULL
-    )
-  `)
+      INSERT IGNORE INTO species
+      (
+        id,
+        name,
+        category,
+        scientific_name,
+        conservation_status,
+        habitats,
+        depth_range,
+        description,
+        image_url,
+        tags,
+        api_source,
+        external_id
+      )
+      VALUES
+      (
+        1,
+        'Green Sea Turtle',
+        'turtle',
+        'Chelonia mydas',
+        'Endangered',
+        'Sipadan, Maldives, Fiji',
+        '1-30m',
+        'A gentle marine turtle commonly seen around coral reefs and seagrass beds.',
+        '/images/species-turtle.jpg',
+        'Herbivore,Friendly,Reef',
+        'manual',
+        NULL
+      ),
+      (
+        2,
+        'Whale Shark',
+        'shark',
+        'Rhincodon typus',
+        'Vulnerable',
+        'Maldives, Philippines, Ningaloo Reef',
+        '0-50m',
+        'The largest fish in the ocean, often seen in warm tropical waters.',
+        '/images/species-whaleshark.jpg',
+        'Gentle Giant,Pelagic,Filter Feeder',
+        'manual',
+        NULL
+      ),
+      (
+        3,
+        'Clownfish',
+        'fish',
+        'Amphiprioninae',
+        'Least Concern',
+        'Great Barrier Reef, Maldives',
+        '1-15m',
+        'A small reef fish commonly found living among sea anemones.',
+        '/images/species-clownfish.jpg',
+        'Reef,Small Fish,Anemone',
+        'manual',
+        NULL
+      ),
+      (
+        4,
+        'Manta Ray',
+        'ray',
+        'Mobula alfredi',
+        'Vulnerable',
+        'Maldives, Raja Ampat, Komodo',
+        '5-40m',
+        'A graceful ray often seen gliding through tropical reefs and cleaning stations.',
+        '/images/species-mantaray.jpg',
+        'Gentle,Reef,Open Water',
+        'manual',
+        NULL
+      ),
+      (
+        5,
+        'Reef Shark',
+        'shark',
+        'Carcharhinus melanopterus',
+        'Vulnerable',
+        'Sipadan, Maldives, Great Barrier Reef',
+        '1-75m',
+        'A reef-associated shark commonly spotted around coral slopes and lagoon edges.',
+        '/images/species-reefshark.jpg',
+        'Predator,Reef,Fast Swimmer',
+        'manual',
+        NULL
+      ),
+      (
+        6,
+        'Blue Tang',
+        'fish',
+        'Paracanthurus hepatus',
+        'Least Concern',
+        'Great Barrier Reef, Fiji, Indonesia',
+        '2-40m',
+        'A bright blue reef fish known for its vivid colour and active swimming behaviour.',
+        '/images/species-bluetang.jpg',
+        'Reef,Colourful,Small Fish',
+        'manual',
+        NULL
+      ),
+      (
+        7,
+        'Parrotfish',
+        'fish',
+        'Scarus',
+        'Least Concern',
+        'Maldives, Redang, Great Barrier Reef',
+        '1-30m',
+        'A colourful reef fish that helps maintain coral reef health by grazing algae.',
+        '/images/species-parrotfish.jpg',
+        'Herbivore,Reef,Colourful',
+        'manual',
+        NULL
+      ),
+      (
+        8,
+        'Brain Coral',
+        'coral',
+        'Diploria labyrinthiformis',
+        'Near Threatened',
+        'Caribbean, Bahamas, Florida Keys',
+        '1-30m',
+        'A hard coral named for its maze-like surface pattern, often found in shallow reefs.',
+        '/images/species-braincoral.jpg',
+        'Coral,Reef Builder,Slow Growing',
+        'manual',
+        NULL
+      ),
+      (
+        9,
+        'Sea Anemone',
+        'other',
+        'Actiniaria',
+        'Not Evaluated',
+        'Great Barrier Reef, Maldives, Indonesia',
+        '1-25m',
+        'A soft-bodied marine animal often associated with clownfish and reef ecosystems.',
+        '/images/species-anemone.jpg',
+        'Reef,Symbiosis,Clownfish Habitat',
+        'manual',
+        NULL
+      ),
+      (
+        10,
+        'Moon Jellyfish',
+        'jellyfish',
+        'Aurelia aurita',
+        'Not Evaluated',
+        'Worldwide Coastal Waters',
+        '0-20m',
+        'A translucent jellyfish often seen drifting slowly in calm coastal waters.',
+        '/images/species-jellyfish.jpg',
+        'Drifter,Soft Body,Coastal',
+        'manual',
+        NULL
+      )
+    `)
 
     // ---------------- JOURNALS ----------------
     await connection.query(`

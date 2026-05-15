@@ -116,7 +116,7 @@ onMounted(() => {
 
 .auth-tool-btn:hover {
   background: #efe7dc;
-  color: #D66967;
+  color: #1897a0;
 }
 
 .auth-back-btn {
@@ -137,6 +137,6 @@ onMounted(() => {
 
 .auth-back-btn:hover {
   background: #efe7dc;
-  color: #D66967;
+  color: #1897a0;
 }
 </style>
