@@ -1,4 +1,12 @@
 <script setup>
+import { ref } from 'vue'
+
+const isFilterOpen = ref(false)
+
+function toggleFilterPanel() {
+  isFilterOpen.value = !isFilterOpen.value
+}
+
 defineProps({
   discoveryMode: {
     type: String,
@@ -71,164 +79,177 @@ function toggleArrayValue(array, value, eventName) {
 
 <template>
   <aside class="filter-panel">
-    <h5 class="fw-bold mb-3">Filters</h5>
+    <div class="filter-header d-flex justify-content-between align-items-center" @click="toggleFilterPanel">
+      <h5 class="fw-bold mb-0 d-flex align-items-center">
+        <i class="bi bi-sliders"></i>
+        Filters
+      </h5>
 
-    <div class="filter-section">
-      <label class="form-label fw-semibold">Discovery Mode</label>
-
-      <div class="mode-card-group">
-        <button
-          class="mode-card"
-          :class="{ active: discoveryMode === 'islands' }"
-          @click="emit('update:discoveryMode', 'islands')"
-        >
-          <i class="bi bi-geo-alt"></i>
-          <span>Islands Explorer</span>
-        </button>
-
-        <button
-          class="mode-card"
-          :class="{ active: discoveryMode === 'marine' }"
-          @click="emit('update:discoveryMode', 'marine')"
-        >
-          <i class="bi bi-water"></i>
-          <span>Marine Encyclopedia</span>
-        </button>
-      </div>
+      <i class="bi filter-arrow"
+        :class="isFilterOpen ? 'bi-chevron-up' : 'bi-chevron-down'"
+      ></i>
     </div>
 
-    <div class="filter-section">
-      <label class="form-label fw-semibold">Search</label>
-
-      <input
-        :value="search"
-        @input="emit('update:search', $event.target.value)"
-        type="search"
-        class="form-control"
-        :placeholder="discoveryMode === 'islands'
-          ? 'Search islands...'
-          : 'Search marine life...'"
-      />
-    </div>
-
-    <template v-if="discoveryMode === 'islands'">
+    <div class="filter-content" :class="{ open: isFilterOpen }">
       <div class="filter-section">
-        <label class="form-label fw-semibold">Continents</label>
+        <label class="form-label fw-semibold">Discovery Mode</label>
 
-        <div
-          v-for="item in continents"
-          :key="item"
-          class="form-check"
-        >
-          <input
-            class="form-check-input"
-            type="checkbox"
-            :checked="selectedContinents.includes(item)"
-            @change="toggleArrayValue(selectedContinents, item, 'update:selectedContinents')"
-            :id="`continent-${item}`"
-          />
+        <div class="mode-card-group">
+          <button
+            class="mode-card"
+            :class="{ active: discoveryMode === 'islands' }"
+            @click="emit('update:discoveryMode', 'islands')"
+          >
+            <i class="bi bi-geo-alt"></i>
+            <span>Islands Explorer</span>
+          </button>
 
-          <label class="form-check-label" :for="`continent-${item}`">
-            {{ item }}
-          </label>
+          <button
+            class="mode-card"
+            :class="{ active: discoveryMode === 'marine' }"
+            @click="emit('update:discoveryMode', 'marine')"
+          >
+            <i class="bi bi-water"></i>
+            <span>Marine Encyclopedia</span>
+          </button>
         </div>
       </div>
 
       <div class="filter-section">
-        <label class="form-label fw-semibold">Activities</label>
+        <label class="form-label fw-semibold">Search</label>
 
-        <div
-          v-for="item in activityOptions"
-          :key="item"
-          class="form-check"
-        >
-          <input
-            class="form-check-input"
-            type="checkbox"
-            :checked="selectedActivities.includes(item)"
-            @change="toggleArrayValue(selectedActivities, item, 'update:selectedActivities')"
-            :id="`activity-${item}`"
-          />
-
-          <label class="form-check-label" :for="`activity-${item}`">
-            {{ item }}
-          </label>
-        </div>
-      </div>
-    </template>
-
-    <template v-else>
-      <div class="filter-section">
-        <label class="form-label fw-semibold">Species Type</label>
-
-        <div
-          v-for="item in speciesTypes"
-          :key="item"
-          class="form-check"
-        >
-          <input
-            class="form-check-input"
-            type="checkbox"
-            :checked="selectedSpeciesTypes.includes(item)"
-            @change="toggleArrayValue(selectedSpeciesTypes, item, 'update:selectedSpeciesTypes')"
-            :id="`species-${item}`"
-          />
-
-          <label class="form-check-label" :for="`species-${item}`">
-            {{ item }}
-          </label>
-        </div>
+        <input
+          :value="search"
+          @input="emit('update:search', $event.target.value)"
+          type="search"
+          class="form-control"
+          :placeholder="discoveryMode === 'islands'
+            ? 'Search islands...'
+            : 'Search marine life...'"
+        />
       </div>
 
-      <div class="filter-section">
-        <div class="depth-label-row">
-          <label class="form-label fw-semibold mb-0">Depth Range</label>
-          <span>{{ minDepth }}-{{ maxDepth }} m</span>
-        </div>
-
-        <div class="dual-range-slider">
-          <div class="slider-track"></div>
+      <template v-if="discoveryMode === 'islands'">
+        <div class="filter-section">
+          <label class="form-label fw-semibold">Continents</label>
 
           <div
-            class="slider-range"
-            :style="{
-              left: `${minDepth}%`,
-              width: `${maxDepth - minDepth}%`
-            }"
-          ></div>
+            v-for="item in continents"
+            :key="item"
+            class="form-check"
+          >
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :checked="selectedContinents.includes(item)"
+              @change="toggleArrayValue(selectedContinents, item, 'update:selectedContinents')"
+              :id="`continent-${item}`"
+            />
 
-          <input
-            :value="minDepth"
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            class="thumb thumb-left"
-            @input="emit(
-              'update:minDepth',
-              Math.min(Number($event.target.value), maxDepth - 1)
-            )"
-          />
-
-          <input
-            :value="maxDepth"
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            class="thumb thumb-right"
-            @input="emit(
-              'update:maxDepth',
-              Math.max(Number($event.target.value), minDepth + 1)
-            )"
-          />
+            <label class="form-check-label" :for="`continent-${item}`">
+              {{ item }}
+            </label>
+          </div>
         </div>
-      </div>
-    </template>
 
-    <button class="btn btn-outline-primary w-100 mt-2" @click="emit('reset')">
-      Reset Filters
-    </button>
+        <div class="filter-section">
+          <label class="form-label fw-semibold">Activities</label>
+
+          <div
+            v-for="item in activityOptions"
+            :key="item"
+            class="form-check"
+          >
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :checked="selectedActivities.includes(item)"
+              @change="toggleArrayValue(selectedActivities, item, 'update:selectedActivities')"
+              :id="`activity-${item}`"
+            />
+
+            <label class="form-check-label" :for="`activity-${item}`">
+              {{ item }}
+            </label>
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="filter-section">
+          <label class="form-label fw-semibold">Species Type</label>
+
+          <div
+            v-for="item in speciesTypes"
+            :key="item"
+            class="form-check"
+          >
+            <input
+              class="form-check-input"
+              type="checkbox"
+              :checked="selectedSpeciesTypes.includes(item)"
+              @change="toggleArrayValue(selectedSpeciesTypes, item, 'update:selectedSpeciesTypes')"
+              :id="`species-${item}`"
+            />
+
+            <label class="form-check-label" :for="`species-${item}`">
+              {{ item }}
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="depth-label-row">
+            <label class="form-label fw-semibold mb-0">Depth Range</label>
+            <span>{{ minDepth }}-{{ maxDepth }} m</span>
+          </div>
+
+          <div class="dual-range-slider position-relative d-flex align-items-center">
+            <div class="slider-track position-absolute w-100"></div>
+
+            <div
+              class="slider-range"
+              :style="{
+                left: `${minDepth}%`,
+                width: `${maxDepth - minDepth}%`
+              }"
+            ></div>
+
+            <input
+              :value="minDepth"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              class="thumb thumb-left"
+              @input="emit(
+                'update:minDepth',
+                Math.min(Number($event.target.value), maxDepth - 1)
+              )"
+            />
+
+            <input
+              :value="maxDepth"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              class="thumb thumb-right"
+              @input="emit(
+                'update:maxDepth',
+                Math.max(Number($event.target.value), minDepth + 1)
+              )"
+            />
+          </div>
+        </div>
+      </template>
+
+      <div class="reset-filter-btn">
+        <button class="btn btn-outline-primary w-100" @click="emit('reset')">
+          Reset Filters
+        </button>
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -318,15 +339,10 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .dual-range-slider {
-  position: relative;
   height: 34px;
-  display: flex;
-  align-items: center;
 }
 
 .slider-track {
-  position: absolute;
-  width: 100%;
   height: 4px;
   border-radius: 999px;
   background: #d8cdbb;
@@ -369,9 +385,65 @@ function toggleArrayValue(array, value, eventName) {
   pointer-events: auto;
 }
 
+.filter-header {
+  gap: 12px;
+  cursor: default;
+}
+
+.filter-header h5 {
+  gap: 8px;
+}
+
+.filter-arrow {
+  display: none;
+  color: #1897a0;
+}
+
+.filter-content {
+  margin-top: 18px;
+}
+
 @media (max-width: 991px) {
+  .filter-header {
+    cursor: pointer;
+  }
+
+  .filter-arrow {
+    display: inline-block;
+  }
+
+  .filter-content {
+    display: none;
+  }
+
+  .filter-content.open {
+    display: block;
+  }
+
   .filter-panel {
     position: static;
+  }
+}
+
+@media (min-width: 992px) {
+  .filter-panel {
+    max-height: calc(100vh - 50px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-content {
+    display: block !important;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+
+  .reset-filter-btn {
+    position: sticky;
+    bottom: 0;
+    background: #fbf9f1;
+    padding-top: 12px;
   }
 }
 </style>
