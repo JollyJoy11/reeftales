@@ -4,10 +4,6 @@ defineProps({
     type: String,
     required: true
   },
-  viewMode: {
-    type: String,
-    required: true
-  },
   search: {
     type: String,
     required: true
@@ -32,7 +28,6 @@ defineProps({
 
 const emit = defineEmits([
   'update:discoveryMode',
-  'update:viewMode',
   'update:search',
   'update:selectedContinents',
   'update:selectedActivities',
@@ -78,9 +73,8 @@ function toggleArrayValue(array, value, eventName) {
 
 <template>
   <aside class="filter-panel">
-    <h5 class="fw-bold mb-3">Discovery Filters</h5>
+    <h5 class="fw-bold mb-3">Filters</h5>
 
-    <!-- Discovery Mode -->
     <div class="filter-section">
       <label class="form-label fw-semibold">Discovery Mode</label>
 
@@ -90,7 +84,8 @@ function toggleArrayValue(array, value, eventName) {
           :class="{ active: discoveryMode === 'islands' }"
           @click="emit('update:discoveryMode', 'islands')"
         >
-          🏝️ Islands
+          <i class="bi bi-geo-alt"></i>
+          Islands Explorer
         </button>
 
         <button
@@ -98,12 +93,12 @@ function toggleArrayValue(array, value, eventName) {
           :class="{ active: discoveryMode === 'marine' }"
           @click="emit('update:discoveryMode', 'marine')"
         >
-          🪸 Marine
+          <i class="bi bi-water"></i>
+          Marine Encyclopedia
         </button>
       </div>
     </div>
 
-    <!-- Search -->
     <div class="filter-section">
       <label class="form-label fw-semibold">Search</label>
 
@@ -118,7 +113,6 @@ function toggleArrayValue(array, value, eventName) {
       />
     </div>
 
-    <!-- Island Filters -->
     <template v-if="discoveryMode === 'islands'">
       <div class="filter-section">
         <label class="form-label fw-semibold">Continents</label>
@@ -165,7 +159,6 @@ function toggleArrayValue(array, value, eventName) {
       </div>
     </template>
 
-    <!-- Marine Filters -->
     <template v-else>
       <div class="filter-section">
         <label class="form-label fw-semibold">Species Type</label>
@@ -221,7 +214,7 @@ function toggleArrayValue(array, value, eventName) {
 <style scoped>
 .filter-panel {
   position: sticky;
-  top: 90px;
+  top: 25px;
   padding: 20px;
   border-radius: 22px;
   background: #fbf9f1;
@@ -243,6 +236,10 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .segment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   border: none;
   border-radius: 999px;
   padding: 8px 10px;
@@ -254,12 +251,12 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .segment-btn.active {
-  background: #D66967;
+  background: #d66967;
   color: white;
 }
 
 .form-control {
-  border-color: #C4A484;
+  border-color: #c4a484;
   background: #fffdf8;
 }
 
@@ -268,12 +265,12 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .form-check-input {
-  border-color: #C4A484;
+  border-color: #c4a484;
 }
 
 .form-check-input:checked {
-  background-color: #D66967;
-  border-color: #D66967;
+  background-color: #d66967;
+  border-color: #d66967;
 }
 
 @media (max-width: 991px) {

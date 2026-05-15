@@ -285,6 +285,14 @@ body.dark-mode .filter-panel {
   box-shadow: 0 12px 30px rgba(0,0,0,0.35) !important;
 }
 
+body.dark-mode .segmented-control {
+  background: #344256 !important;
+}
+
+body.dark-mode .segment-btn {
+  color: #f8fafc !important;
+}
+
 body.dark-mode .filter-panel .form-label,
 body.dark-mode .filter-panel .form-check-label,
 body.dark-mode .filter-panel h5 {
@@ -310,33 +318,34 @@ body.dark-mode .more-badge {
   color: #f8fafc;
 }
 
-body.dark-mode .island-card-body {
-  background: #253244 !important;
-  color: #f8fafc !important;
-}
-
-body.dark-mode .island-desc {
+body.dark-mode .island-desc,
+body.dark-mode .species-desc {
   color: #cbd5e1 !important;
 }
 
-body.dark-mode .island-label-card {
-  background: #253244 !important;
+body.dark-mode .island-label-card,
+body.dark-mode .species-label-card,
+body.dark-mode .ai-identify-card {
+  background: #212c3b !important;
   border-color: rgba(255,255,255,0.08) !important;
 }
 
-body.dark-mode .stamp-image-area {
+body.dark-mode .stamp-image-area,
+body.dark-mode .stamp-drop-area {
   background: #424e63 !important;
 }
 
-body.dark-mode .island-image {
+body.dark-mode .island-image,
+body.dark-mode .species-image {
   border: 2px solid #c4a88d;
 }
 body.dark-mode .label-body {
-  background: #253244 !important;
+  background: #212c3b !important;
   color: #f8fafc !important;
 }
 
-body.dark-mode .label-body h4 {
+body.dark-mode .label-body h4,
+body.dark-mode .drop-placeholder {
   color: #f8fafc !important;
 }
 

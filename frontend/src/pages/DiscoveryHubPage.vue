@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import IslandCard from '@/components/discovery/IslandCard.vue'
 import SpeciesCard from '@/components/discovery/SpeciesCard.vue'
 import AIIdentifyCard from '@/components/discovery/AIIdentifyCard.vue'
@@ -14,15 +14,11 @@ const loading = ref(false)
 const errorMessage = ref('')
 
 const discoveryMode = ref('islands')
-const viewMode = ref('grid')
 const search = ref('')
 const selectedContinents = ref([])
 const selectedActivities = ref([])
 const selectedSpeciesTypes = ref([])
 const selectedDepths = ref([])
-
-const continents = ['Asia', 'Europe', 'Oceania', 'North America', 'South America', 'Africa']
-const activityOptions = ['Snorkeling', 'Scuba Diving', 'Island Hopping', 'Sunset Watching', 'Kayaking']
 
 async function loadIslands() {
   try {
@@ -86,11 +82,29 @@ watch(discoveryMode, (mode) => {
     loadSpecies()
   }
 })
+
+watch(
+  [
+    search,
+    selectedContinents,
+    selectedActivities,
+    selectedSpeciesTypes,
+    selectedDepths
+  ],
+  () => {
+    handleFilterChange()
+  },
+  { deep: true }
+)
+
+onMounted(() => {
+  loadIslands()
+})
 </script>
 
 <template>
   <MainLayout>
-    <section class="container py-5">
+    <section class="container py-3">
       <div class="explore-header mb-4">
         <div>
           <h1 class="fw-bold">Discovery Hub</h1>
@@ -98,34 +112,50 @@ watch(discoveryMode, (mode) => {
             Explore island destinations, marine species, and community sightings.
           </p>
         </div>
+      </div>
 
-        <div class="view-toggle">
-          <button
-            class="btn"
-            :class="viewMode === 'map' ? 'btn-primary' : 'btn-outline-primary'"
-            @click="viewMode = 'map'"
-          >
-            <i class="bi bi-map"></i>
-            Map
-          </button>
-
-          <button
-            class="btn"
-            :class="viewMode === 'grid' ? 'btn-primary' : 'btn-outline-primary'"
-            @click="viewMode = 'grid'"
-          >
-            <i class="bi bi-grid"></i>
-            Grid
-          </button>
+      <div class="map-panel mb-4">
+        <div
+          v-if="discoveryMode === 'islands'"
+          v-for="island in islands"
+          :key="island.id"
+          class="map-point"
+          :style="{
+            left: `${20 + island.id * 10}%`,
+            top: `${25 + island.id * 8}%`
+          }"
+        >
+          <RouterLink :to="`/islands/${island.id}`" class="map-card">
+            <strong>{{ island.name }}</strong>
+            <small>{{ island.country }}</small>
+          </RouterLink>
         </div>
+
+        <div
+          v-else
+          v-for="species in speciesList"
+          :key="species.id"
+          class="map-point marine-point"
+          :style="{
+            left: `${20 + species.id * 12}%`,
+            top: `${25 + species.id * 7}%`
+          }"
+        >
+          <div class="map-card">
+            <strong>{{ species.name }}</strong>
+            <small>{{ species.scientific_name }}</small>
+          </div>
+        </div>
+
+        <p class="map-note">
+          Interactive discovery map - Leaflet integration coming later.
+        </p>
       </div>
 
       <div class="row g-4">
-        <!-- Filter Sidebar -->
         <aside class="col-12 col-lg-3">
           <DiscoveryFilters
             v-model:discoveryMode="discoveryMode"
-            v-model:viewMode="viewMode"
             v-model:search="search"
             v-model:selectedContinents="selectedContinents"
             v-model:selectedActivities="selectedActivities"
@@ -135,35 +165,11 @@ watch(discoveryMode, (mode) => {
           />
         </aside>
 
-        <!-- Content -->
         <main class="col-12 col-lg-9">
-          <p v-if="loading">Loading islands...</p>
+          <p v-if="loading">Loading {{ discoveryMode === 'islands' ? 'islands' : 'marine species' }}...</p>
           <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
 
-          <!-- Map View Placeholder -->
-          <div v-if="viewMode === 'map'" class="map-panel">
-            <div
-              v-for="island in islands"
-              :key="island.id"
-              class="map-point"
-              :style="{
-                left: `${20 + island.id * 10}%`,
-                top: `${25 + island.id * 8}%`
-              }"
-            >
-              <RouterLink :to="`/islands/${island.id}`" class="map-card">
-                <strong>{{ island.name }}</strong>
-                <small>{{ island.country }}</small>
-              </RouterLink>
-            </div>
-
-            <p class="map-note">
-              Map view placeholder — later you can replace this with Leaflet or Google Maps.
-            </p>
-          </div>
-
-          <!-- Grid View -->
-          <div v-else class="row g-4">
+          <div class="row g-4">
             <template v-if="discoveryMode === 'islands'">
               <div
                 v-for="(island, index) in islands"
@@ -202,15 +208,11 @@ watch(discoveryMode, (mode) => {
   align-items: center;
 }
 
-.view-toggle {
-  display: flex;
-  gap: 8px;
-}
-
 .map-panel {
   position: relative;
-  min-height: 520px;
-  border-radius: 24px;
+  min-height: 420px;
+  border: 1px solid #eadfca;
+  border-radius: 22px;
   background:
     linear-gradient(rgba(10,61,98,0.1), rgba(10,61,98,0.2)),
     url('/images/map-placeholder.jpg');
@@ -259,32 +261,11 @@ watch(discoveryMode, (mode) => {
   position: absolute;
   left: 20px;
   bottom: 20px;
-  background: rgba(255,255,255,0.9);
+  margin: 0;
   padding: 10px 14px;
   border-radius: 12px;
-  margin: 0;
+  background: rgba(255,255,255,0.9);
   font-size: 0.9rem;
-}
-
-.empty-state {
-  min-height: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #64748b;
-}
-
-.empty-state i {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-}
-
-.discovery-mode-toggle {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 @media (max-width: 991px) {
@@ -293,12 +274,9 @@ watch(discoveryMode, (mode) => {
     align-items: flex-start;
   }
 
-  .filter-panel {
-    position: static;
-  }
-
   .map-panel {
-    min-height: 360px;
+    min-height: 320px;
   }
 }
+
 </style>

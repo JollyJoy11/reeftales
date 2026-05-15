@@ -174,9 +174,8 @@ const tags = computed(() => splitTags(props.species.tags))
 .species-desc {
   font-size: 0.82rem;
   color: #475569;
-  display: -webkit-box;
+  display: block;
   line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
