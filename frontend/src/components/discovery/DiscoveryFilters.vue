@@ -279,8 +279,8 @@ function toggleArrayValue(array, value, eventName) {
   align-items: center;
   gap: 10px;
   border: 1px solid #eadfca;
-  border-radius: 16px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 10px 14px;
   background: #fffdf8;
   color: #2f4858;
   font-weight: 600;

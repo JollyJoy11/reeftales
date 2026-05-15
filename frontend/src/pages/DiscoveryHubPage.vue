@@ -184,11 +184,19 @@ onMounted(() => {
               >
                 <IslandCard :island="island" :tilt-variant="index" />
               </div>
+
+              <div v-if="!loading && islands.length === 0" class="col-12 d-flex">
+                <div class="empty-state w-100 h-100">
+                  <i class="bi bi-compass"></i>
+                  <h5>No islands found</h5>
+                  <p>Try changing your search keyword or filters.</p>
+                </div>
+              </div>
             </template>
 
             <template v-else>
-              <div class="col-12 col-md-6 col-xl-4">
-                <AIIdentifyCard />
+              <div class="col-12 col-md-6 col-xl-4 d-flex">
+                <AIIdentifyCard class="h-100" />
               </div>
 
               <div
@@ -197,6 +205,14 @@ onMounted(() => {
                 class="col-12 col-md-6 col-xl-4"
               >
                 <SpeciesCard :species="species" :tilt-variant="index + 1" />
+              </div>
+
+              <div v-if="!loading && speciesList.length === 0" class="col-12 col-md-6 col-xl-8 d-flex">
+                <div class="empty-state h-100 w-100">
+                  <i class="bi bi-water"></i>
+                  <h5>No marine species found</h5>
+                  <p>Try adjusting the species type, depth range, or search keyword.</p>
+                </div>
               </div>
             </template>
           </div>
@@ -272,6 +288,31 @@ onMounted(() => {
   border-radius: 12px;
   background: rgba(255,255,255,0.9);
   font-size: 0.9rem;
+}
+
+.empty-state {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22px;
+  background: #fbf9f1;
+  border: 1px dashed #c4a484;
+  text-align: center;
+  color: #64748b;
+  padding: 32px;
+}
+
+.empty-state i {
+  font-size: 2.4rem;
+  color: #1897a0;
+  margin-bottom: 12px;
+}
+
+.empty-state h5 {
+  color: #2f4858;
+  font-weight: 700;
 }
 
 @media (max-width: 991px) {
