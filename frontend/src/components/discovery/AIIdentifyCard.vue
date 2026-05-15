@@ -110,14 +110,14 @@ onBeforeUnmount(() => {
 
       <div v-else class="drop-placeholder">
         <i class="bi bi-cloud-arrow-up"></i>
-        <strong>Drop a species photo</strong>
-        <span>or choose an image</span>
+        <strong>Drop a marine photo</strong>
+        <span>AI will suggest a species match</span>
       </div>
     </div>
 
     <div class="label-body">
       <h4>AI Identify</h4>
-      <p class="subtitle">Check a marine name with WoRMS</p>
+      <p class="subtitle">Upload a marine photo to predict the species and verify its taxonomy.</p>
 
       <div class="lookup-form">
         <button class="btn btn-primary" :disabled="loading" @click="identifySpecies">
@@ -137,6 +137,27 @@ onBeforeUnmount(() => {
         <small>
           Confidence: {{ aiPrediction.confidence }}
         </small>
+
+        <p v-if="aiPrediction.reason" class="ai-reason">
+          {{ aiPrediction.reason }}
+        </p>
+      </div>
+
+      <div v-if="!aiPrediction" class="ai-steps">
+        <div>
+          <i class="bi bi-image"></i>
+          <span>Upload a clear marine photo</span>
+        </div>
+
+        <div>
+          <i class="bi bi-stars"></i>
+          <span>Gemini suggests a match</span>
+        </div>
+
+        <div>
+          <i class="bi bi-check-circle"></i>
+          <span>WoRMS verifies taxonomy</span>
+        </div>
       </div>
 
       <p v-if="errorMessage" class="lookup-message">{{ errorMessage }}</p>
@@ -296,5 +317,32 @@ onBeforeUnmount(() => {
 .match-row span {
   font-size: 0.72rem;
   color: #64748b;
+}
+
+.ai-reason {
+  margin: 8px 0 0;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.ai-steps {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.ai-steps div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.45);
+}
+
+.ai-steps i {
+  color: #1897a0;
 }
 </style>
