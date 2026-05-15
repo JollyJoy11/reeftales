@@ -40,111 +40,73 @@ async function handleLogin() {
 
 <template>
   <AuthLayout>
-    <section class="auth-page">
-      <video class="auth-bg-video" autoplay muted loop playsinline>
-        <source src="/videos/auth-ocean.mp4" type="video/mp4" />
-      </video>
+    <div class="postcard-card">
+      <div class="postcard-left">
+        <Stamp image="/images/stamp-turtle.jpg" />
 
-      <div class="postcard-card">
-        <div class="postcard-left">
-          <Stamp image="/images/stamp-turtle.jpg" />
+        <h2>Welcome Back</h2>
+        <p>Continue your island memories and marine discoveries.</p>
+      </div>
 
-          <h2>Welcome Back</h2>
-          <p>Continue your island memories and marine discoveries.</p>
-        </div>
+      <div class="postcard-right">
+        <h1>Login</h1>
+        <p class="subtitle">Sign in to your Reef Tales account.</p>
 
-        <div class="postcard-right">
-          <h1>Login</h1>
-          <p class="subtitle">Sign in to your Reef Tales account.</p>
+        <p v-if="errorMessage" class="text-danger small">
+          {{ errorMessage }}
+        </p>
 
-          <p v-if="errorMessage" class="text-danger small">
-            {{ errorMessage }}
-          </p>
-
-          <form @submit.prevent="handleLogin" novalidate>
-            <div class="mb-3">
-              <label class="form-label">Email</label>
-              <input
-                v-model="email"
-                type="email"
-                class="form-control"
-                placeholder="Enter your email"
-                autocomplete="email"
-                required
-              />
-            </div>
-
-            <div class="mb-2">
-              <label class="form-label">Password</label>
-              <div class="input-group">
-                <input
-                  v-model="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  class="form-control"
-                  placeholder="Enter your password"
-                  autocomplete="new-password"
-                  required
-                  maxlength="16"
-                />
-
-                <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword">
-                  <i :class="showPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="text-end mb-3">
-              <a href="#" class="small auth-link">Forgot password?</a>
-            </div>
-
-            <button class="btn btn-primary w-100" :disabled="loading">
-              {{ loading ? 'Logging in...' : 'Login' }}
-            </button>
-          </form>
-
-          <div class="auth-links">
-            <span>No account?</span>
-            <RouterLink to="/register">Register</RouterLink>
+        <form @submit.prevent="handleLogin" novalidate>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input
+              v-model="email"
+              type="email"
+              class="form-control"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            />
           </div>
+
+          <div class="mb-2">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+              <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                class="form-control"
+                placeholder="Enter your password"
+                autocomplete="new-password"
+                required
+                maxlength="16"
+              />
+
+              <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword">
+                <i :class="showPassword ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="text-end mb-3">
+            <a href="#" class="small auth-link">Forgot password?</a>
+          </div>
+
+          <button class="btn btn-primary w-100" :disabled="loading">
+            {{ loading ? 'Logging in...' : 'Login' }}
+          </button>
+        </form>
+
+        <div class="auth-links">
+          <span>No account?</span>
+          <RouterLink to="/register">Register</RouterLink>
         </div>
       </div>
-    </section>
+    </div>
   </AuthLayout>
 </template>
 
 <style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 16px;
-  background:
-    linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.9)),
-    url('/images/auth-ocean-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.auth-bg-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-.auth-page::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.267);
-  z-index: 1;
-}
-
 .postcard-card {
   width: min(900px, 100%);
   min-height: 480px;

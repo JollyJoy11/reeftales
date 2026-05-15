@@ -95,20 +95,15 @@ async function handleRegister() {
 
 <template>
   <AuthLayout>
-    <section class="auth-page">
-      <video class="auth-bg-video" autoplay muted loop playsinline>
-        <source src="/videos/auth-ocean.mp4" type="video/mp4" />
-      </video>
+    <div class="postcard-card">
+      <div class="postcard-left">
+        <Stamp image="/images/stamp-turtle.jpg" />
 
-      <div class="postcard-card">
-        <div class="postcard-left">
-          <Stamp image="/images/stamp-turtle.jpg" />
+        <h2>Start Your Journey</h2>
+        <p>Create your travel diary and record the marine life you discover.</p>
+      </div>
 
-          <h2>Start Your Journey</h2>
-          <p>Create your travel diary and record the marine life you discover.</p>
-        </div>
-
-        <div class="postcard-right d-flex flex-column justify-content-center">
+      <div class="postcard-right d-flex flex-column justify-content-center">
           <h1>Register</h1>
           <p class="subtitle">Create your Reef Tales account.</p>
 
@@ -270,45 +265,12 @@ async function handleRegister() {
             <span>Already have an account?</span>
             <RouterLink to="/login">Login</RouterLink>
           </div>
-        </div>
       </div>
-    </section>
+    </div>
   </AuthLayout>
 </template>
 
 <style scoped>
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 16px;
-  background:
-    linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.9)),
-    url('/images/auth-ocean-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.auth-bg-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-.auth-page::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.267);
-  z-index: 1;
-}
-
 .postcard-card {
   width: min(900px, 100%);
   min-height: 480px;

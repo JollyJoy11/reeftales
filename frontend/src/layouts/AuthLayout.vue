@@ -27,7 +27,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <main>
+  <main class="auth-page">
+    <video class="auth-bg-video" autoplay muted loop playsinline>
+      <source src="/videos/auth-ocean.mp4" type="video/mp4" />
+    </video>
+
     <button class="auth-back-btn" @click="goBack">
       <i class="bi bi-arrow-left"></i>
       <span>Back</span>
@@ -56,6 +60,38 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  background:
+    linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.9)),
+    url('/images/auth-ocean-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.auth-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.267);
+  z-index: 1;
+}
+
 .auth-floating-tools {
   position: fixed;
   right: 24px;
