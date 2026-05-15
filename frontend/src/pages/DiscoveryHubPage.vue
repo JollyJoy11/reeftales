@@ -212,7 +212,7 @@ onMounted(() => {
   position: relative;
   min-height: 420px;
   border: 1px solid #eadfca;
-  border-radius: 22px;
+  border-radius: 10px;
   background:
     linear-gradient(rgba(10,61,98,0.1), rgba(10,61,98,0.2)),
     url('/images/map-placeholder.jpg');
