@@ -18,7 +18,8 @@ const search = ref('')
 const selectedContinents = ref([])
 const selectedActivities = ref([])
 const selectedSpeciesTypes = ref([])
-const selectedDepths = ref([])
+const minDepth = ref(0)
+const maxDepth = ref(100)
 
 async function loadIslands() {
   try {
@@ -44,7 +45,9 @@ async function loadSpecies() {
 
     speciesList.value = await getSpecies({
       search: search.value,
-      categories: selectedSpeciesTypes.value
+      categories: selectedSpeciesTypes.value,
+      minDepth: minDepth.value,
+      maxDepth: maxDepth.value
     })
   } catch (error) {
     errorMessage.value = 'Failed to load marine species.'
@@ -58,7 +61,8 @@ function resetFilters() {
   selectedContinents.value = []
   selectedActivities.value = []
   selectedSpeciesTypes.value = []
-  selectedDepths.value = []
+  minDepth.value = 0
+  maxDepth.value = 100
 
   if (discoveryMode.value === 'islands') {
     loadIslands()
@@ -89,7 +93,8 @@ watch(
     selectedContinents,
     selectedActivities,
     selectedSpeciesTypes,
-    selectedDepths
+    minDepth,
+    maxDepth
   ],
   () => {
     handleFilterChange()
@@ -160,7 +165,8 @@ onMounted(() => {
             v-model:selectedContinents="selectedContinents"
             v-model:selectedActivities="selectedActivities"
             v-model:selectedSpeciesTypes="selectedSpeciesTypes"
-            v-model:selectedDepths="selectedDepths"
+            v-model:minDepth="minDepth"
+            v-model:maxDepth="maxDepth"
             @reset="resetFilters"
           />
         </aside>

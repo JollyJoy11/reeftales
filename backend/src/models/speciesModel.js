@@ -35,6 +35,22 @@ async function getAllSpecies(filters = {}) {
     values.push(...filters.categories)
   }
 
+  if (filters.minDepth !== undefined && filters.minDepth !== '') {
+    sql += `
+      AND max_depth >= ?
+    `
+
+    values.push(Number(filters.minDepth))
+  }
+
+  if (filters.maxDepth !== undefined && filters.maxDepth !== '') {
+    sql += `
+      AND min_depth <= ?
+    `
+
+    values.push(Number(filters.maxDepth))
+  }
+
   sql += ` ORDER BY name ASC`
 
   const [rows] = await db.query(sql, values)

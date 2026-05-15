@@ -20,8 +20,12 @@ defineProps({
     type: Array,
     required: true
   },
-  selectedDepths: {
-    type: Array,
+  minDepth: {
+    type: Number,
+    required: true
+  },
+  maxDepth: {
+    type: Number,
     required: true
   }
 })
@@ -32,7 +36,8 @@ const emit = defineEmits([
   'update:selectedContinents',
   'update:selectedActivities',
   'update:selectedSpeciesTypes',
-  'update:selectedDepths',
+  'update:minDepth',
+  'update:maxDepth',
   'reset'
 ])
 
@@ -55,13 +60,6 @@ const speciesTypes = [
   'Jellyfish'
 ]
 
-const depthOptions = [
-  '0-10m',
-  '10-30m',
-  '30-60m',
-  '60m+'
-]
-
 function toggleArrayValue(array, value, eventName) {
   const updated = array.includes(value)
     ? array.filter(item => item !== value)
@@ -78,23 +76,23 @@ function toggleArrayValue(array, value, eventName) {
     <div class="filter-section">
       <label class="form-label fw-semibold">Discovery Mode</label>
 
-      <div class="segmented-control">
+      <div class="mode-card-group">
         <button
-          class="segment-btn"
+          class="mode-card"
           :class="{ active: discoveryMode === 'islands' }"
           @click="emit('update:discoveryMode', 'islands')"
         >
           <i class="bi bi-geo-alt"></i>
-          Islands Explorer
+          <span>Islands Explorer</span>
         </button>
 
         <button
-          class="segment-btn"
+          class="mode-card"
           :class="{ active: discoveryMode === 'marine' }"
           @click="emit('update:discoveryMode', 'marine')"
         >
           <i class="bi bi-water"></i>
-          Marine Encyclopedia
+          <span>Marine Encyclopedia</span>
         </button>
       </div>
     </div>
@@ -183,24 +181,47 @@ function toggleArrayValue(array, value, eventName) {
       </div>
 
       <div class="filter-section">
-        <label class="form-label fw-semibold">Depth Range</label>
+        <div class="depth-label-row">
+          <label class="form-label fw-semibold mb-0">Depth Range</label>
+          <span>{{ minDepth }}-{{ maxDepth }} m</span>
+        </div>
 
-        <div
-          v-for="item in depthOptions"
-          :key="item"
-          class="form-check"
-        >
+        <div class="dual-range-slider">
+          <div class="slider-track"></div>
+
+          <div
+            class="slider-range"
+            :style="{
+              left: `${minDepth}%`,
+              width: `${maxDepth - minDepth}%`
+            }"
+          ></div>
+
           <input
-            class="form-check-input"
-            type="checkbox"
-            :checked="selectedDepths.includes(item)"
-            @change="toggleArrayValue(selectedDepths, item, 'update:selectedDepths')"
-            :id="`depth-${item}`"
+            :value="minDepth"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            class="thumb thumb-left"
+            @input="emit(
+              'update:minDepth',
+              Math.min(Number($event.target.value), maxDepth - 1)
+            )"
           />
 
-          <label class="form-check-label" :for="`depth-${item}`">
-            {{ item }}
-          </label>
+          <input
+            :value="maxDepth"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            class="thumb thumb-right"
+            @input="emit(
+              'update:maxDepth',
+              Math.max(Number($event.target.value), minDepth + 1)
+            )"
+          />
         </div>
       </div>
     </template>
@@ -226,33 +247,43 @@ function toggleArrayValue(array, value, eventName) {
   margin-bottom: 22px;
 }
 
-.segmented-control {
+.mode-card-group {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  padding: 5px;
-  border-radius: 999px;
-  background: #efe7dc;
+  gap: 8px;
 }
 
-.segment-btn {
+.mode-card {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border: none;
-  border-radius: 999px;
-  padding: 8px 10px;
-  background: transparent;
+  gap: 10px;
+  border: 1px solid #eadfca;
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: #fffdf8;
   color: #2f4858;
-  font-size: 0.85rem;
   font-weight: 600;
+  text-align: left;
   transition: 0.2s ease;
 }
 
-.segment-btn.active {
+.mode-card i {
+  color: #1897a0;
+}
+
+.mode-card:hover {
+  transform: translateY(-1px);
+  border-color: #1897a0;
+}
+
+.mode-card.active {
   background: #1897a0;
-  color: white;
+  border-color: #1897a0;
+  color: #fff;
+}
+
+.mode-card.active i {
+  color: #fff;
 }
 
 .form-control {
@@ -271,6 +302,71 @@ function toggleArrayValue(array, value, eventName) {
 .form-check-input:checked {
   background-color: #1897a0;
   border-color: #1897a0;
+}
+
+.depth-label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.depth-label-row span {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.dual-range-slider {
+  position: relative;
+  height: 34px;
+  display: flex;
+  align-items: center;
+}
+
+.slider-track {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: #d8cdbb;
+}
+
+.slider-range {
+  position: absolute;
+  height: 4px;
+  border-radius: 999px;
+  background: #1897a0;
+}
+
+.thumb {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+  appearance: none;
+  background: none;
+}
+
+.thumb::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fbf9f1;
+  border: 3px solid #2f4858;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+.thumb::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fbf9f1;
+  border: 3px solid #2f4858;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 @media (max-width: 991px) {

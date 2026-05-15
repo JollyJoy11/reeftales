@@ -26,6 +26,13 @@ function splitTags(value) {
 }
 
 const tags = computed(() => splitTags(props.species.tags))
+const depthLabel = computed(() => {
+  if (props.species.min_depth == null || props.species.max_depth == null) {
+    return 'Unknown'
+  }
+
+  return `${props.species.min_depth}-${props.species.max_depth} m`
+})
 </script>
 
 <template>
@@ -55,7 +62,7 @@ const tags = computed(() => splitTags(props.species.tags))
 
         <div>
           <span>Depth</span>
-          <strong>{{ species.depth_range || 'Unknown' }}</strong>
+          <strong>{{ depthLabel }}</strong>
         </div>
       </div>
 

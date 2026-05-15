@@ -9,7 +9,9 @@ async function fetchSpecies(req, res) {
       search: req.query.search,
       categories: req.query.categories
         ? req.query.categories.split(',')
-        : []
+        : [],
+      minDepth: req.query.minDepth,
+      maxDepth: req.query.maxDepth
     })
 
     res.json(species)

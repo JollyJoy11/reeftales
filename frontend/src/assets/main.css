@@ -275,12 +275,19 @@ body.dark-mode .filter-panel {
   box-shadow: 0 12px 30px rgba(0,0,0,0.35) !important;
 }
 
-body.dark-mode .segmented-control {
-  background: #344256 !important;
+body.dark-mode .mode-card {
+  background: #2d3748;
+  border-color: rgba(255,255,255,0.08);
+  color: #f8fafc;
 }
 
-body.dark-mode .segment-btn {
-  color: #f8fafc !important;
+body.dark-mode .mode-card:hover {
+  border-color: #1897a0;
+}
+
+body.dark-mode .mode-card.active {
+  background: #1897a0;
+  color: #fff;
 }
 
 body.dark-mode .filter-panel .form-label,
@@ -407,4 +414,18 @@ body.dark-mode .ai-result {
 body.dark-mode .ai-result span,
 body.dark-mode .ai-result small {
   color: #cbd5e1;
+}
+
+body.dark-mode .slider-track {
+  background: rgba(255,255,255,0.12);
+}
+
+body.dark-mode .thumb::-webkit-slider-thumb {
+  background: #1a202c;
+  border-color: #dbeafe;
+}
+
+body.dark-mode .thumb::-moz-range-thumb {
+  background: #1a202c;
+  border-color: #dbeafe;
 }
