@@ -9,14 +9,17 @@ const authStore = useAuthStore()
     <div class="container">
       <div class="row">
 
-        <div class="col-md-4 mb-4">
-          <h4 class="fw-bold">🌊 Reef Tales</h4>
+        <div class="col-md-4 mb-3">
+          <div class="website-brand">
+            <img src="/images/reeftale_logo_c.png" alt="Reef Tales logo" class="brand-logo" />
+            <h4 class="fw-bold">Reef Tales</h4>
+          </div>
           <p class="text-muted">
             Discover islands, document marine sightings, and share unforgettable ocean adventures.
           </p>
         </div>
 
-        <div class="col-md-2 mb-4">
+        <div class="col-md-2 mb-3">
           <h6 class="fw-bold">Discover</h6>
           <ul class="list-unstyled footer-links">
             <li><RouterLink to="/discovery">Discovery Hub</RouterLink></li>
@@ -25,7 +28,7 @@ const authStore = useAuthStore()
           </ul>
         </div>
 
-        <div class="col-md-2 mb-4">
+        <div class="col-md-2 mb-3">
           <h6 class="fw-bold">Account</h6>
           <ul class="list-unstyled footer-links">
             <template v-if="authStore.isLoggedIn">
@@ -40,7 +43,7 @@ const authStore = useAuthStore()
           </ul>
         </div>
 
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-3">
           <h6 class="fw-bold">Accessibility</h6>
           <p class="text-muted mb-2">Language:</p>
 
@@ -63,8 +66,29 @@ const authStore = useAuthStore()
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,700&display=swap');
+
 footer {
   background: #efe7dc;
+}
+
+.website-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.website-brand h4{
+  padding-top: 8px;
+  font-family: 'Spectral', serif;
+  color: #1897a0;
+  font-size: 36px;
+}
+
+.brand-logo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
 }
 
 .footer-links a {

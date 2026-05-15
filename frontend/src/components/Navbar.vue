@@ -40,7 +40,10 @@ onMounted(() => {
   <nav class="navbar shadow-sm py-3">
     <div class="container d-flex align-items-center">
       <!-- Logo -->
-      <RouterLink to="/" class="navbar-brand fw-bold me-3">Reef Tales</RouterLink>
+      <RouterLink to="/" class="navbar-brand fw-bold me-4">
+        <img src="/images/reeftale_logo_c.png" alt="Reef Tales logo" class="brand-logo" />
+        <span>Reef Tales</span>
+      </RouterLink>
       
       <!-- Search -->
       <div class="search-wrapper d-none d-lg-block position-relative">
@@ -72,7 +75,7 @@ onMounted(() => {
       </div>
 
       <!-- Desktop Navigation -->
-      <ul class="navbar-nav ms-auto d-none d-lg-flex flex-row align-items-center gap-3">
+      <ul class="navbar-nav ms-auto d-none d-lg-flex flex-row align-items-center gap-4">
         <li class="nav-item"><RouterLink to="/discovery" class="nav-link">Discovery</RouterLink></li>
         <li class="nav-item"><RouterLink to="/community" class="nav-link">Community Diaries</RouterLink></li>
         <li class="nav-item"><RouterLink to="/planner" class="nav-link">Trip Planner</RouterLink></li>
@@ -203,8 +206,29 @@ onMounted(() => {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,700&display=swap');
+
 nav{
   background: #efe7dc;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Spectral', serif;
+  color: #1897a0;
+  font-size: 26px;
+}
+
+.navbar-brand span{
+  padding-top: 2px;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
 .search-box {

@@ -4,12 +4,12 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-h1, h2, h3, h4, .navbar-brand {
+h1, h2, h3, h4 {
   font-family: 'Playfair Display', serif;
   color: #2f4858;
 }
 
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode .website-brand h4 {
   color: #f8fafc;
 }
 
