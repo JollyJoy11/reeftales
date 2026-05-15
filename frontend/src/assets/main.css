@@ -400,3 +400,21 @@ body.dark-mode .navbar-nav > .nav-item > .nav-link.router-link-active,
 body.dark-mode .offcanvas .nav-link.router-link-active {
   color: #7dd3fc !important;
 }
+
+body.dark-mode .match-row span {
+  color: #cbd5e1;
+}
+
+body.dark-mode .match-row {
+  border-color: rgba(255,255,255,0.12);
+}
+
+body.dark-mode .ai-result {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark-mode .ai-result span,
+body.dark-mode .ai-result small {
+  color: #cbd5e1;
+}

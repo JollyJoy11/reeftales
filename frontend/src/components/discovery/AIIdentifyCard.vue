@@ -1,11 +1,13 @@
 <script setup>
 import { onBeforeUnmount, ref } from 'vue'
-import { searchWorms } from '@/services/wormsService'
+import { identifyMarineImage } from '@/services/wormsService'
 
 const fileInput = ref(null)
 const previewUrl = ref('')
-const candidateName = ref('')
+const selectedFile = ref(null)
 const matches = ref([])
+const aiPrediction = ref(null)
+
 const isDragging = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
@@ -24,8 +26,12 @@ function setImage(file) {
     URL.revokeObjectURL(previewUrl.value)
   }
 
+  selectedFile.value = file
   previewUrl.value = URL.createObjectURL(file)
+
   errorMessage.value = ''
+  matches.value = []
+  aiPrediction.value = null
 }
 
 function handleFileChange(event) {
@@ -38,21 +44,32 @@ function handleDrop(event) {
 }
 
 async function identifySpecies() {
-  if (!candidateName.value.trim()) {
-    errorMessage.value = 'Enter a species name to check with WoRMS.'
+  if (!selectedFile.value) {
+    errorMessage.value = 'Upload a marine image first.'
     return
   }
 
   try {
     loading.value = true
     errorMessage.value = ''
-    matches.value = await searchWorms(candidateName.value)
+
+    const result = await identifyMarineImage(
+      selectedFile.value
+    )
+
+    aiPrediction.value = result.aiPrediction
+    matches.value = result.wormsMatches || []
 
     if (!matches.value.length) {
-      errorMessage.value = 'No WoRMS matches found.'
+      errorMessage.value =
+        'AI prediction completed, but no WoRMS match was found.'
     }
   } catch (error) {
-    errorMessage.value = 'Unable to search WoRMS right now.'
+    console.error(error)
+
+    errorMessage.value =
+      error.response?.data?.message ||
+      'Unable to identify marine species.'
   } finally {
     loading.value = false
   }
@@ -103,17 +120,23 @@ onBeforeUnmount(() => {
       <p class="subtitle">Check a marine name with WoRMS</p>
 
       <div class="lookup-form">
-        <input
-          v-model="candidateName"
-          type="search"
-          class="form-control"
-          placeholder="e.g. Chelonia mydas"
-          @keyup.enter="identifySpecies"
-        />
-
         <button class="btn btn-primary" :disabled="loading" @click="identifySpecies">
-          {{ loading ? 'Checking...' : 'Identify' }}
+          {{ loading ? 'Analyzing...' : 'Identify Species' }}
         </button>
+      </div>
+
+      <div v-if="aiPrediction" class="ai-result">
+        <strong>
+          {{ aiPrediction.commonName }}
+        </strong>
+
+        <span>
+          {{ aiPrediction.scientificName }}
+        </span>
+
+        <small>
+          Confidence: {{ aiPrediction.confidence }}
+        </small>
       </div>
 
       <p v-if="errorMessage" class="lookup-message">{{ errorMessage }}</p>
@@ -220,6 +243,30 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 
+.ai-result {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.ai-result strong,
+.ai-result span,
+.ai-result small {
+  display: block;
+}
+
+.ai-result span {
+  font-style: italic;
+  color: #475569;
+}
+
+.ai-result small {
+  margin-top: 4px;
+  color: #64748b;
+}
+
 .lookup-message {
   margin: 10px 0 0;
   font-size: 0.78rem;
@@ -249,31 +296,5 @@ onBeforeUnmount(() => {
 .match-row span {
   font-size: 0.72rem;
   color: #64748b;
-}
-
-:global(body.dark-mode) .ai-identify-card {
-  background: #253244;
-}
-
-:global(body.dark-mode) .label-body {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .subtitle,
-:global(body.dark-mode) .match-row span {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .stamp-drop-area {
-  background: #2d3748;
-}
-
-:global(body.dark-mode) .drop-placeholder {
-  border-color: #94a3b8;
-  color: #e2e8f0;
-}
-
-:global(body.dark-mode) .match-row {
-  border-color: rgba(255,255,255,0.12);
 }
 </style>
