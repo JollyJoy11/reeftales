@@ -9,8 +9,12 @@ h1, h2, h3, h4 {
   color: #2f4858;
 }
 
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode .website-brand h4 {
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
   color: #f8fafc;
+}
+
+body.dark-mode .website-brand h4, body.dark-mode .navbar-brand  {
+  color: #26d2de !important;
 }
 
 .btn-primary {
@@ -50,8 +54,7 @@ body.dark-mode footer{
   border-color: rgba(255,255,255,0.08) !important;
 }
 
-body.dark-mode .nav-link,
-body.dark-mode .navbar-brand {
+body.dark-mode .nav-link {
   color: #f8fafc !important;
 }
 
@@ -96,8 +99,7 @@ body.dark-mode .form-select option {
 
 body.dark-mode .navbar .bi,
 body.dark-mode .navbar button,
-body.dark-mode .navbar .nav-link,
-body.dark-mode .navbar .navbar-brand {
+body.dark-mode .navbar .nav-link {
   color: #f8fafc !important;
 }
 
@@ -448,4 +450,39 @@ body.dark-mode .empty-state {
 
 body.dark-mode .empty-state h5 {
   color: #f8fafc !important;
+}
+
+body.dark-mode .loading-state {
+  color: #cbd5e1;
+}
+
+body.dark-mode .app-toast {
+  background: #253244;
+  color: #f8fafc;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+body.dark-mode .app-toast.success {
+  background: rgba(24,151,160,0.18);
+  border-color: #1897a0;
+  color: #dffcff;
+}
+
+body.dark-mode .app-toast.danger {
+  background: rgba(220,53,69,0.18);
+  border-color: #ef4444;
+  color: #fee2e2;
+}
+
+body.dark-mode .app-toast button {
+  color: inherit;
+}
+
+body.dark-mode .filter-content::-webkit-scrollbar-thumb {
+  background: #4b6475;
+}
+
+body.dark-mode .filter-content::-webkit-scrollbar-thumb:hover {
+  background: #1897a0;
 }

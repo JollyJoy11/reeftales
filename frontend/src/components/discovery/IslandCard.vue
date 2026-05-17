@@ -189,10 +189,12 @@ const species = computed(() => splitList(props.island.species))
 .activity-badge {
   background: #dff6f0;
   color: #0f766e;
+  border: 1px dashed rgba(42, 123, 136, 0.4);
 }
 
 .more-badge {
   background: #f1f5f9;
   color: #334155;
+  border: 1px dashed rgba(42, 123, 136, 0.4);
 }
 </style>

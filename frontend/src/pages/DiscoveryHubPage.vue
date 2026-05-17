@@ -4,6 +4,9 @@ import IslandCard from '@/components/discovery/IslandCard.vue'
 import SpeciesCard from '@/components/discovery/SpeciesCard.vue'
 import AIIdentifyCard from '@/components/discovery/AIIdentifyCard.vue'
 import DiscoveryFilters from '@/components/discovery/DiscoveryFilters.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+import LoadingState from '@/components/common/LoadingState.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
 import { getIslands } from '@/services/islandService'
 import { getSpecies } from '@/services/speciesService'
@@ -109,6 +112,10 @@ onMounted(() => {
 
 <template>
   <MainLayout>
+    <AppAlert
+      v-if="errorMessage" :message="errorMessage" variant="danger" @close="errorMessage = ''"
+    />
+
     <section class="container py-3">
       <div class="explore-header mb-4">
         <div>
@@ -172,8 +179,10 @@ onMounted(() => {
         </aside>
 
         <main class="col-12 col-lg-9">
-          <p v-if="loading">Loading {{ discoveryMode === 'islands' ? 'islands' : 'marine species' }}...</p>
-          <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
+          <LoadingState
+            v-if="loading"
+            :message="`Loading ${discoveryMode === 'islands' ? 'islands' : 'marine species'}...`"
+          />
 
           <div class="row g-4">
             <template v-if="discoveryMode === 'islands'">
@@ -186,11 +195,11 @@ onMounted(() => {
               </div>
 
               <div v-if="!loading && islands.length === 0" class="col-12 d-flex">
-                <div class="empty-state w-100 h-100">
-                  <i class="bi bi-compass"></i>
-                  <h5>No islands found</h5>
-                  <p>Try changing your search keyword or filters.</p>
-                </div>
+                <EmptyState
+                  icon="bi bi-compass"
+                  title="No islands found"
+                  message="Try changing your search keyword or filters."
+                />
               </div>
             </template>
 
@@ -208,11 +217,11 @@ onMounted(() => {
               </div>
 
               <div v-if="!loading && speciesList.length === 0" class="col-12 col-md-6 col-xl-8 d-flex">
-                <div class="empty-state h-100 w-100">
-                  <i class="bi bi-water"></i>
-                  <h5>No marine species found</h5>
-                  <p>Try adjusting the species type, depth range, or search keyword.</p>
-                </div>
+                <EmptyState
+                  icon="bi bi-water"
+                  title="No marine species found"
+                  message="Try adjusting the species type, depth range, or search keyword."
+                />
               </div>
             </template>
           </div>
@@ -288,31 +297,6 @@ onMounted(() => {
   border-radius: 12px;
   background: rgba(255,255,255,0.9);
   font-size: 0.9rem;
-}
-
-.empty-state {
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 22px;
-  background: #fbf9f1;
-  border: 1px dashed #c4a484;
-  text-align: center;
-  color: #64748b;
-  padding: 32px;
-}
-
-.empty-state i {
-  font-size: 2.4rem;
-  color: #1897a0;
-  margin-bottom: 12px;
-}
-
-.empty-state h5 {
-  color: #2f4858;
-  font-weight: 700;
 }
 
 @media (max-width: 991px) {

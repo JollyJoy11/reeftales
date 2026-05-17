@@ -4,9 +4,11 @@ import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import Stamp from '@/components/Stamp.vue'
+import { useToastStore } from '@/stores/toastStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toastStore = useToastStore()
 
 const username = ref('')
 const email = ref('')
@@ -83,6 +85,7 @@ async function handleRegister() {
 
     await authStore.register(username.value, email.value, password.value)
 
+    toastStore.success('Account created successfully! Please log in.')
     router.push('/login')
   } catch (error) {
     errorMessage.value =

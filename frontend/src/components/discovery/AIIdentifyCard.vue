@@ -176,7 +176,6 @@ onBeforeUnmount(() => {
 .ai-identify-card {
   padding: 12px;
   background: #deefec;
-  transition: transform 0.2s ease;
   transform: rotate(0.4deg);
 
   --r: 5px;
@@ -188,10 +187,6 @@ onBeforeUnmount(() => {
     radial-gradient(var(--r) at 50% var(--r), transparent 98%, black)
       50% calc(-1*var(--r)) / var(--s) 100%;
   mask-composite: intersect;
-}
-
-.ai-identify-card:hover {
-  transform: rotate(0deg) translateY(-4px);
 }
 
 .stamp-drop-area {

@@ -403,6 +403,23 @@ function toggleArrayValue(array, value, eventName) {
   margin-top: 18px;
 }
 
+.filter-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.filter-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filter-content::-webkit-scrollbar-thumb {
+  background: #c4a484;
+  border-radius: 999px;
+}
+
+.filter-content::-webkit-scrollbar-thumb:hover {
+  background: #1897a0;
+}
+
 @media (max-width: 991px) {
   .filter-header {
     cursor: pointer;

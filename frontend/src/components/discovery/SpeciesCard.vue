@@ -195,5 +195,6 @@ const depthLabel = computed(() => {
 .species-badge {
   background: #e0f2fe;
   color: #0369a1;
+  border: 1px dashed rgba(42, 123, 136, 0.4);
 }
 </style>
