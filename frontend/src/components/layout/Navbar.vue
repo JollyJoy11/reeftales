@@ -332,7 +332,7 @@ nav{
 
 .navbar-nav > .nav-item > .nav-link.router-link-active,
 .offcanvas .nav-link.router-link-active {
-  color: #D66967 !important;
+  color: #1ba7b1 !important;
   font-weight: 600;
 }
 
