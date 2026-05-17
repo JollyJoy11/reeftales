@@ -4,6 +4,7 @@ import IslandCard from '@/components/discovery/IslandCard.vue'
 import SpeciesCard from '@/components/discovery/SpeciesCard.vue'
 import AIIdentifyCard from '@/components/discovery/AIIdentifyCard.vue'
 import DiscoveryFilters from '@/components/discovery/DiscoveryFilters.vue'
+import DiscoveryMap from '@/components/discovery/DiscoveryMap.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
@@ -126,43 +127,12 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="map-panel mb-4">
-        <div
-          v-if="discoveryMode === 'islands'"
-          v-for="island in islands"
-          :key="island.id"
-          class="map-point"
-          :style="{
-            left: `${20 + island.id * 10}%`,
-            top: `${25 + island.id * 8}%`
-          }"
-        >
-          <RouterLink :to="`/islands/${island.id}`" class="map-card">
-            <strong>{{ island.name }}</strong>
-            <small>{{ island.country }}</small>
-          </RouterLink>
-        </div>
-
-        <div
-          v-else
-          v-for="species in speciesList"
-          :key="species.id"
-          class="map-point marine-point"
-          :style="{
-            left: `${20 + species.id * 12}%`,
-            top: `${25 + species.id * 7}%`
-          }"
-        >
-          <div class="map-card">
-            <strong>{{ species.name }}</strong>
-            <small>{{ species.scientific_name }}</small>
-          </div>
-        </div>
-
-        <p class="map-note">
-          Interactive discovery map - Leaflet integration coming later.
-        </p>
-      </div>
+      <DiscoveryMap
+        class="mb-4"
+        :discovery-mode="discoveryMode"
+        :islands="islands"
+        :species-list="speciesList"
+      />
 
       <div class="row g-4">
         <aside class="col-12 col-lg-3">
@@ -237,66 +207,6 @@ onMounted(() => {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-}
-
-.map-panel {
-  position: relative;
-  min-height: 420px;
-  border: 1px solid #eadfca;
-  border-radius: 10px;
-  background:
-    linear-gradient(rgba(10,61,98,0.1), rgba(10,61,98,0.2)),
-    url('/images/map-placeholder.jpg');
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
-
-.map-point {
-  position: absolute;
-}
-
-.map-point::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  background: #ff7f50;
-  border: 3px solid white;
-  border-radius: 50%;
-  display: block;
-}
-
-.map-card {
-  display: none;
-  min-width: 160px;
-  margin-top: 8px;
-  padding: 12px;
-  border-radius: 16px;
-  background: white;
-  color: #1e293b;
-  text-decoration: none;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.16);
-}
-
-.map-point:hover .map-card {
-  display: block;
-}
-
-.map-card small {
-  display: block;
-  color: #64748b;
-}
-
-.map-note {
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
-  margin: 0;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.9);
-  font-size: 0.9rem;
 }
 
 @media (max-width: 991px) {
