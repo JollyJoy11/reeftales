@@ -1,0 +1,39 @@
+async function getWeather(req, res) {
+  const { latitude, longitude } = req.query
+
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: 'Latitude and longitude are required' })
+  }
+
+  try {
+    const endpoint = new URL('https://api.open-meteo.com/v1/forecast')
+
+    endpoint.searchParams.set('latitude', latitude)
+    endpoint.searchParams.set('longitude', longitude)
+    endpoint.searchParams.set('current', 'temperature_2m,weather_code,wind_speed_10m')
+    endpoint.searchParams.set('daily', 'temperature_2m_max,temperature_2m_min,precipitation_probability_max')
+    endpoint.searchParams.set('timezone', 'auto')
+    endpoint.searchParams.set('forecast_days', '3')
+
+    const response = await fetch(endpoint)
+
+    if (!response.ok) {
+      return res.status(response.status).json({ message: 'Weather API failed' })
+    }
+
+    const data = await response.json()
+
+    res.json({
+      current: data.current,
+      daily: data.daily,
+      timezone: data.timezone
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to fetch weather' })
+  }
+}
+
+module.exports = {
+  getWeather
+}

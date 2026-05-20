@@ -175,7 +175,7 @@ onMounted(() => {
 
             <template v-else>
               <div class="col-12 col-md-6 col-xl-4 d-flex">
-                <AIIdentifyCard class="h-100" />
+                <AIIdentifyCard class="h-100 w-100" />
               </div>
 
               <div

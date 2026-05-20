@@ -486,3 +486,47 @@ body.dark-mode .filter-content::-webkit-scrollbar-thumb {
 body.dark-mode .filter-content::-webkit-scrollbar-thumb:hover {
   background: #1897a0;
 }
+
+body.dark-mode .weather-card {
+  background: #253244;
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark-mode .weather-icon,
+body.dark-mode .forecast-item {
+  background: #2d3748;
+}
+
+body.dark-mode .weather-current strong,
+body.dark-mode .forecast-item strong {
+  color: #f8fafc;
+}
+
+body.dark-mode .weather-label,
+body.dark-mode .weather-current p,
+body.dark-mode .weather-current small,
+body.dark-mode .forecast-item span,
+body.dark-mode .forecast-item small {
+  color: #cbd5e1;
+}
+
+body.dark-mode .detail-panel,
+body.dark-mode .species-mini-card {
+  background: #253244;
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark-mode .island-title-row h1,
+body.dark-mode .info-box strong,
+body.dark-mode .species-mini-card h6 {
+  color: #f8fafc;
+}
+
+body.dark-mode .weather-widget {
+  background: #2d3748;
+}
+
+body.dark-mode .selected-species-note {
+  background: rgba(37,50,68,0.92);
+  color: #f8fafc;
+}

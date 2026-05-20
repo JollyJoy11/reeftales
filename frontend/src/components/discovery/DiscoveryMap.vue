@@ -25,7 +25,6 @@ function createMap() {
   map = L.map(mapContainer.value).setView([4.2105, 101.9758], 4)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map)
 
   markersLayer = L.layerGroup().addTo(map)
@@ -93,7 +92,7 @@ watch(
 <style scoped>
 .discovery-map {
   width: 100%;
-  min-height: 420px;
+  min-height: 70vh;
   border-radius: 12px;
   border: 1px solid #eadfca;
   overflow: hidden;
