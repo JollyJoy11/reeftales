@@ -386,11 +386,6 @@ body.dark-mode .stamp {
   background-color: #95b8c9;
 }
 
-body.dark-mode .navbar-nav > .nav-item > .nav-link.router-link-active,
-body.dark-mode .offcanvas .nav-link.router-link-active {
-  color: #7dd3fc !important;
-}
-
 body.dark-mode .match-row span {
   color: #cbd5e1;
 }

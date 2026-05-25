@@ -1,7 +1,7 @@
 <template>
   <RouterLink
     v-if="type === 'island'"
-    :to="`/islands/${item.id}`"
+    :to="`/discovery/island/${item.id}`"
     class="map-popup-card"
   >
     <strong>{{ item.name }}</strong>

@@ -1,8 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
 const authStore = useAuthStore()
+const route = useRoute()
 
 const searchQuery = ref('')
 const showSuggestions = ref(false)
@@ -10,12 +12,49 @@ const showSuggestions = ref(false)
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
 const currentLanguage = ref(localStorage.getItem('language') || 'English')
 
+const mainNavLinks = [
+  {
+    label: 'Discovery',
+    to: '/discovery',
+    section: 'discovery'
+  },
+  {
+    label: 'Community Diaries',
+    to: '/community',
+    section: 'community'
+  },
+  {
+    label: 'Trip Planner',
+    to: '/planner',
+    section: 'planner'
+  }
+]
+
+function isSectionActive(section) {
+  if (section === 'discovery') {
+    return route.path.startsWith('/discovery')
+  }
+
+  if (section === 'community') {
+    return (
+      route.path.startsWith('/community') ||
+      route.path.startsWith('/journal')
+    )
+  }
+
+  if (section === 'planner') {
+    return route.path.startsWith('/planner')
+  }
+
+  return false
+}
+
 function handleLogout() {
   authStore.logout()
 }
 
 const suggestions = [
-  { label: 'Maldives', type: 'Island', path: '/islands/1' },
+  { label: 'Maldives', type: 'Island', path: '/discovery/island/1' },
   { label: 'Sea Turtle', type: 'Marine Life', path: '/discovery?mode=marine' },
   { label: 'Sipadan Journal', type: 'Journal', path: '/community' }
 ]
@@ -76,9 +115,21 @@ onMounted(() => {
 
       <!-- Desktop Navigation -->
       <ul class="navbar-nav ms-auto d-none d-lg-flex flex-row align-items-center gap-4">
-        <li class="nav-item"><RouterLink to="/discovery" class="nav-link">Discovery</RouterLink></li>
-        <li class="nav-item"><RouterLink to="/community" class="nav-link">Community Diaries</RouterLink></li>
-        <li class="nav-item"><RouterLink to="/planner" class="nav-link">Trip Planner</RouterLink></li>
+
+        <!-- Main Navigation -->
+        <li class="nav-item nav-links-group d-flex align-items-center">
+          <template v-for="link in mainNavLinks" :key="link.label">
+            <div class="main-nav-item">
+              <RouterLink
+                :to="link.to"
+                class="nav-link"
+                :class="{ 'section-active': isSectionActive(link.section) }"
+              >
+                {{ link.label }}
+              </RouterLink>
+            </div>
+          </template>
+        </li>
 
         <!-- Language Dropdown -->
         <li class="nav-item dropdown">
@@ -122,7 +173,9 @@ onMounted(() => {
 
         <!-- Logged-in profile dropdown -->
         <li v-if="authStore.isLoggedIn" class="nav-item dropdown ms-lg-2">
-          <a class="nav-action-btn" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-person-circle fs-4"></i></a>
+          <a class="nav-action-btn" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle fs-4"></i>
+          </a>
 
           <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown">
             <li><RouterLink to="/dashboard" class="dropdown-item">My Journeys</RouterLink></li>
@@ -144,7 +197,7 @@ onMounted(() => {
   <!-- Mobile Offcanvas Menu -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title fw-bold">Reef Tales</h5>
+      <h5 class="offcanvas-title fw-bold navbar-brand">Reef Tales</h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
 
@@ -164,9 +217,15 @@ onMounted(() => {
       </div>
 
       <ul class="navbar-nav gap-2">
-        <li><RouterLink to="/discovery" class="nav-link">Discovery</RouterLink></li>
-        <li><RouterLink to="/community" class="nav-link">Community Diaries</RouterLink></li>
-        <li><RouterLink to="/planner" class="nav-link">Trip Planner</RouterLink></li>
+        <li v-for="link in mainNavLinks" :key="link.label">
+          <RouterLink
+            :to="link.to"
+            class="nav-link mobile-nav-link"
+            :class="{ 'section-active': isSectionActive(link.section) }"
+          >
+            {{ link.label }}
+          </RouterLink>
+        </li>
 
         <li>
           <button class="btn btn-light w-100 mb-2" @click="toggleTheme">
@@ -330,10 +389,55 @@ nav{
   text-decoration: none;
 }
 
-.navbar-nav > .nav-item > .nav-link.router-link-active,
-.offcanvas .nav-link.router-link-active {
+.main-nav-item .nav-link.section-active,
+.offcanvas .mobile-nav-link.section-active  {
   color: #1ba7b1 !important;
+  position: relative;
   font-weight: 600;
+}
+
+.main-nav-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.main-nav-item .nav-link {
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-links-group {
+  gap: 40px;
+}
+
+.main-nav-item .nav-link.section-active::after {
+  content: "";
+  position: absolute;
+  left: -26px;
+  bottom: -40px;
+  width: 105px;
+  height: 100px;
+  background:
+    url('/images/flipflop-swirl-indicator.png')
+    center / contain no-repeat;
+  pointer-events: none;
+  animation: slipperFootstep 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slipperFootstep {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) rotate(-8deg) scale(0.9);
+  }
+  60% {
+    transform: translateY(-2px) rotate(2deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
 }
 
 @media (min-width: 992px) {

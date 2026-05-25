@@ -44,7 +44,7 @@ function renderMarkers() {
       marker.bindPopup(`
         <strong>${island.name}</strong><br>
         <span>${island.location || ''}, ${island.country || ''}</span><br>
-        <a href="/islands/${island.id}">View island</a>
+        <a href="/discovery/island/${island.id}">View island</a>
       `)
 
       markersLayer.addLayer(marker)

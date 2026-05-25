@@ -16,7 +16,7 @@ const routes = [
   { path: '/', component: Home },
 
   { path: '/discovery', component: Discovery },
-  { path: '/islands/:id', component: IslandDetails },
+  { path: '/discovery/island/:id', component: IslandDetails },
 
   { path: '/community', component: Community },
   { path: '/journal/:id', component: Journal },
