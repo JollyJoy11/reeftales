@@ -263,6 +263,26 @@ async function initializeDatabase() {
     )
 		`);
 
+    // SAVED_JOURNALS
+    await run(`
+      CREATE TABLE IF NOT EXISTS saved_journals (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        journal_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (user_id) 
+          REFERENCES users(id) 
+          ON DELETE CASCADE,
+
+        FOREIGN KEY (journal_id) 
+          REFERENCES journals(id) 
+          ON DELETE CASCADE,
+
+        UNIQUE(user_id, journal_id)
+    )
+    `)
+
 		// SAVED_ISLANDS
 		await run(`
       CREATE TABLE IF NOT EXISTS saved_islands (

@@ -30,7 +30,7 @@ const species = computed(() => splitList(props.island.species))
 </script>
 
 <template>
-  <RouterLink :to="`discovery/island/${island.id}`" class="text-decoration-none">
+  <RouterLink :to="`/discovery/island/${island.id}`" class="text-decoration-none">
     <article class="island-label-card h-100">
       <div class="stamp-image-area" :class="`stamp-tilt-${tiltVariant % 3}`">
         <img
