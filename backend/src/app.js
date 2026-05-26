@@ -8,6 +8,7 @@ const wormsRoutes = require('./routes/wormsRoutes')
 const weatherRoutes = require('./routes/weatherRoutes')
 const journalRoutes = require('./routes/journalRoutes')
 const savedIslandRoutes = require('./routes/savedIslandRoutes')
+const savedJournalRoutes = require('./routes/savedJournalRoutes')
 
 const app = express()
 
@@ -28,5 +29,6 @@ app.use('/api/worms', wormsRoutes)
 app.use('/api/weather', weatherRoutes)
 app.use('/api/journals', journalRoutes)
 app.use('/api/saved-islands', savedIslandRoutes)
+app.use('/api/saved-journals', savedJournalRoutes)
 
 module.exports = app
