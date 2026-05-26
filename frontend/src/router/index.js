@@ -25,6 +25,7 @@ const routes = [
   { path: '/register', component: Register },
 
   { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
+  { path: '/saved-islands', redirect: '/dashboard' },
   { path: '/journal/create', component: CreateJournal, meta: { requiresAuth: true } },
   { path: '/planner', component: Planner, meta: { requiresAuth: true } },
   { path: '/settings', component: Settings, meta: { requiresAuth: true } },
@@ -35,16 +36,14 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const token = localStorage.getItem('token')
 
   if (to.meta.requiresAuth && !token) {
-    next({
+    return {
       path: '/login',
       query: { redirect: to.fullPath }
-    })
-  } else {
-    next()
+    }
   }
 })
 
