@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import WeatherWidget from '@/components/common/WeatherWidget.vue'
@@ -7,13 +7,37 @@ import LoadingState from '@/components/common/LoadingState.vue'
 import { getIslandById } from '@/services/islandService'
 import { getWeather } from '@/services/weatherService'
 import L from 'leaflet'
+import { useAuthStore } from '@/stores/authStore'
+import { useSavedIslandStore } from '@/stores/savedIslandStore'
+import { useToastStore } from '@/stores/toastStore'
 
+const authStore = useAuthStore()
+const savedIslandStore = useSavedIslandStore()
+const toastStore = useToastStore()
 const route = useRoute()
 const island = ref(null)
 const loading = ref(false)
 const errorMessage = ref('')
 const selectedSpecies = ref(null)
 const weather = ref(null)
+
+const isSaved = computed(() => {
+  if (!island.value) return false
+  return savedIslandStore.isSaved(island.value.id)
+})
+
+async function handleSaveIsland() {
+  if (!authStore.isLoggedIn) {
+    toastStore.danger('Please login to save islands.')
+    return
+  }
+
+  try {
+    await savedIslandStore.toggle(island.value)
+  } catch (error) {
+    toastStore.danger('Unable to update saved island.')
+  }
+}
 
 const residentSpecies = ref([
   {
@@ -113,6 +137,11 @@ function showSpeciesPath(species) {
 
 onMounted(async () => {
   await loadIsland()
+
+  if (authStore.isLoggedIn) {
+    await savedIslandStore.loadSavedIslands()
+  }
+
   await loadWeather()
   initMap()
 })
@@ -157,6 +186,11 @@ onMounted(async () => {
                 {{ island.location }}, {{ island.country }}
               </p>
             </div>
+
+            <button class="save-detail-btn" @click="handleSaveIsland">
+              <i :class="isSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+              {{ isSaved ? 'Saved' : 'Save Island' }}
+            </button>
           </div>
         </section>
 
@@ -437,6 +471,16 @@ onMounted(async () => {
   margin: 8px 0 0;
   font-size: 0.78rem;
   color: #64748b;
+}
+
+.save-detail-btn {
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.16);
+  color: white;
+  backdrop-filter: blur(6px);
+  font-weight: 600;
 }
 
 @media (max-width: 991px) {

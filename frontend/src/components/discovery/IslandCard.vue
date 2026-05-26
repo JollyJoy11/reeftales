@@ -1,5 +1,30 @@
 <script setup>
 import { computed } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
+import { useSavedIslandStore } from '@/stores/savedIslandStore'
+import { useToastStore } from '@/stores/toastStore'
+
+const authStore = useAuthStore()
+const savedIslandStore = useSavedIslandStore()
+const toastStore = useToastStore()
+
+const isSaved = computed(() => savedIslandStore.isSaved(props.island.id))
+
+async function handleSave(event) {
+  event.preventDefault()
+  event.stopPropagation()
+
+  if (!authStore.isLoggedIn) {
+    toastStore.danger('Please login to save islands.')
+    return
+  }
+
+  try {
+    await savedIslandStore.toggle(props.island)
+  } catch (error) {
+    toastStore.danger('Unable to update saved island.')
+  }
+}
 
 const props = defineProps({
   island: {
@@ -32,6 +57,14 @@ const species = computed(() => splitList(props.island.species))
 <template>
   <RouterLink :to="`/discovery/island/${island.id}`" class="text-decoration-none">
     <article class="island-label-card h-100">
+      <button
+        class="save-island-btn"
+        type="button"
+        @click="handleSave"
+      >
+        <i :class="isSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+      </button>
+
       <div class="stamp-image-area" :class="`stamp-tilt-${tiltVariant % 3}`">
         <img
           :src="island.cover_image || '/images/island-placeholder.jpg'"
@@ -92,10 +125,38 @@ const species = computed(() => splitList(props.island.species))
     radial-gradient(var(--r) at 50% var(--r), transparent 98%, black)
       50% calc(-1*var(--r)) / var(--s) 100%;
   mask-composite: intersect;
+  position: relative;
 }
 
 .island-label-card:hover {
   transform: rotate(0deg) translateY(-4px);
+}
+
+.save-island-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  color: #1897a0;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+.save-island-btn:hover {
+  background: #1897a0;
+  color: white;
+}
+
+.save-island-btn i {
+  transition: transform 0.2s ease;
+}
+
+.save-island-btn:active i {
+  transform: scale(1.2);
 }
 
 .stamp-image-area {

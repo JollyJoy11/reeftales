@@ -2,8 +2,10 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import { useSavedIslandStore } from '@/stores/savedIslandStore'
 
 const authStore = useAuthStore()
+const savedIslandStore = useSavedIslandStore()
 const route = useRoute()
 
 const searchQuery = ref('')
@@ -51,6 +53,7 @@ function isSectionActive(section) {
 
 function handleLogout() {
   authStore.logout()
+  savedIslandStore.clear()
 }
 
 const suggestions = [

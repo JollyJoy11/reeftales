@@ -11,12 +11,15 @@ import EmptyState from '@/components/common/EmptyState.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
 import { getIslands } from '@/services/islandService'
 import { getSpecies } from '@/services/speciesService'
+import { useAuthStore } from '@/stores/authStore'
+import { useSavedIslandStore } from '@/stores/savedIslandStore'
 
+const authStore = useAuthStore()
+const savedIslandStore = useSavedIslandStore()
 const islands = ref([])
 const speciesList = ref([])
 const loading = ref(false)
 const errorMessage = ref('')
-
 const discoveryMode = ref('islands')
 const search = ref('')
 const selectedContinents = ref([])
@@ -106,8 +109,12 @@ watch(
   { deep: true }
 )
 
-onMounted(() => {
-  loadIslands()
+onMounted(async () => {
+  await loadIslands()
+
+  if (authStore.isLoggedIn) {
+    await savedIslandStore.loadSavedIslands()
+  }
 })
 </script>
 
