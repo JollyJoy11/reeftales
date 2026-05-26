@@ -39,9 +39,10 @@ const depthLabel = computed(() => {
   <article class="species-label-card h-100">
     <div class="stamp-image-area" :class="`stamp-tilt-${tiltVariant % 3}`">
       <img
-        :src="species.image_url || '/images/species-placeholder.jpg'"
+        :src="species.image_url || '/images/island-placeholder.jpg'"
         class="species-image"
         alt="Marine species image"
+        @error="$event.target.src = '/images/island-placeholder.jpg'"
       />
     </div>
 

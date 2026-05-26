@@ -302,6 +302,7 @@ nav{
   box-shadow: none;
   border-color: #d8cdbb !important;
   background: #fffdf8;
+  font-size: 14px;
 }
 
 .search-suggestions {

@@ -68,7 +68,7 @@ onMounted(() => {
   padding: 40px 16px;
   background:
     linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.9)),
-    url('/images/auth-ocean-bg.jpg');
+    url('/images/postcard.jpg');
   background-size: cover;
   background-position: center;
   position: relative;

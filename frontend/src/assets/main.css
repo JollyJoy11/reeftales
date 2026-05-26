@@ -164,7 +164,7 @@ body.dark-mode .bi-globe2 {
 body.dark-mode .auth-page {
   background:
     linear-gradient(rgba(7, 30, 38, 0.78), rgba(7, 30, 38, 0.9)),
-    url('/images/auth-ocean-bg.jpg') !important;
+    url('/images/postcard-dark.jpg') !important;
 }
 
 body.dark-mode .postcard-card {

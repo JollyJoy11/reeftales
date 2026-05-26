@@ -50,16 +50,17 @@ const avatarInitial = computed(() => {
           <strong>{{ journal.username }}</strong>
           <span>
             {{ journal.island_name }}, {{ journal.country }} ·
-            {{ formatDate(journal.visit_date || journal.created_at) }}
+            {{ formatDate(journal.created_at) }}
           </span>
         </div>
       </div>
 
       <div class="postcard-image-wrap">
         <img
-          :src="journal.cover_image || '/images/journal-placeholder.jpg'"
+          :src="journal.cover_image || '/images/island-placeholder.jpg'"
           class="journal-cover"
           alt="Journal cover"
+          @error="$event.target.src = '/images/island-placeholder.jpg'"
         />
       </div>
 

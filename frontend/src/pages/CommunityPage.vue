@@ -185,7 +185,7 @@ onMounted(() => {
   border-radius: 28px;
   background:
     linear-gradient(rgba(251,249,241,0.88), rgba(251,249,241,0.95)),
-    url('/images/community-hero.jpg');
+    url('/images/postcard.jpg');
   background-size: cover;
   background-position: center;
   border: 1px solid #eadfca;
@@ -342,7 +342,7 @@ onMounted(() => {
 :global(body.dark-mode) .community-hero {
   background:
     linear-gradient(rgba(37,50,68,0.9), rgba(37,50,68,0.95)),
-    url('/images/community-hero.jpg');
+    url('/images/postcard-dark.jpg');
   border-color: rgba(255,255,255,0.1);
 }
 
