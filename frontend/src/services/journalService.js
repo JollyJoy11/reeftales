@@ -24,3 +24,8 @@ export async function getTopExplorers() {
   const response = await api.get('/journals/top/explorers')
   return response.data
 }
+
+export async function createJournal(data) {
+  const response = await api.post('/journals', data)
+  return response.data
+}

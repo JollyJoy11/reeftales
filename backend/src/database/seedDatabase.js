@@ -320,19 +320,22 @@ async function seedDatabase(connection) {
         island_id,
         title,
         content,
-        visit_date,
+        cover_image,
+        start_date,
+        end_date,
         mood,
         visibility
       )
       VALUES
-
       (
         1,
         1,
         5,
-        'My Magical Redang Trip',
-        'Saw crystal clear water and many fishes!',
+        'My Magical Redang Adventure',
+        'Spent four incredible days snorkeling around Redang Island. The coral gardens were vibrant and I even spotted turtles near the shallow reef.',
+        '/images/journal-redang.jpg',
         '2025-06-15',
+        '2025-06-18',
         'excited',
         'public'
       ),
@@ -341,11 +344,75 @@ async function seedDatabase(connection) {
         2,
         2,
         4,
-        'Diving at Sipadan',
-        'One of the best underwater experiences.',
+        'Diving Through Sipadan',
+        'One of the best underwater experiences I have ever had. Huge schools of barracudas and reef sharks surrounded the dive site.',
+        '/images/journal-sipadan.jpg',
         '2025-05-20',
+        '2025-05-24',
         'amazed',
         'public'
+      ),
+
+      (
+        3,
+        1,
+        1,
+        'Peaceful Evenings in Maldives',
+        'Relaxed by the crystal-clear waters and kayaked through the lagoon during sunset.',
+        '/images/journal-maldives.jpg',
+        '2025-04-08',
+        '2025-04-12',
+        'relaxed',
+        'public'
+      )
+    `);
+
+    // ---------------- JOURNAL ACTIVITIES ----------------
+    await connection.query(`
+      INSERT IGNORE INTO journal_activities
+      (
+        journal_id,
+        activity_id,
+        custom_activity_name,
+        day_number,
+        activity_time,
+        notes
+      )
+      VALUES
+      (
+        1,
+        1,
+        NULL,
+        1,
+        '09:00:00',
+        'Morning snorkeling around coral reef'
+      ),
+
+      (
+        1,
+        5,
+        NULL,
+        2,
+        '17:30:00',
+        'Sunset kayaking session'
+      ),
+
+      (
+        2,
+        2,
+        NULL,
+        1,
+        '08:00:00',
+        'Deep dive near Barracuda Point'
+      ),
+
+      (
+        2,
+        NULL,
+        'Underwater Photography',
+        2,
+        '14:00:00',
+        'Captured reef shark footage'
       )
     `);
 
@@ -355,13 +422,104 @@ async function seedDatabase(connection) {
       (
         journal_id,
         species_id,
+        custom_species_name,
         quantity,
         notes
       )
       VALUES
-      (1,1,12,'Swimming near coral'),
-      (1,3,5,'Beautiful reef area'),
-      (2,2,2,'Saw near diving site')
+      (
+        1,
+        1,
+        NULL,
+        3,
+        'Spotted near shallow coral reef'
+      ),
+
+      (
+        1,
+        7,
+        NULL,
+        12,
+        'Large schools swimming together'
+      ),
+
+      (
+        2,
+        2,
+        NULL,
+        2,
+        'Massive whale sharks seen during dive'
+      ),
+
+      (
+        2,
+        5,
+        NULL,
+        6,
+        'Several reef sharks circling dive area'
+      ),
+
+      (
+        3,
+        NULL,
+        'Dolphin Pod',
+        8,
+        'Seen during evening boat ride'
+      )
+    `);
+
+    // ---------------- JOURNAL MEDIA ----------------
+    await connection.query(`
+      INSERT IGNORE INTO journal_media
+      (
+        journal_id,
+        species_id,
+        activity_id,
+        media_url,
+        media_type,
+        caption,
+        display_order
+      )
+      VALUES
+      (
+        1,
+        1,
+        1,
+        '/images/journal/redang-turtle.jpg',
+        'photo',
+        'Sea turtle swimming beside coral reef',
+        1
+      ),
+
+      (
+        1,
+        NULL,
+        5,
+        '/images/journal/redang-kayak.jpg',
+        'photo',
+        'Sunset kayaking view',
+        2
+      ),
+
+      (
+        2,
+        2,
+        2,
+        '/images/journal/sipadan-whaleshark.jpg',
+        'photo',
+        'Whale shark encounter during dive',
+        1
+      ),
+
+      (
+        3,
+        NULL,
+        NULL,
+        '/images/journal/maldives-lagoon.jpg',
+        'photo',
+        'Peaceful lagoon at sunset',
+        1
+      )
     `);
 
     // ---------------- COMMENTS ----------------

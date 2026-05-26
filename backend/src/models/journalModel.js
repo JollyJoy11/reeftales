@@ -7,7 +7,8 @@ async function getPublicJournals(filters = {}) {
       journals.title,
       journals.content,
       journals.cover_image,
-      journals.visit_date,
+      journals.start_date,
+      journals.end_date,
       journals.mood,
       journals.created_at,
 
@@ -20,8 +21,8 @@ async function getPublicJournals(filters = {}) {
       COUNT(DISTINCT likes.id) AS like_count,
       COUNT(DISTINCT comments.id) AS comment_count,
 
-      GROUP_CONCAT(DISTINCT activities.name) AS activities,
-      GROUP_CONCAT(DISTINCT species.name) AS species
+      GROUP_CONCAT(DISTINCT COALESCE(activities.name, journal_activities.custom_activity_name)) AS activities,
+      GROUP_CONCAT(DISTINCT COALESCE(species.name, journal_sightings.custom_species_name)) AS species
     FROM journals
     JOIN users ON journals.user_id = users.id
     JOIN islands ON journals.island_id = islands.id
@@ -124,9 +125,126 @@ async function getTopExplorers() {
   return rows
 }
 
+async function createJournal(data) {
+  const connection = await db.getConnection()
+
+  try {
+    await connection.beginTransaction()
+
+    const [journalResult] = await connection.query(`
+      INSERT INTO journals
+      (
+        user_id,
+        island_id,
+        title,
+        content,
+        cover_image,
+        start_date,
+        end_date,
+        mood,
+        visibility
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      data.user_id,
+      data.island_id,
+      data.title,
+      data.content,
+      data.cover_image,
+      data.start_date,
+      data.end_date,
+      data.mood,
+      data.visibility
+    ])
+
+    const journalId = journalResult.insertId
+
+    if (data.activities?.length) {
+      for (const activity of data.activities) {
+        await connection.query(`
+          INSERT INTO journal_activities
+          (
+            journal_id,
+            activity_id,
+            custom_activity_name,
+            day_number,
+            activity_time,
+            notes
+          )
+          VALUES (?, ?, ?, ?, ?, ?)
+        `, [
+          journalId,
+          activity.activity_id || null,
+          activity.custom_activity_name || null,
+          activity.day_number || null,
+          activity.activity_time || null,
+          activity.notes || null
+        ])
+      }
+    }
+
+    if (data.sightings?.length) {
+      for (const sighting of data.sightings) {
+        await connection.query(`
+          INSERT INTO journal_sightings
+          (
+            journal_id,
+            species_id,
+            custom_species_name,
+            quantity,
+            notes
+          )
+          VALUES (?, ?, ?, ?, ?)
+        `, [
+          journalId,
+          sighting.species_id || null,
+          sighting.custom_species_name || null,
+          sighting.quantity || 1,
+          sighting.notes || null
+        ])
+      }
+    }
+
+    if (data.media?.length) {
+      for (const item of data.media) {
+        await connection.query(`
+          INSERT INTO journal_media
+          (
+            journal_id,
+            species_id,
+            activity_id,
+            media_url,
+            media_type,
+            caption,
+            display_order
+          )
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [
+          journalId,
+          item.species_id || null,
+          item.activity_id || null,
+          item.media_url,
+          item.media_type || 'photo',
+          item.caption || null,
+          item.display_order || 0
+        ])
+      }
+    }
+
+    await connection.commit()
+    return journalId
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
+  }
+}
+
 module.exports = {
   getPublicJournals,
   getJournalById,
   getTrendingIslands,
-  getTopExplorers
+  getTopExplorers,
+  createJournal
 }

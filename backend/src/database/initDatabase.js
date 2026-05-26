@@ -52,7 +52,7 @@ async function initializeDatabase() {
         country VARCHAR(100),
         continent VARCHAR(100),
         description TEXT,
-        cover_image TEXT,
+        cover_image LONGTEXT,
         best_visit_time VARCHAR(100),
         latitude DECIMAL(10,8),
         longitude DECIMAL(11,8),
@@ -91,22 +91,27 @@ async function initializeDatabase() {
 		`);
 
 		// JOURNALS
-		await run(`
+    await run(`
       CREATE TABLE IF NOT EXISTS journals (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
         island_id INT NOT NULL,
         title VARCHAR(150) NOT NULL,
         content LONGTEXT,
-        cover_image TEXT,
-        visit_date DATE,
-        mood VARCHAR(50),
+        cover_image LONGTEXT,
+        start_date DATE,
+        end_date DATE,
 
-        visibility ENUM(
-          'public',
-          'private'
-        ) DEFAULT 'public',
+        mood ENUM(
+          'peaceful',
+          'excited',
+          'adventurous',
+          'relaxed',
+          'amazed',
+          'tired'
+        ) DEFAULT 'peaceful',
 
+        visibility ENUM('public', 'private') DEFAULT 'public',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
         FOREIGN KEY (user_id)
@@ -116,8 +121,8 @@ async function initializeDatabase() {
         FOREIGN KEY (island_id)
           REFERENCES islands(id)
           ON DELETE CASCADE
-    )
-		`);
+      )
+    `)
 
 		// SPECIES
 		await run(`
@@ -154,70 +159,68 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS journal_sightings (
         id INT AUTO_INCREMENT PRIMARY KEY,
         journal_id INT NOT NULL,
-        species_id INT NOT NULL,
+        species_id INT NULL,
+        custom_species_name VARCHAR(150),
         quantity INT DEFAULT 1,
         notes TEXT,
 
         FOREIGN KEY (journal_id)
-					REFERENCES journals(id)
-					ON DELETE CASCADE,
+          REFERENCES journals(id)
+          ON DELETE CASCADE,
 
         FOREIGN KEY (species_id)
-					REFERENCES species(id)
-					ON DELETE CASCADE
+          REFERENCES species(id)
+          ON DELETE SET NULL
     )
-		`);
+    `)
 
 		// JOURNAL_ACTIVITIES
 		await run(`
       CREATE TABLE IF NOT EXISTS journal_activities (
         id INT AUTO_INCREMENT PRIMARY KEY,
         journal_id INT NOT NULL,
-        activity_id INT NOT NULL,
+        activity_id INT NULL,
+        custom_activity_name VARCHAR(150),
+        day_number INT,
+        activity_time TIME,
         notes TEXT,
 
         FOREIGN KEY (journal_id)
-					REFERENCES journals(id)
-					ON DELETE CASCADE,
+          REFERENCES journals(id)
+          ON DELETE CASCADE,
 
         FOREIGN KEY (activity_id)
-					REFERENCES activities(id)
-					ON DELETE CASCADE,
-
-        UNIQUE(journal_id, activity_id)
+          REFERENCES activities(id)
+          ON DELETE SET NULL
     )
-		`);
+    `)
 
 		// JOURNAL MEDIA
 		await run(`
-			CREATE TABLE IF NOT EXISTS journal_media (
-				id INT AUTO_INCREMENT PRIMARY KEY,
-				journal_id INT NOT NULL,
-				species_id INT,
-				activity_id INT,
-				media_url TEXT NOT NULL,
+      CREATE TABLE IF NOT EXISTS journal_media (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        journal_id INT NOT NULL,
+        species_id INT NULL,
+        activity_id INT NULL,
+        media_url LONGTEXT NOT NULL,
+        media_type ENUM('photo', 'video') NOT NULL,
+        caption TEXT,
+        display_order INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-				media_type ENUM(
-					'photo', 
-					'video'
-				) NOT NULL,
+        FOREIGN KEY (journal_id)
+          REFERENCES journals(id)
+          ON DELETE CASCADE,
 
-				caption TEXT,
-				created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (species_id)
+          REFERENCES species(id)
+          ON DELETE SET NULL,
 
-				FOREIGN KEY (journal_id)
-					REFERENCES journals(id)
-					ON DELETE CASCADE,
-
-				FOREIGN KEY (species_id)
-					REFERENCES species(id)
-					ON DELETE SET NULL,
-
-				FOREIGN KEY (activity_id)
-					REFERENCES activities(id)
-					ON DELETE SET NULL
-		)
-		`);
+        FOREIGN KEY (activity_id)
+          REFERENCES activities(id)
+          ON DELETE SET NULL
+    )
+    `)
 
 		// COMMENTS
 		await run(`

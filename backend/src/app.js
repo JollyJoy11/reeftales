@@ -9,6 +9,7 @@ const weatherRoutes = require('./routes/weatherRoutes')
 const journalRoutes = require('./routes/journalRoutes')
 const savedIslandRoutes = require('./routes/savedIslandRoutes')
 const savedJournalRoutes = require('./routes/savedJournalRoutes')
+const activityRoutes = require('./routes/activityRoutes')
 
 const app = express()
 
@@ -30,5 +31,6 @@ app.use('/api/weather', weatherRoutes)
 app.use('/api/journals', journalRoutes)
 app.use('/api/saved-islands', savedIslandRoutes)
 app.use('/api/saved-journals', savedJournalRoutes)
+app.use('/api/activities', activityRoutes)
 
 module.exports = app

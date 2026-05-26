@@ -5,10 +5,14 @@ const {
   fetchPublicJournals,
   fetchJournalById,
   fetchTrendingIslands,
-  fetchTopExplorers
+  fetchTopExplorers,
+  addJournal
 } = require('../controllers/journalController')
 
+const authMiddleware = require('../middleware/authMiddleware')
+
 router.get('/', fetchPublicJournals)
+router.post('/', authMiddleware, addJournal)
 router.get('/:id', fetchJournalById)
 router.get('/trending/islands', fetchTrendingIslands)
 router.get('/top/explorers', fetchTopExplorers)

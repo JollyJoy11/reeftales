@@ -6,6 +6,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './assets/main.css'
 import 'leaflet/dist/leaflet.css'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 import App from './App.vue'
 import router from './router'

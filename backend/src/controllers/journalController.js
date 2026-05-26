@@ -53,9 +53,39 @@ async function fetchTopExplorers(req, res) {
   }
 }
 
+async function addJournal(req, res) {
+  try {
+    const journalId = await createJournal({
+      user_id: req.user.id,
+      island_id: req.body.island_id,
+      title: req.body.title,
+      content: req.body.content,
+      cover_image: req.body.cover_image,
+      start_date: req.body.start_date,
+      end_date: req.body.end_date,
+      mood: req.body.mood,
+      visibility: req.body.visibility,
+      activities: req.body.activities || [],
+      sightings: req.body.sightings || [],
+      media: req.body.media || []
+    })
+
+    res.status(201).json({
+      message: 'Journal created successfully',
+      journalId
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message: 'Failed to create journal'
+    })
+  }
+}
+
 module.exports = {
   fetchPublicJournals,
   fetchJournalById,
   fetchTrendingIslands,
-  fetchTopExplorers
+  fetchTopExplorers,
+  addJournal
 }
