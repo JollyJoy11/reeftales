@@ -98,6 +98,7 @@ function getCoverPayload(item) {
 
   return {
     mediaId: item.id,
+    mediaType: item.media_type,
     previewUrl: coverUrl,
     dataUrl: coverUrl
   }
@@ -211,134 +212,152 @@ function setCoverImage(item) {
       v-if="media.length"
       v-model="draggableMedia"
       item-key="id"
-      class="uploaded-list mt-3"
+      class="row g-4 mt-3"
+      handle=".drag-side"
       ghost-class="drag-ghost"
 			chosen-class="drag-chosen"
   		drag-class="drag-active"
     >
       <template #item="{ element: item, index }">
-        <article class="uploaded-card">
-					<div class="drag-side">
-						<i class="bi bi-grip-vertical"></i>
-					</div>
-
-          <div class="media-preview-panel">
-            <span v-if="isCover(item)" class="cover-badge">
-              Cover
-            </span>
-
-            <img
-            v-if="item.media_type === 'photo'"
-            :src="item.previewUrl"
-            alt="Uploaded preview"
-            />
-
-            <video
-            v-else
-            :src="item.previewUrl"
-            controls
-            ></video>
-          </div>
-
-          <div class="uploaded-fields">
-            <div>
-              <label class="form-label">
-								{{ item.media_type === 'video' ? 'Video caption' : 'Photo caption' }}
-							</label>
-              <input
-                :value="item.caption"
-                type="text"
-                class="form-control"
-                :placeholder="item.media_type === 'video' ? 'Caption for this video...' : 'Caption for this photo...'"
-                @input="updateMedia(index, 'caption', $event.target.value)"
-              />
-            </div>
-
-            <div>
-              <label class="form-label">Link this {{ item.media_type === 'video' ? 'video' : 'photo' }} to</label>
-              <select
-                :value="item.link_type"
-                class="form-select"
-                @change="updateMedia(index, 'link_type', $event.target.value)"
-              >
-                <option value="">General scenery</option>
-                <option value="activity">Activity</option>
-                <option value="species">Marine species</option>
-              </select>
-            </div>
-
-            <select
-              v-if="item.link_type === 'activity'"
-              :value="item.activity_id"
-              class="form-select"
-              @change="updateMedia(index, 'activity_id', $event.target.value)"
+        <div class="col-12 col-md-6 col-xl-4">
+          <article class="uploaded-card">
+            <div
+              class="scrapbook-polaroid"
+              :class="index % 2 === 0 ? 'tilt-left' : 'tilt-right'"
             >
-              <option value="">Choose activity</option>
-              <option
-                v-for="activity in activities"
-                :key="activity.id"
-                :value="activity.id"
-              >
-                {{ activity.name }}
-              </option>
-            </select>
-
-            <input
-              v-if="item.link_type === 'activity'"
-              :value="item.custom_activity_name"
-              type="text"
-              class="form-control"
-              placeholder="Or describe another activity..."
-              @input="updateMedia(index, 'custom_activity_name', $event.target.value)"
-            />
-
-            <select
-              v-if="item.link_type === 'species'"
-              :value="item.species_id"
-              class="form-select"
-              @change="updateMedia(index, 'species_id', $event.target.value)"
-            >
-              <option value="">Choose species</option>
-              <option
-                v-for="species in speciesList"
-                :key="species.id"
-                :value="species.id"
-              >
-                {{ species.name }}
-              </option>
-            </select>
-
-            <input
-              v-if="item.link_type === 'species'"
-              :value="item.custom_species_name"
-              type="text"
-              class="form-control"
-              placeholder="Or type another species..."
-              @input="updateMedia(index, 'custom_species_name', $event.target.value)"
-            />
-
-            <div class="media-actions">
-              <button
-                type="button"
-                class="btn btn-sm"
-                :class="isCover(item) ? 'btn-primary' : 'btn-outline-primary'"
-                @click="setCoverImage(item)"
-              >
-                <i :class="isCover(item) ? 'bi bi-star-fill' : 'bi bi-star'"></i>
-                {{ isCover(item) ? 'Cover selected' : 'Use as cover' }}
+              <button type="button" class="drag-side border-0 w-100 d-flex align-items-center justify-content-center bg-transparent" title="Drag to reorder">
+                <i class="bi bi-grip-horizontal"></i>
               </button>
 
-              <button
-                type="button"
-                class="remove-media-btn"
-                @click="removeMedia(index)"
-              >
-                <i class="bi bi-trash"></i>
-                Remove
-              </button>
+              <div class="tape-accent"></div>
+
+              <span v-if="isCover(item)" class="cover-badge">
+                Cover
+              </span>
+
+              <div class="media-canvas">
+                <img
+                  v-if="item.media_type === 'photo'"
+                  :src="item.previewUrl"
+                  alt="Uploaded preview"
+                />
+
+                <video
+                  v-else
+                  :src="item.previewUrl"
+                  controls
+                ></video>
+              </div>
+
+              <div class="polaroid-caption-zone">
+                <label class="caption-label">
+                  {{ item.media_type === 'video' ? 'Video memory' : 'Photo memory' }}
+                </label>
+
+                <textarea
+                  :value="item.caption"
+                  class="caption-textarea"
+                  rows="2"
+                  :placeholder="item.media_type === 'video'
+                    ? 'Write a memory for this video...'
+                    : 'Write a memory for this photo...'"
+                  @input="updateMedia(index, 'caption', $event.target.value)"
+                ></textarea>
+              </div>
+
+              <div class="polaroid-controls">
+                <div>
+                  <label class="caption-label">
+                    Link this {{ item.media_type === 'video' ? 'video' : 'photo' }} to
+                  </label>
+
+                  <select
+                    :value="item.link_type"
+                    class="form-select form-select-sm"
+                    @change="updateMedia(index, 'link_type', $event.target.value)"
+                  >
+                    <option value="">General scenery</option>
+                    <option value="activity">Activity</option>
+                    <option value="species">Marine species</option>
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  class="cover-select-btn"
+                  :class="{ selected: isCover(item) }"
+                  @click="setCoverImage(item)"
+                >
+                  <i :class="isCover(item) ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                  {{ isCover(item) ? 'Cover' : 'Set cover' }}
+                </button>
+              </div>
+
+              <div class="uploaded-fields">
+                <select
+                  v-if="item.link_type === 'activity'"
+                  :value="item.activity_id"
+                  class="form-select"
+                  @change="updateMedia(index, 'activity_id', $event.target.value)"
+                >
+                  <option value="">Choose activity</option>
+                  <option
+                    v-for="activity in activities"
+                    :key="activity.id"
+                    :value="activity.id"
+                  >
+                    {{ activity.name }}
+                  </option>
+                </select>
+
+                <input
+                  v-if="item.link_type === 'activity'"
+                  :value="item.custom_activity_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Or describe another activity..."
+                  @input="updateMedia(index, 'custom_activity_name', $event.target.value)"
+                />
+
+                <select
+                  v-if="item.link_type === 'species'"
+                  :value="item.species_id"
+                  class="form-select"
+                  @change="updateMedia(index, 'species_id', $event.target.value)"
+                >
+                  <option value="">Choose species</option>
+                  <option
+                    v-for="species in speciesList"
+                    :key="species.id"
+                    :value="species.id"
+                  >
+                    {{ species.name }}
+                  </option>
+                </select>
+
+                <input
+                  v-if="item.link_type === 'species'"
+                  :value="item.custom_species_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Or type another species..."
+                  @input="updateMedia(index, 'custom_species_name', $event.target.value)"
+                />
+
+                <div class="media-actions">
+                  <button
+                    type="button"
+                    class="remove-media-btn"
+                    @click="removeMedia(index)"
+                  >
+                    <i class="bi bi-trash"></i>
+                    Remove
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </article>
+          </article>
+        </div>
       </template>
     </draggable>
   </div>
@@ -376,22 +395,12 @@ function setCoverImage(item) {
   font-size: 0.86rem;
 }
 
-.uploaded-list {
-  display: grid;
-  gap: 16px;
-}
-
 .uploaded-card {
-  display: grid;
-  grid-template-columns: 10px minmax(260px, 42%) 1fr;
-  gap: 18px;
-  align-items: stretch;
-  padding: 16px;
-  border-radius: 24px;
-  background: #fbf9f1;
-  border: 1px solid #eadfca;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
-  cursor: grab;
+  position: relative;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .uploaded-card:active {
@@ -399,34 +408,85 @@ function setCoverImage(item) {
 }
 
 .drag-side {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #94a3b8;
   font-size: 1.1rem;
   user-select: none;
 }
 
-.media-preview-panel {
+.scrapbook-polaroid {
   position: relative;
-  min-height: 260px;
-  border-radius: 10px;
-  background: #fffdf8;
-  border: 1px dashed #c4a484;
+  background: #ffffff;
+  padding: 16px 16px 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.scrapbook-polaroid.tilt-left {
+  transform: rotate(-0.8deg);
+}
+
+.scrapbook-polaroid.tilt-right {
+  transform: rotate(0.8deg);
+}
+
+.tape-accent {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 120px;
+  height: 28px;
+  transform: translateX(-50%) rotate(2deg);
+  background: rgba(24,151,160,0.2);
+  border-left: 1px dashed rgba(0,0,0,0.12);
+  border-right: 1px dashed rgba(0,0,0,0.12);
+  z-index: 2;
+}
+
+.media-canvas {
+  min-height: 240px;
+  background: #f6f3eb;
+  border: 2px solid #475569;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.media-preview-panel img,
-.media-preview-panel video {
+.media-canvas img,
+.media-canvas video {
   display: block;
   max-width: 100%;
-  max-height: 420px;
+  max-height: 360px;
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 10px;
+}
+
+.polaroid-caption-zone {
+  margin-top: 14px;
+}
+
+.caption-textarea {
+  width: 100%;
+  min-height: 54px;
+  border: 1px dashed transparent;
+  background: #fffdf8;
+  border-bottom: 1px dashed #c4a484;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #2f4858;
+  padding: 8px;
+  resize: vertical;
+  cursor: text;
+}
+
+.caption-textarea:hover {
+  border-color: rgba(24,151,160,0.25);
+}
+
+.caption-textarea:focus {
+  outline: none;
+  border-color: #1897a0;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(24,151,160,0.12);
 }
 
 .cover-badge {
@@ -444,9 +504,9 @@ function setCoverImage(item) {
 }
 
 .uploaded-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
 }
 
 .uploaded-fields .form-label {
@@ -457,17 +517,17 @@ function setCoverImage(item) {
 }
 
 .media-actions {
-  margin-top: auto;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  justify-content: flex-end;
 }
 
 .remove-media-btn {
   border: none;
-  background: transparent;
+  background: #fff1f2;
   color: #dc3545;
-  font-size: 0.9rem;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
 }
 
 .drag-chosen {
@@ -487,6 +547,30 @@ function setCoverImage(item) {
   border: 2px dashed #1897a0 !important;
 }
 
+.polaroid-controls {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.cover-select-btn {
+  border: 1px solid #1897a0;
+  background: #fffdf8;
+  color: #1897a0;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.cover-select-btn.selected {
+  background: #1897a0;
+  color: white;
+}
+
 :global(body.dark-mode) .uploaded-card {
   background: #253244;
   border-color: rgba(255,255,255,0.1);
@@ -499,15 +583,5 @@ function setCoverImage(item) {
 
 :global(body.dark-mode) .uploaded-fields .form-label {
   color: #f8fafc;
-}
-
-@media (max-width: 768px) {
-  .uploaded-card {
-    grid-template-columns: 1fr;
-  }
-
-  .media-preview-panel {
-    min-height: 240px;
-  }
 }
 </style>

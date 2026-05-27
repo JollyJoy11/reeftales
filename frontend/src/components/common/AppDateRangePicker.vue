@@ -6,6 +6,10 @@ const props = defineProps({
   modelValue: {
     type: Array,
     default: () => []
+  },
+  label: {
+    type: String,
+    default: ''
   }
 })
 
@@ -95,17 +99,23 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="reef-date-picker">
-    <button
-      class="one-day-toggle"
-      type="button"
-      :class="{ active: oneDayTrip }"
-      @click="toggleOneDayTrip"
-    >
-      <span class="toggle-track">
-        <span class="toggle-thumb"></span>
-      </span>
-      <span>One-day trip</span>
-    </button>
+    <div class="date-picker-header" :class="{ 'without-label': !label }">
+      <label v-if="label" class="form-label fw-bold mb-0">
+        {{ label }}
+      </label>
+
+      <button
+        class="one-day-toggle"
+        type="button"
+        :class="{ active: oneDayTrip }"
+        @click="toggleOneDayTrip"
+      >
+        <span class="toggle-track">
+          <span class="toggle-thumb"></span>
+        </span>
+        <span>One-day trip</span>
+      </button>
+    </div>
 
     <div class="date-range-fields" :class="{ 'one-day': oneDayTrip }">
       <i class="bi bi-calendar3 date-input-icon" aria-hidden="true"></i>
@@ -177,10 +187,20 @@ onBeforeUnmount(() => {
   gap: 10px;
 }
 
+.date-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.date-picker-header.without-label {
+  justify-content: flex-end;
+}
+
 .one-day-toggle {
   display: inline-flex;
   align-items: center;
-  justify-self: start;
   gap: 8px;
   border: 1px dashed #c4a484;
   border-radius: 999px;
@@ -450,8 +470,21 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 575px) {
+  .date-picker-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .date-picker-header.without-label {
+    align-items: flex-end;
+  }
+
   .date-range-fields {
     grid-template-columns: 1fr;
+  }
+
+  .inline-calendar {
+    width: min(100%, calc(100vw - 32px));
   }
 }
 </style>

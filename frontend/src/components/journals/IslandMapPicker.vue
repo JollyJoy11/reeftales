@@ -120,7 +120,9 @@ onMounted(async () => {
       </option>
     </select>
 
-    <div ref="mapEl" class="map-picker"></div>
+    <div class="map-stamp-frame">
+      <div ref="mapEl" class="map-picker"></div>
+    </div>
 
     <div v-if="selectedIsland" class="selected-island-badge">
       <i class="bi bi-geo-fill"></i>
@@ -133,23 +135,30 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.map-stamp-frame {
+  background: #d2cab3;
+  padding: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+  --r: 6px;
+  --s: 18px;
+  mask:
+    radial-gradient(var(--r) at var(--r) 50%, transparent 98%, black)
+      calc(-1 * var(--r)) 50% / 100% var(--s),
+    radial-gradient(var(--r) at 50% var(--r), transparent 98%, black)
+      50% calc(-1 * var(--r)) / var(--s) 100%;
+  mask-composite: intersect;
+}
+
 .map-picker {
-  height: 300px;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid #eadfca;
+  height: 320px;
 }
 
 .selected-island-badge {
   margin-top: 10px;
   padding: 10px 14px;
-  border-radius: 14px;
+  border-radius: 10px;
   background: #deefec;
   color: #2f4858;
-}
-
-.island-marker {
-	cursor: pointer;
 }
 
 .bi-geo-fill {
@@ -169,6 +178,7 @@ onMounted(async () => {
   color: #1897a0;
   box-shadow: 0 5px 14px rgba(0,0,0,0.18);
   transition: 0.2s ease;
+  cursor: pointer;
 }
 
 :deep(.island-marker.selected) {

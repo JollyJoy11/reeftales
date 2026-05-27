@@ -80,7 +80,7 @@ function formatTime(value) {
 .reef-time-picker .time-input-icon {
   position: absolute;
   left: 14px;
-  top: 23px;
+  top: 19px;
   z-index: 2;
   color: #1897a0;
   font-size: 1rem;
@@ -103,13 +103,13 @@ function formatTime(value) {
 
 .reef-time-picker .dp__input,
 .reef-time-picker .dp--input {
-  min-height: 44px;
-  border-radius: 14px;
+  height: 38px;
+  min-height: 38px;
+  border-radius: 6px;
   border: 1px solid #eadfca;
   background: #fffdf8;
   padding-left: 42px !important;
   color: #1f2a44;
-  font-weight: 600;
 }
 
 .reef-time-picker .dp__menu,
