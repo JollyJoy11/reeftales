@@ -5,7 +5,7 @@ import MainLayout from '@/layouts/MainLayout.vue'
 import WeatherWidget from '@/components/common/WeatherWidget.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import { getIslandById } from '@/services/islandService'
-import { getWeather } from '@/services/weatherService'
+import { getWeather, getMarineWeather } from '@/services/weatherService'
 import L from 'leaflet'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
@@ -20,6 +20,7 @@ const loading = ref(false)
 const errorMessage = ref('')
 const selectedSpecies = ref(null)
 const weather = ref(null)
+const marine = ref(null)
 
 const isSaved = computed(() => {
   if (!island.value) return false
@@ -90,8 +91,14 @@ async function loadWeather() {
       island.value.latitude,
       island.value.longitude
     )
+
+    marine.value = await getMarineWeather(
+      island.value.latitude,
+      island.value.longitude
+    )
   } catch (error) {
     weather.value = null
+    marine.value = null
   }
 }
 
@@ -215,7 +222,10 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <WeatherWidget :weather="weather" />
+              <WeatherWidget
+                :weather="weather"
+                :marine="marine"
+              />
 
               <div class="activity-section">
                 <h6 class="fw-bold">Popular Activities</h6>
@@ -242,7 +252,9 @@ onMounted(async () => {
               <div id="islandMap"></div>
 
               <div v-if="selectedSpecies" class="selected-species-note">
-                Showing movement path for
+                Known Observation Areas
+Seasonal Sightings
+Habitat Distribution for
                 <strong>{{ selectedSpecies.name }}</strong>
               </div>
             </div>
