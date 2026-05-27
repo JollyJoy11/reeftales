@@ -34,6 +34,44 @@ async function getWeather(req, res) {
   }
 }
 
+async function getMarineWeather(req, res) {
+  const { latitude, longitude } = req.query
+
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: 'Latitude and longitude are required' })
+  }
+
+  try {
+    const endpoint = new URL('https://marine-api.open-meteo.com/v1/marine')
+
+    endpoint.searchParams.set('latitude', latitude)
+    endpoint.searchParams.set('longitude', longitude)
+    endpoint.searchParams.set(
+      'current',
+      'wave_height,wave_direction,wave_period,ocean_current_velocity,ocean_current_direction'
+    )
+    endpoint.searchParams.set('timezone', 'auto')
+
+    const response = await fetch(endpoint)
+
+    if (!response.ok) {
+      return res.status(response.status).json({ message: 'Marine weather API failed' })
+    }
+
+    const data = await response.json()
+
+    res.json({
+      current: data.current,
+      current_units: data.current_units,
+      timezone: data.timezone
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to fetch marine weather' })
+  }
+}
+
 module.exports = {
-  getWeather
+  getWeather,
+  getMarineWeather
 }
