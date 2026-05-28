@@ -17,7 +17,8 @@ const steps = [
   { number: 2, label: 'Story', icon: 'bi bi-journal-text' },
   { number: 3, label: 'Timeline', icon: 'bi bi-clock-history' },
   { number: 4, label: 'Media', icon: 'bi bi-images' },
-  { number: 5, label: 'Publish', icon: 'bi bi-send' }
+  { number: 5, label: 'Arrange', icon: 'bi bi-layout-wtf' },
+  { number: 6, label: 'Publish', icon: 'bi bi-send' }
 ]
 
 function goToStep(item) {

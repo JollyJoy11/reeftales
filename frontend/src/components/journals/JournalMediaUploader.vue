@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import draggable from 'vuedraggable'
+import { useToastStore } from '@/stores/toastStore'
 
 const props = defineProps({
   media: {
@@ -22,6 +23,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:media', 'update:coverImage'])
+const toastStore = useToastStore()
 
 const isDragging = ref(false)
 const fileInput = ref(null)
@@ -93,6 +95,37 @@ function createVideoThumbnail(dataUrl) {
   })
 }
 
+function getImageAspectRatio(dataUrl) {
+  return new Promise((resolve) => {
+    const image = new Image()
+    image.onload = () => {
+      resolve(image.naturalWidth && image.naturalHeight
+        ? image.naturalWidth / image.naturalHeight
+        : 1.32)
+    }
+    image.onerror = () => resolve(1.32)
+    image.src = dataUrl
+  })
+}
+
+function getVideoAspectRatio(dataUrl) {
+  return new Promise((resolve) => {
+    const video = document.createElement('video')
+    video.preload = 'metadata'
+    video.muted = true
+    video.playsInline = true
+    video.src = dataUrl
+
+    video.addEventListener('loadedmetadata', () => {
+      resolve(video.videoWidth && video.videoHeight
+        ? video.videoWidth / video.videoHeight
+        : 1.32)
+    }, { once: true })
+
+    video.addEventListener('error', () => resolve(1.32), { once: true })
+  })
+}
+
 function getCoverPayload(item) {
   const coverUrl = item.coverDataUrl || item.dataUrl
 
@@ -106,14 +139,26 @@ function getCoverPayload(item) {
 
 async function processFiles(files) {
   const updated = [...props.media]
+  let skippedType = 0
+  let skippedLimit = 0
 
   for (const file of files) {
-    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) continue
-    if (updated.length >= 10) break
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      skippedType++
+      continue
+    }
+
+    if (updated.length >= 10) {
+      skippedLimit++
+      continue
+    }
 
     const dataUrl = await toBase64(file)
     const isVideo = file.type.startsWith('video/')
     const coverDataUrl = isVideo ? await createVideoThumbnail(dataUrl) : dataUrl
+    const aspectRatio = isVideo
+      ? await getVideoAspectRatio(dataUrl)
+      : await getImageAspectRatio(dataUrl)
 
     const item = {
       id: crypto.randomUUID(),
@@ -121,6 +166,7 @@ async function processFiles(files) {
       previewUrl: dataUrl,
       dataUrl,
       coverDataUrl,
+      aspectRatio,
       media_type: isVideo ? 'video' : 'photo',
       caption: '',
       link_type: '',
@@ -138,6 +184,18 @@ async function processFiles(files) {
   }
 
   emit('update:media', updated)
+
+  if (skippedType) {
+    toastStore.danger('Some files were skipped. Please upload images or videos only.')
+  }
+
+  if (skippedLimit) {
+    toastStore.danger('Only 10 media files can be uploaded for one journal.')
+  }
+
+  if (!files.length) {
+    toastStore.danger('No files were selected.')
+  }
 }
 
 function handleFileDrop(event) {

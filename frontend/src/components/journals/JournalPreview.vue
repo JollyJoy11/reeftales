@@ -52,6 +52,11 @@ const includedItems = computed(() => [
     label: 'Media gallery',
     active: props.form.media.length > 0,
     icon: 'bi bi-images'
+  },
+  {
+    label: 'Memory board',
+    active: props.form.layoutItems?.length > 0,
+    icon: 'bi bi-layout-wtf'
   }
 ])
 
@@ -127,6 +132,7 @@ const dateText = computed(() => {
             <span><i class="bi bi-images"></i> {{ form.media.length }} Media</span>
             <span><i class="bi bi-map"></i> {{ form.timeline.length }} Activities</span>
             <span><i class="bi bi-stars"></i> {{ form.sightings.length }} Encounters</span>
+            <span><i class="bi bi-layout-wtf"></i> {{ form.layoutItems?.length || 0 }} Arranged</span>
             <span>
               <i :class="form.is_public ? 'bi bi-globe2' : 'bi bi-lock-fill'"></i>
               {{ form.is_public ? 'Public' : 'Private' }}

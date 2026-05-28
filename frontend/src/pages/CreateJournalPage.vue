@@ -13,6 +13,8 @@ import JournalTimelineEditor from '@/components/journals/JournalTimelineEditor.v
 import JournalSightingsEditor from '@/components/journals/JournalSightingsEditor.vue'
 import JournalPreview from '@/components/journals/JournalPreview.vue'
 import AppDateRangePicker from '@/components/common/AppDateRangePicker.vue'
+import JournalScrapbookEditor from '@/components/journals/JournalScrapbookEditor.vue'
+import { useToastStore } from '@/stores/toastStore'
 
 import { createJournal } from '@/services/journalService'
 import { getIslands } from '@/services/islandService'
@@ -20,6 +22,7 @@ import { getSpecies } from '@/services/speciesService'
 import { getActivities } from '@/services/activityService'
 
 const router = useRouter()
+const toastStore = useToastStore()
 
 const step = ref(1)
 const maxStep = ref(1)
@@ -34,21 +37,50 @@ const form = ref({
   island_id: '',
   title: '',
   trip_dates: [],
-  mood: 'relaxed',
+  mood: 'joyful',
   is_public: true,
   content: '',
   coverImage: null,
   media: [],
   timeline: [
-    { day_number: 1, activity_time: '', activity_id: '', custom_activity_name: '', notes: '' }
+    {
+      id: crypto.randomUUID(),
+      day_number: 1,
+      activity_time: '',
+      activity_id: '',
+      custom_activity_name: '',
+      notes: ''
+    }
   ],
   sightings: [
     { species_id: '', custom_species_name: '', quantity: 1, notes: '' }
-  ]
+  ],
+  layoutItems: []
 })
 
+function validateCurrentStep() {
+  if (step.value === 1 && (!form.value.island_id || !form.value.title)) {
+    toastStore.danger('Please choose an island and add a journal title.')
+    return false
+  }
+
+  if (step.value === 2 && !form.value.content.trim()) {
+    toastStore.danger('Please write your story before continuing.')
+    return false
+  }
+
+  if (step.value === 4 && !form.value.media.length) {
+    toastStore.danger('Please upload at least one photo or video before arranging.')
+    return false
+  }
+
+  return true
+}
+
 function nextStep() {
-  if (step.value < 5) {
+  if (!validateCurrentStep()) return
+
+  if (step.value < 6) {
     step.value++
     maxStep.value = Math.max(maxStep.value, step.value)
   }
@@ -75,6 +107,11 @@ async function loadData() {
 
 async function handleSubmit() {
   try {
+    if (!form.value.coverImage) {
+      toastStore.danger('Please choose a cover before publishing.')
+      return
+    }
+
     loading.value = true
     errorMessage.value = ''
 
@@ -87,6 +124,7 @@ async function handleSubmit() {
       end_date: formatDateForMySQL(form.value.trip_dates?.[1]),
       mood: form.value.mood,
       visibility: form.value.is_public ? 'public' : 'private',
+      layout_items: form.value.layoutItems,
 
       activities: form.value.timeline
         .filter(item => item.activity_id || item.custom_activity_name || item.notes)
@@ -139,7 +177,9 @@ async function handleSubmit() {
     const response = await createJournal(payload)
     router.push(`/journal/${response.journalId}`)
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || 'Failed to publish journal.'
+    const message = error.response?.data?.message || 'Failed to publish journal.'
+    const details = error.response?.data?.details
+    errorMessage.value = details ? `${message}: ${details}` : message
   } finally {
     loading.value = false
   }
@@ -159,108 +199,126 @@ onMounted(loadData)
 
     <section class="container py-4">
       <div class="journal-shell">
-        <div class="journal-header">
-          <span>Logbook Entry</span>
-          <h1>Document your island adventure</h1>
-          <p>Build a scrapbook-style travel journal with dates, media, activities, and marine sightings.</p>
-        </div>
+        <div class="journal-shell-inner">
+          <div class="journal-header">
+            <span>Logbook Entry</span>
+            <h1>Document your island adventure</h1>
+            <p>Build a scrapbook-style travel journal with dates, media, activities, marine sightings, and your own arranged memory board.</p>
+          </div>
 
-        <JournalStepIndicator
-          v-model:step="step"
-          :max-step="maxStep"
-        />
+          <JournalStepIndicator
+            v-model:step="step"
+            :max-step="maxStep"
+          />
 
-        <div v-if="step === 1" class="step-card">
-          <div class="row g-4">
-            <div class="col-12 col-lg-6">
-              <IslandMapPicker
-                v-model="form.island_id"
-                :islands="islands"
+          <div v-if="step === 1" class="step-card">
+            <div class="row g-4">
+              <div class="col-12 col-lg-6">
+                <IslandMapPicker
+                  v-model="form.island_id"
+                  :islands="islands"
+                />
+              </div>
+
+              <div class="col-12 col-lg-6">
+                <label class="form-label fw-bold">Journal Title</label>
+                <input v-model="form.title" class="form-control mb-3" placeholder="Swimming with turtles at Sipadan..." />
+
+              <AppDateRangePicker
+                v-model="form.trip_dates"
+                label="Trip Duration"
               />
+              </div>
             </div>
 
-            <div class="col-12 col-lg-6">
-              <label class="form-label fw-bold">Journal Title</label>
-              <input v-model="form.title" class="form-control mb-3" placeholder="Swimming with turtles at Sipadan..." />
-
-              <label class="form-label fw-bold">Trip Duration</label>
-              <AppDateRangePicker v-model="form.trip_dates" />
+            <div class="step-actions mt-4">
+              <RouterLink to="/community" class="btn btn-outline-primary">
+                Cancel
+              </RouterLink>
+              <button class="btn btn-primary" @click="nextStep">
+                Continue
+              </button>
             </div>
           </div>
 
-          <div class="step-actions mt-4">
-            <RouterLink to="/community" class="btn btn-outline-primary">
-              Cancel
-            </RouterLink>
-            <button class="btn btn-primary" :disabled="!form.island_id || !form.title" @click="nextStep">
-              Continue
-            </button>
+          <div v-if="step === 2" class="step-card">
+            <MoodSelector v-model="form.mood" />
+
+            <label class="form-label fw-bold mt-4">Your Story</label>
+            <textarea
+              v-model="form.content"
+              rows="10"
+              class="form-control"
+              placeholder="Write about your marine encounters, dive spots, food, people, beaches, or tips..."
+            ></textarea>
+
+            <div class="step-actions mt-4">
+              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-primary" @click="nextStep">Continue</button>
+            </div>
           </div>
-        </div>
 
-        <div v-if="step === 2" class="step-card">
-          <MoodSelector v-model="form.mood" />
+          <div v-if="step === 3" class="step-card">
+            <JournalTimelineEditor
+              v-model="form.timeline"
+              :activities="activities"
+            />
 
-          <label class="form-label fw-bold mt-4">Your Story</label>
-          <textarea
-            v-model="form.content"
-            rows="10"
-            class="form-control"
-            placeholder="Write about your marine encounters, dive spots, food, people, beaches, or tips..."
-          ></textarea>
+            <JournalSightingsEditor
+              v-model="form.sightings"
+              :species-list="speciesList"
+              class="mt-4"
+            />
 
-          <div class="step-actions mt-4">
-            <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-            <button class="btn btn-primary" :disabled="!form.content" @click="nextStep">Continue</button>
+            <div class="step-actions mt-4">
+              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-primary" @click="nextStep">
+                Continue
+              </button>
+            </div>
           </div>
-        </div>
+          
+          <div v-if="step === 4" class="step-card">
+            <JournalMediaUploader
+              v-model:media="form.media"
+              v-model:coverImage="form.coverImage"
+              :activities="activities"
+              :species-list="speciesList"
+            />
 
-        <div v-if="step === 3" class="step-card">
-          <JournalTimelineEditor
-            v-model="form.timeline"
-            :activities="activities"
-          />
-
-          <JournalSightingsEditor
-            v-model="form.sightings"
-            :species-list="speciesList"
-            class="mt-4"
-          />
-
-          <div class="step-actions mt-4">
-            <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-            <button class="btn btn-primary" @click="nextStep">Continue</button>
+            <div class="step-actions mt-4">
+              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-primary" @click="nextStep">Arrange Layout</button>
+            </div>
           </div>
-        </div>
 
-        
-        <div v-if="step === 4" class="step-card">
-          <JournalMediaUploader
-            v-model:media="form.media"
-            v-model:coverImage="form.coverImage"
-            :activities="activities"
-            :species-list="speciesList"
-          />
+          <div v-if="step === 5" class="step-card">
+            <JournalScrapbookEditor
+              :media="form.media"
+              :mood="form.mood"
+              v-model:layoutItems="form.layoutItems"
+            />
 
-          <div class="step-actions mt-4">
-            <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-            <button class="btn btn-primary" @click="nextStep">Review Journal</button>
+            <div class="step-actions mt-4">
+              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-primary" @click="nextStep">Review Journal</button>
+            </div>
           </div>
-        </div>
 
-        <div v-if="step === 5" class="step-card">
-          <JournalPreview
-            :form="form"
-            :islands="islands"
-          />
+          <div v-if="step === 6" class="step-card">
+            <JournalPreview
+              :form="form"
+              :islands="islands"
+            />
 
-          <VisibilityToggle v-model="form.is_public" class="mt-3" />
+            <VisibilityToggle v-model="form.is_public" class="mt-3" />
 
-          <div class="step-actions mt-4">
-            <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-            <button class="btn btn-primary" :disabled="loading" @click="handleSubmit">
-              {{ loading ? 'Publishing...' : 'Publish Journal' }}
-            </button>
+            <div class="step-actions mt-4">
+              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-primary" :disabled="loading" @click="handleSubmit">
+                {{ loading ? 'Publishing...' : 'Publish Journal' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -270,11 +328,25 @@ onMounted(loadData)
 
 <style scoped>
 .journal-shell {
+  position: relative;
+  padding: 10px;
+  border-radius: 18px;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #e85d5d 0 12px,
+      #ffffff 12px 24px,
+      #2c9ab7 24px 36px,
+      #ffffff 36px 48px
+  );
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+}
+
+.journal-shell-inner {
   background: #fbf9f1;
-  border-radius: 28px;
+  border-radius: 12px;
   padding: 32px;
-  border: 1px dashed #c4a484;
-  box-shadow: inset 0 0 40px rgba(196,164,132,0.08), 0 15px 40px rgba(0,0,0,0.05);
+  min-height: 100%;
 }
 
 .journal-header {
