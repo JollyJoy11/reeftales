@@ -13,8 +13,8 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 router.get('/', fetchPublicJournals)
 router.post('/', authMiddleware, addJournal)
-router.get('/:id', fetchJournalById)
 router.get('/trending/islands', fetchTrendingIslands)
 router.get('/top/explorers', fetchTopExplorers)
+router.get('/:id', fetchJournalById)
 
 module.exports = router

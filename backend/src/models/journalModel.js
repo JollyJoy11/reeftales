@@ -86,7 +86,55 @@ async function getJournalById(id) {
     WHERE journals.id = ?
   `, [id])
 
-  return rows[0]
+  if (!rows[0]) return null
+
+  let layoutItems = []
+
+  try {
+    layoutItems = rows[0].layout_json ? JSON.parse(rows[0].layout_json) : []
+  } catch {
+    layoutItems = []
+  }
+
+  const [media] = await db.query(`
+    SELECT
+      journal_media.*,
+      species.name AS species_name,
+      activities.name AS activity_name
+    FROM journal_media
+    LEFT JOIN species ON journal_media.species_id = species.id
+    LEFT JOIN activities ON journal_media.activity_id = activities.id
+    WHERE journal_media.journal_id = ?
+    ORDER BY journal_media.display_order ASC, journal_media.id ASC
+  `, [id])
+
+  const [activities] = await db.query(`
+    SELECT
+      journal_activities.*,
+      activities.name AS activity_name
+    FROM journal_activities
+    LEFT JOIN activities ON journal_activities.activity_id = activities.id
+    WHERE journal_activities.journal_id = ?
+    ORDER BY journal_activities.day_number ASC, journal_activities.activity_time ASC, journal_activities.id ASC
+  `, [id])
+
+  const [sightings] = await db.query(`
+    SELECT
+      journal_sightings.*,
+      species.name AS species_name
+    FROM journal_sightings
+    LEFT JOIN species ON journal_sightings.species_id = species.id
+    WHERE journal_sightings.journal_id = ?
+    ORDER BY journal_sightings.id ASC
+  `, [id])
+
+  return {
+    ...rows[0],
+    layout_items: layoutItems,
+    media,
+    activities,
+    sightings
+  }
 }
 
 async function getTrendingIslands() {
@@ -142,9 +190,10 @@ async function createJournal(data) {
         start_date,
         end_date,
         mood,
-        visibility
+        visibility,
+        layout_json
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       data.user_id,
       data.island_id,
@@ -154,7 +203,8 @@ async function createJournal(data) {
       data.start_date,
       data.end_date,
       data.mood,
-      data.visibility
+      data.visibility,
+      JSON.stringify(data.layout_items || [])
     ])
 
     const journalId = journalResult.insertId

@@ -369,7 +369,7 @@ async function seedDatabase(connection) {
 
     // ---------------- JOURNAL ACTIVITIES ----------------
     await connection.query(`
-      INSERT IGNORE INTO journal_activities
+      INSERT INTO journal_activities
       (
         journal_id,
         activity_id,
@@ -378,47 +378,37 @@ async function seedDatabase(connection) {
         activity_time,
         notes
       )
-      VALUES
-      (
-        1,
-        1,
-        NULL,
-        1,
-        '09:00:00',
-        'Morning snorkeling around coral reef'
-      ),
-
-      (
-        1,
-        5,
-        NULL,
-        2,
-        '17:30:00',
-        'Sunset kayaking session'
-      ),
-
-      (
-        2,
-        2,
-        NULL,
-        1,
-        '08:00:00',
-        'Deep dive near Barracuda Point'
-      ),
-
-      (
-        2,
-        NULL,
-        'Underwater Photography',
-        2,
-        '14:00:00',
-        'Captured reef shark footage'
+      SELECT
+        seeded.journal_id,
+        seeded.activity_id,
+        seeded.custom_activity_name,
+        seeded.day_number,
+        seeded.activity_time,
+        seeded.notes
+      FROM (
+        SELECT 1 AS journal_id, 1 AS activity_id, NULL AS custom_activity_name, 1 AS day_number, '09:00:00' AS activity_time, 'Morning snorkeling around coral reef' AS notes
+        UNION ALL
+        SELECT 1, 5, NULL, 2, '17:30:00', 'Sunset kayaking session'
+        UNION ALL
+        SELECT 2, 2, NULL, 1, '08:00:00', 'Deep dive near Barracuda Point'
+        UNION ALL
+        SELECT 2, NULL, 'Underwater Photography', 2, '14:00:00', 'Captured reef shark footage'
+      ) AS seeded
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM journal_activities existing
+        WHERE existing.journal_id = seeded.journal_id
+          AND existing.activity_id <=> seeded.activity_id
+          AND existing.custom_activity_name <=> seeded.custom_activity_name
+          AND existing.day_number <=> seeded.day_number
+          AND existing.activity_time <=> seeded.activity_time
+          AND existing.notes <=> seeded.notes
       )
     `);
 
     // ---------------- JOURNAL SIGHTINGS ----------------
     await connection.query(`
-      INSERT IGNORE INTO journal_sightings
+      INSERT INTO journal_sightings
       (
         journal_id,
         species_id,
@@ -426,51 +416,37 @@ async function seedDatabase(connection) {
         quantity,
         notes
       )
-      VALUES
-      (
-        1,
-        1,
-        NULL,
-        3,
-        'Spotted near shallow coral reef'
-      ),
-
-      (
-        1,
-        7,
-        NULL,
-        12,
-        'Large schools swimming together'
-      ),
-
-      (
-        2,
-        2,
-        NULL,
-        2,
-        'Massive whale sharks seen during dive'
-      ),
-
-      (
-        2,
-        5,
-        NULL,
-        6,
-        'Several reef sharks circling dive area'
-      ),
-
-      (
-        3,
-        NULL,
-        'Dolphin Pod',
-        8,
-        'Seen during evening boat ride'
+      SELECT
+        seeded.journal_id,
+        seeded.species_id,
+        seeded.custom_species_name,
+        seeded.quantity,
+        seeded.notes
+      FROM (
+        SELECT 1 AS journal_id, 1 AS species_id, NULL AS custom_species_name, 3 AS quantity, 'Spotted near shallow coral reef' AS notes
+        UNION ALL
+        SELECT 1, 7, NULL, 12, 'Large schools swimming together'
+        UNION ALL
+        SELECT 2, 2, NULL, 2, 'Massive whale sharks seen during dive'
+        UNION ALL
+        SELECT 2, 5, NULL, 6, 'Several reef sharks circling dive area'
+        UNION ALL
+        SELECT 3, NULL, 'Dolphin Pod', 8, 'Seen during evening boat ride'
+      ) AS seeded
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM journal_sightings existing
+        WHERE existing.journal_id = seeded.journal_id
+          AND existing.species_id <=> seeded.species_id
+          AND existing.custom_species_name <=> seeded.custom_species_name
+          AND existing.quantity <=> seeded.quantity
+          AND existing.notes <=> seeded.notes
       )
     `);
 
     // ---------------- JOURNAL MEDIA ----------------
     await connection.query(`
-      INSERT IGNORE INTO journal_media
+      INSERT INTO journal_media
       (
         journal_id,
         species_id,
@@ -480,67 +456,59 @@ async function seedDatabase(connection) {
         caption,
         display_order
       )
-      VALUES
-      (
-        1,
-        1,
-        1,
-        '/images/journal/redang-turtle.jpg',
-        'photo',
-        'Sea turtle swimming beside coral reef',
-        1
-      ),
-
-      (
-        1,
-        NULL,
-        5,
-        '/images/journal/redang-kayak.jpg',
-        'photo',
-        'Sunset kayaking view',
-        2
-      ),
-
-      (
-        2,
-        2,
-        2,
-        '/images/journal/sipadan-whaleshark.jpg',
-        'photo',
-        'Whale shark encounter during dive',
-        1
-      ),
-
-      (
-        3,
-        NULL,
-        NULL,
-        '/images/journal/maldives-lagoon.jpg',
-        'photo',
-        'Peaceful lagoon at sunset',
-        1
+      SELECT
+        seeded.journal_id,
+        seeded.species_id,
+        seeded.activity_id,
+        seeded.media_url,
+        seeded.media_type,
+        seeded.caption,
+        seeded.display_order
+      FROM (
+        SELECT 1 AS journal_id, 1 AS species_id, 1 AS activity_id, '/images/journal/redang-turtle.jpg' AS media_url, 'photo' AS media_type, 'Sea turtle swimming beside coral reef' AS caption, 1 AS display_order
+        UNION ALL
+        SELECT 1, NULL, 5, '/images/journal/redang-kayak.jpg', 'photo', 'Sunset kayaking view', 2
+        UNION ALL
+        SELECT 2, 2, 2, '/images/journal/sipadan-whaleshark.jpg', 'photo', 'Whale shark encounter during dive', 1
+        UNION ALL
+        SELECT 3, NULL, NULL, '/images/journal/maldives-lagoon.jpg', 'photo', 'Peaceful lagoon at sunset', 1
+      ) AS seeded
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM journal_media existing
+        WHERE existing.journal_id = seeded.journal_id
+          AND existing.species_id <=> seeded.species_id
+          AND existing.activity_id <=> seeded.activity_id
+          AND existing.media_url = seeded.media_url
+          AND existing.media_type = seeded.media_type
+          AND existing.caption <=> seeded.caption
+          AND existing.display_order <=> seeded.display_order
       )
     `);
 
     // ---------------- COMMENTS ----------------
     await connection.query(`
-      INSERT IGNORE INTO comments
+      INSERT INTO comments
       (
         user_id,
         journal_id,
         content
       )
-      VALUES
-      (
-        2,
-        1,
-        'This looks amazing!'
-      ),
-
-      (
-        1,
-        2,
-        'Adding Sipadan to my bucket list!'
+      SELECT
+        seeded.user_id,
+        seeded.journal_id,
+        seeded.content
+      FROM (
+        SELECT 2 AS user_id, 1 AS journal_id, 'This looks amazing!' AS content
+        UNION ALL
+        SELECT 1, 2, 'Adding Sipadan to my bucket list!'
+      ) AS seeded
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM comments existing
+        WHERE existing.user_id = seeded.user_id
+          AND existing.journal_id = seeded.journal_id
+          AND existing.content = seeded.content
       )
     `);
 

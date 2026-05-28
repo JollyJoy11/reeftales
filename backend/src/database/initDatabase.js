@@ -99,11 +99,13 @@ async function initializeDatabase() {
         title VARCHAR(150) NOT NULL,
         content LONGTEXT,
         cover_image LONGTEXT,
+        layout_json LONGTEXT,
         start_date DATE,
         end_date DATE,
 
         mood ENUM(
           'peaceful',
+          'joyful',
           'excited',
           'adventurous',
           'relaxed',

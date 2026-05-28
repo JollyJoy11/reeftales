@@ -2,7 +2,8 @@ const {
   getPublicJournals,
   getJournalById,
   getTrendingIslands,
-  getTopExplorers
+  getTopExplorers,
+  createJournal
 } = require('../models/journalModel')
 
 async function fetchPublicJournals(req, res) {
@@ -65,6 +66,7 @@ async function addJournal(req, res) {
       end_date: req.body.end_date,
       mood: req.body.mood,
       visibility: req.body.visibility,
+      layout_items: req.body.layout_items || [],
       activities: req.body.activities || [],
       sightings: req.body.sightings || [],
       media: req.body.media || []
@@ -77,7 +79,10 @@ async function addJournal(req, res) {
   } catch (error) {
     console.error(error)
     res.status(500).json({
-      message: 'Failed to create journal'
+      message: 'Failed to create journal',
+      details: process.env.NODE_ENV === 'production'
+        ? undefined
+        : error.sqlMessage || error.message
     })
   }
 }
