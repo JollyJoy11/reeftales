@@ -75,6 +75,14 @@ async function identifySpecies() {
   }
 }
 
+function matchStatusLabel(status) {
+  return status?.toLowerCase() === 'accepted' ? 'Verified' : status
+}
+
+function isVerifiedMatch(status) {
+  return status?.toLowerCase() === 'accepted'
+}
+
 onBeforeUnmount(() => {
   if (previewUrl.value) {
     URL.revokeObjectURL(previewUrl.value)
@@ -165,7 +173,19 @@ onBeforeUnmount(() => {
       <div v-if="matches.length" class="match-list">
         <div v-for="match in matches" :key="match.aphiaId" class="match-row">
           <strong>{{ match.acceptedName || match.scientificName }}</strong>
-          <span>{{ match.rank }} · {{ match.status }}</span>
+          <span class="match-meta">
+            {{ match.rank }}
+            <span
+              class="status-text"
+              :class="{ verified: isVerifiedMatch(match.status) }"
+            >
+              <i
+                v-if="isVerifiedMatch(match.status)"
+                class="bi bi-check-lg"
+              ></i>
+              {{ matchStatusLabel(match.status) }}
+            </span>
+          </span>
         </div>
       </div>
     </div>
@@ -301,7 +321,7 @@ onBeforeUnmount(() => {
 }
 
 .match-row strong,
-.match-row span {
+.match-row > span {
   display: block;
 }
 
@@ -309,9 +329,37 @@ onBeforeUnmount(() => {
   font-size: 0.82rem;
 }
 
-.match-row span {
+.match-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   font-size: 0.72rem;
   color: #64748b;
+}
+
+.status-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.status-text.verified {
+  color: #2f7d4d;
+}
+
+.status-text i {
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.58rem;
+  line-height: 1;
 }
 
 .ai-reason {
