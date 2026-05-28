@@ -62,14 +62,6 @@ const unusedMedia = computed(() => {
   return props.media.filter(item => !usedMediaIds.value.includes(item.id))
 })
 
-function highestZIndex() {
-  return Math.max(0, ...props.layoutItems.map(item => item.zIndex || 1))
-}
-
-function lowestZIndex() {
-  return Math.min(1, ...props.layoutItems.map(item => item.zIndex || 1))
-}
-
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max)
 }
@@ -95,7 +87,7 @@ function itemHeight(item) {
 
 function mediaHeightFromWidth(item, width) {
   const horizontalFrame = 24
-  const verticalFrame = item.caption ? 56 : 46
+  const verticalFrame = item.caption ? 70 : 46
   return clamp((width - horizontalFrame) / (item.aspectRatio || 1.32) + verticalFrame, 90, canvasSize.value.height)
 }
 
@@ -141,13 +133,14 @@ function mediaLayoutItem(mediaItem, index = props.layoutItems.length) {
   const aspectRatio = mediaItem.aspectRatio || 1.32
   const wPct = 0.32
   const baseWidth = 620 * wPct
-  const baseHeight = (baseWidth - 24) / aspectRatio + (mediaItem.caption ? 56 : 46)
+  const baseHeight = (baseWidth - 24) / aspectRatio + (mediaItem.caption ? 70 : 46)
 
   return {
     id: crypto.randomUUID(),
     type: 'media',
     mediaId: mediaItem.id,
     previewUrl: mediaItem.coverDataUrl || mediaItem.previewUrl,
+    mediaUrl: mediaItem.dataUrl || mediaItem.previewUrl,
     mediaType: mediaItem.media_type,
     caption: mediaItem.caption,
     aspectRatio,
@@ -155,7 +148,7 @@ function mediaLayoutItem(mediaItem, index = props.layoutItems.length) {
     tapeColor: tapeColors[index % tapeColors.length],
     tapePlacement: tapePlacements[index % tapePlacements.length],
     attachment: index % 4 === 0 ? 'clip' : 'tape',
-    zIndex: highestZIndex() + 1,
+    zIndex: props.layoutItems.length + 1,
     xPct: 0.08 + (index % 3) * 0.07,
     yPct: 0.07 + (index % 3) * 0.05,
     wPct,
@@ -180,7 +173,7 @@ function addTextBox() {
       text: 'Write a small memory...',
       textColor: textColors[0],
       rotation: -2,
-      zIndex: highestZIndex() + 1,
+      zIndex: props.layoutItems.length + 1,
       xPct: 0.1,
       yPct: 0.1,
       wPct: 0.36,
@@ -204,7 +197,7 @@ function addSticker(sticker) {
       stickerColor: sticker.color,
       stickerShape: 'stamp',
       rotation: props.layoutItems.length % 2 === 0 ? -5 : 4,
-      zIndex: highestZIndex() + 1,
+      zIndex: props.layoutItems.length + 1,
       xPct: 0.14 + (props.layoutItems.length % 4) * 0.04,
       yPct: 0.12 + (props.layoutItems.length % 4) * 0.04,
       wPct: 0.15,
@@ -229,7 +222,7 @@ function addMoodSticker() {
       mood: props.mood,
       stickerShape: 'ticket',
       rotation: 4,
-      zIndex: highestZIndex() + 1,
+      zIndex: props.layoutItems.length + 1,
       xPct: 0.16,
       yPct: 0.14,
       wPct: 0.2,
@@ -254,6 +247,27 @@ function updateLayoutItem(id, patch) {
   emit('update:layoutItems', props.layoutItems.map(item => (
     item.id === id ? { ...item, ...patch } : item
   )))
+}
+
+function reorderLayoutItems(targetId, direction) {
+  const orderedItems = [...props.layoutItems].sort((a, b) => (
+    (a.zIndex ?? 1) - (b.zIndex ?? 1)
+  ))
+  const targetIndex = orderedItems.findIndex(item => item.id === targetId)
+  if (targetIndex < 0) return
+
+  const [targetItem] = orderedItems.splice(targetIndex, 1)
+
+  if (direction === 'front') {
+    orderedItems.push(targetItem)
+  } else {
+    orderedItems.unshift(targetItem)
+  }
+
+  emit('update:layoutItems', orderedItems.map((item, index) => ({
+    ...item,
+    zIndex: index + 1
+  })))
 }
 
 function removeLayoutItem(id) {
@@ -306,15 +320,11 @@ function toggleAttachment(item) {
 }
 
 function bringFront(item) {
-  updateLayoutItem(item.id, {
-    zIndex: highestZIndex() + 1
-  })
+  reorderLayoutItems(item.id, 'front')
 }
 
 function sendBack(item) {
-  updateLayoutItem(item.id, {
-    zIndex: lowestZIndex() - 1
-  })
+  reorderLayoutItems(item.id, 'back')
 }
 
 function selectItem(id) {
@@ -471,7 +481,7 @@ onBeforeUnmount(() => {
             :h="itemHeight(item)"
             :parent="true"
             :lock-aspect-ratio="resizableRatio(item)"
-            :style="{ zIndex: item.zIndex || 1 }"
+            :style="{ zIndex: item.zIndex ?? 1 }"
             @activated="selectItem(item.id)"
             @dragging="(x, y) => updateLayoutItem(item.id, responsivePatch(x, y, itemWidth(item), itemHeight(item)))"
             @resizing="(x, y, width, height) => updateLayoutItem(item.id, responsiveResizePatch(item, x, y, width, height))"

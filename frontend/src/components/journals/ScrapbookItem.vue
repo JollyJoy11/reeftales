@@ -50,7 +50,7 @@ const itemStyle = computed(() => {
     style.top = `${(props.item.yPct ?? 0) * 100}%`
     style.width = `${(props.item.wPct ?? 0.24) * 100}%`
     style.height = `${(props.item.hPct ?? 0.18) * 100}%`
-    style.zIndex = props.item.zIndex || 1
+    style.zIndex = props.item.zIndex ?? 1
   }
 
   return style
@@ -132,23 +132,21 @@ const itemStyle = computed(() => {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #ffffff;
+  background: #fffdf8;
   box-shadow: 0 10px 22px rgba(0,0,0,0.14);
   transform: rotate(var(--item-rotation));
   transform-origin: center;
   outline: none;
   transition:
     box-shadow 0.16s ease,
-    filter 0.16s ease;
-}
-
-.scrapbook-item-card.selected {
-  filter: drop-shadow(0 0 10px rgba(24,151,160,0.16));
+    filter 0.16s ease,
+    transform 0.22s ease;
 }
 
 .scrapbook-item-card.type-media {
-  padding: 12px 12px 34px;
+  padding: 12px 12px 48px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  border: 1px solid rgba(234,223,202,0.72);
 }
 
 .scrapbook-item-card.type-text {
@@ -161,6 +159,26 @@ const itemStyle = computed(() => {
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+.scrapbook-item-card.selected {
+  transform:
+    rotate(calc(var(--item-rotation) + 4deg))
+    translateY(-5px)
+    scale(1.05);
+
+  box-shadow:
+    0 18px 30px rgba(0,0,0,0.18),
+    0 0 0 4px rgba(24,151,160,0.16),
+    0 0 30px rgba(24,151,160,0.34),
+    0 0 54px rgba(24,151,160,0.18);
+
+  filter: saturate(1.08);
+  z-index: 999 !important;
+}
+
+.scrapbook-item-card.type-media.selected {
+  border-color: rgba(24,151,160,0.52);
 }
 
 .remove-layout-item {

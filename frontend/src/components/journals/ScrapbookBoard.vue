@@ -8,6 +8,10 @@ defineProps({
     type: Array,
     default: () => []
   },
+  activeMediaId: {
+    type: [String, Number],
+    default: null
+  },
   emptyMessage: {
     type: String,
     default: 'Your arranged memories will appear here.'
@@ -15,6 +19,7 @@ defineProps({
 })
 
 const rootEl = ref(null)
+const emit = defineEmits(['media-select'])
 
 defineExpose({ rootEl })
 </script>
@@ -33,6 +38,12 @@ defineExpose({ rootEl })
         v-for="item in items"
         :key="item.id"
         :item="item"
+        :selected="
+          activeMediaId &&
+          item.type === 'media' &&
+          String(item.mediaId) === String(activeMediaId)
+        "
+        @select="item.type === 'media' && item.mediaId && emit('media-select', item.mediaId)"
       />
     </slot>
   </div>
@@ -49,9 +60,9 @@ defineExpose({ rootEl })
   border: 1px dashed #c4a484;
   border-radius: 22px;
   background:
-    linear-gradient(rgba(196,164,132,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(196,164,132,0.08) 1px, transparent 1px),
-    #fbf9f1;
+    linear-gradient(rgba(196,164,132,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,164,132,0.04) 1px, transparent 1px),
+    linear-gradient(180deg, #fdfbf5 0%, #fbf7ef 100%);
   background-size: 32px 32px;
   overflow: visible;
   box-shadow: inset 0 0 30px rgba(196,164,132,0.08);

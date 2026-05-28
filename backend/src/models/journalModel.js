@@ -17,6 +17,7 @@ async function getPublicJournals(filters = {}) {
 
       islands.name AS island_name,
       islands.country,
+      islands.cover_image AS island_cover_image,
 
       COUNT(DISTINCT likes.id) AS like_count,
       COUNT(DISTINCT comments.id) AS comment_count,
@@ -79,11 +80,17 @@ async function getJournalById(id) {
       users.username,
       users.profile_image,
       islands.name AS island_name,
-      islands.country
+      islands.country,
+      islands.cover_image AS island_cover_image,
+      COUNT(DISTINCT likes.id) AS like_count,
+      COUNT(DISTINCT comments.id) AS comment_count
     FROM journals
     JOIN users ON journals.user_id = users.id
     JOIN islands ON journals.island_id = islands.id
+    LEFT JOIN likes ON likes.journal_id = journals.id
+    LEFT JOIN comments ON comments.journal_id = journals.id
     WHERE journals.id = ?
+    GROUP BY journals.id
   `, [id])
 
   if (!rows[0]) return null
@@ -128,13 +135,59 @@ async function getJournalById(id) {
     ORDER BY journal_sightings.id ASC
   `, [id])
 
+  const [comments] = await db.query(`
+    SELECT
+      comments.*,
+      users.username,
+      users.profile_image
+    FROM comments
+    JOIN users ON comments.user_id = users.id
+    WHERE comments.journal_id = ?
+      AND comments.parent_comment_id IS NULL
+    ORDER BY comments.created_at DESC, comments.id DESC
+  `, [id])
+
   return {
     ...rows[0],
     layout_items: layoutItems,
     media,
     activities,
-    sightings
+    sightings,
+    comments
   }
+}
+
+async function addComment(journalId, userId, content) {
+  const [result] = await db.query(`
+    INSERT INTO comments (user_id, journal_id, content)
+    VALUES (?, ?, ?)
+  `, [userId, journalId, content])
+
+  return result.insertId
+}
+
+async function isJournalLiked(userId, journalId) {
+  const [rows] = await db.query(`
+    SELECT id
+    FROM likes
+    WHERE user_id = ? AND journal_id = ?
+  `, [userId, journalId])
+
+  return Boolean(rows[0])
+}
+
+async function likeJournal(userId, journalId) {
+  await db.query(`
+    INSERT IGNORE INTO likes (user_id, journal_id)
+    VALUES (?, ?)
+  `, [userId, journalId])
+}
+
+async function unlikeJournal(userId, journalId) {
+  await db.query(`
+    DELETE FROM likes
+    WHERE user_id = ? AND journal_id = ?
+  `, [userId, journalId])
 }
 
 async function getTrendingIslands() {
@@ -296,5 +349,9 @@ module.exports = {
   getJournalById,
   getTrendingIslands,
   getTopExplorers,
-  createJournal
+  createJournal,
+  addComment,
+  isJournalLiked,
+  likeJournal,
+  unlikeJournal
 }

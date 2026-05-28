@@ -29,6 +29,12 @@ const speciesTags = computed(() => splitList(props.journal.species).slice(0, 2))
 const avatarInitial = computed(() => {
   return props.journal.username?.charAt(0)?.toUpperCase() || 'U'
 })
+
+const coverImage = computed(() => {
+  return props.journal.cover_image ||
+    props.journal.island_cover_image ||
+    '/images/island-placeholder.jpg'
+})
 </script>
 
 <template>
@@ -57,7 +63,7 @@ const avatarInitial = computed(() => {
 
       <div class="postcard-image-wrap">
         <img
-          :src="journal.cover_image || '/images/island-placeholder.jpg'"
+          :src="coverImage"
           class="journal-cover"
           alt="Journal cover"
           @error="$event.target.src = '/images/island-placeholder.jpg'"

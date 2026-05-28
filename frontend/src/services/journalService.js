@@ -29,3 +29,13 @@ export async function createJournal(data) {
   const response = await api.post('/journals', data)
   return response.data
 }
+
+export async function addJournalComment(journalId, content) {
+  const response = await api.post(`/journals/${journalId}/comments`, { content })
+  return response.data
+}
+
+export async function toggleJournalLike(journalId) {
+  const response = await api.post(`/journals/${journalId}/like`)
+  return response.data
+}

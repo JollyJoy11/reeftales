@@ -19,7 +19,18 @@ defineProps({
     <i class="bi bi-play-fill"></i>
   </span>
 
+  <video
+    v-if="item.mediaType === 'video'"
+    :src="item.mediaUrl || item.previewUrl"
+    :poster="item.previewUrl"
+    class="scrapbook-polaroid-media"
+    controls
+    playsinline
+    preload="metadata"
+  ></video>
+
   <img
+    v-else
     :src="item.previewUrl"
     class="scrapbook-polaroid-media"
     alt="Arranged journal media"
@@ -36,8 +47,12 @@ defineProps({
   height: 100%;
   object-fit: contain;
   display: block;
-  background: #f6f3eb;
+  background: #fbf9f1;
   border: 2px solid #475569;
+}
+
+video.scrapbook-polaroid-media {
+  background: #102f3a;
 }
 
 .washi-tape {
@@ -80,8 +95,8 @@ defineProps({
 
 .layout-video-badge {
   position: absolute;
-  left: 6px;
-  bottom: 6px;
+  top: 8px;
+  right: 8px;
   z-index: 2;
   width: 26px;
   height: 26px;
@@ -90,6 +105,7 @@ defineProps({
   color: #fff;
   display: grid;
   place-items: center;
+  pointer-events: none;
 }
 
 .scrapbook-polaroid-caption {
@@ -102,9 +118,12 @@ defineProps({
   font-size: 0.78rem;
   font-style: italic;
   font-weight: 700;
-  white-space: nowrap;
+  line-height: 1.15;
   overflow: hidden;
-  text-overflow: ellipsis;
   text-align: center;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>

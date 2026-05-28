@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import draggable from 'vuedraggable'
 import AppTimePicker from '@/components/common/AppTimePicker.vue'
 
@@ -20,6 +20,10 @@ const props = defineProps({
   activities: {
     type: Array,
     default: () => []
+  },
+  maxDays: {
+    type: Number,
+    default: 1
   }
 })
 
@@ -27,7 +31,9 @@ const emit = defineEmits(['update:modelValue'])
 
 function updateItem(index, key, value) {
   const updated = [...props.modelValue]
-  updated[index] = { ...updated[index], [key]: value }
+  const nextValue = key === 'day_number' ? Number(value) : value
+
+  updated[index] = { ...updated[index], [key]: nextValue }
   emit('update:modelValue', updated)
 }
 
@@ -36,7 +42,7 @@ function addEntry() {
     ...props.modelValue,
     {
       id: crypto.randomUUID(),
-      day_number: 1,
+      day_number: Math.min(props.maxDays, props.modelValue.length + 1),
       activity_time: '',
       activity_id: '',
       custom_activity_name: '',
@@ -48,6 +54,20 @@ function addEntry() {
 function removeEntry(index) {
   emit('update:modelValue', props.modelValue.filter((_, i) => i !== index))
 }
+
+watch(
+  () => props.maxDays,
+  () => {
+    const clamped = props.modelValue.map(entry => ({
+      ...entry,
+      day_number: Math.min(Math.max(Number(entry.day_number) || 1, 1), props.maxDays)
+    }))
+
+    if (clamped.some((entry, index) => entry.day_number !== props.modelValue[index].day_number)) {
+      emit('update:modelValue', clamped)
+    }
+  }
+)
 </script>
 
 <template>
@@ -98,9 +118,11 @@ function removeEntry(index) {
                 :value="entry.day_number"
                 type="number"
                 min="1"
+                :max="maxDays"
                 class="form-control"
                 @input="updateItem(index, 'day_number', $event.target.value)"
               />
+              <small class="day-limit-hint">Max Day {{ maxDays }}</small>
             </div>
 
             <div class="field-small">
@@ -253,6 +275,14 @@ function removeEntry(index) {
 .form-label {
   color: #2f4858;
   font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.day-limit-hint {
+  display: block;
+  margin-top: 4px;
+  color: #7c6f63;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 

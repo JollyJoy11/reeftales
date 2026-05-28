@@ -3,7 +3,11 @@ const {
   getJournalById,
   getTrendingIslands,
   getTopExplorers,
-  createJournal
+  createJournal,
+  addComment,
+  isJournalLiked,
+  likeJournal,
+  unlikeJournal
 } = require('../models/journalModel')
 
 async function fetchPublicJournals(req, res) {
@@ -87,10 +91,51 @@ async function addJournal(req, res) {
   }
 }
 
+async function addJournalComment(req, res) {
+  try {
+    const content = req.body.content?.trim()
+
+    if (!content) {
+      return res.status(400).json({ message: 'Comment cannot be empty' })
+    }
+
+    const commentId = await addComment(req.params.id, req.user.id, content)
+
+    res.status(201).json({
+      message: 'Comment added successfully',
+      commentId
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to add comment' })
+  }
+}
+
+async function toggleJournalLike(req, res) {
+  try {
+    const userId = req.user.id
+    const journalId = req.params.id
+    const liked = await isJournalLiked(userId, journalId)
+
+    if (liked) {
+      await unlikeJournal(userId, journalId)
+      return res.json({ liked: false })
+    }
+
+    await likeJournal(userId, journalId)
+    res.json({ liked: true })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to update journal like' })
+  }
+}
+
 module.exports = {
   fetchPublicJournals,
   fetchJournalById,
   fetchTrendingIslands,
   fetchTopExplorers,
-  addJournal
+  addJournal,
+  addJournalComment,
+  toggleJournalLike
 }

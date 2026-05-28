@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -58,6 +58,17 @@ const form = ref({
   layoutItems: []
 })
 
+const tripDayCount = computed(() => {
+  const [startDate, endDate] = form.value.trip_dates || []
+  if (!startDate || !endDate) return 1
+
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  const diff = Math.round((end - start) / 86400000) + 1
+
+  return Math.max(1, diff)
+})
+
 function validateCurrentStep() {
   if (step.value === 1 && (!form.value.island_id || !form.value.title)) {
     toastStore.danger('Please choose an island and add a journal title.')
@@ -69,9 +80,16 @@ function validateCurrentStep() {
     return false
   }
 
-  if (step.value === 4 && !form.value.media.length) {
-    toastStore.danger('Please upload at least one photo or video before arranging.')
-    return false
+  if (step.value === 3) {
+    const invalidEntry = form.value.timeline.find(entry => {
+      const dayNumber = Number(entry.day_number)
+      return dayNumber < 1 || dayNumber > tripDayCount.value
+    })
+
+    if (invalidEntry) {
+      toastStore.danger(`Timeline days must be between Day 1 and Day ${tripDayCount.value}.`)
+      return false
+    }
   }
 
   return true
@@ -107,13 +125,23 @@ async function loadData() {
 
 async function handleSubmit() {
   try {
-    if (!form.value.coverImage) {
-      toastStore.danger('Please choose a cover before publishing.')
-      return
-    }
-
     loading.value = true
     errorMessage.value = ''
+
+    const mediaById = new Map(form.value.media.map(item => [String(item.id), item]))
+    const layoutItems = form.value.layoutItems.map(item => {
+      if (item.type !== 'media' || !item.mediaId) return item
+
+      const sourceMedia = mediaById.get(String(item.mediaId))
+      if (!sourceMedia) return item
+
+      return {
+        ...item,
+        previewUrl: item.previewUrl || sourceMedia.coverDataUrl || sourceMedia.previewUrl,
+        mediaUrl: sourceMedia.dataUrl || sourceMedia.previewUrl,
+        mediaType: sourceMedia.media_type
+      }
+    })
 
     const payload = {
       island_id: form.value.island_id,
@@ -124,7 +152,7 @@ async function handleSubmit() {
       end_date: formatDateForMySQL(form.value.trip_dates?.[1]),
       mood: form.value.mood,
       visibility: form.value.is_public ? 'public' : 'private',
-      layout_items: form.value.layoutItems,
+      layout_items: layoutItems,
 
       activities: form.value.timeline
         .filter(item => item.activity_id || item.custom_activity_name || item.notes)
@@ -262,6 +290,7 @@ onMounted(loadData)
             <JournalTimelineEditor
               v-model="form.timeline"
               :activities="activities"
+              :max-days="tripDayCount"
             />
 
             <JournalSightingsEditor
