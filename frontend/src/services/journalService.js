@@ -30,6 +30,22 @@ export async function createJournal(data) {
   return response.data
 }
 
+export async function uploadJournalMedia(files) {
+  const formData = new FormData()
+
+  files.forEach(file => {
+    formData.append('files', file)
+  })
+
+  const response = await api.post('/uploads/journal-media', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+
+  return response.data.files
+}
+
 export async function addJournalComment(journalId, content) {
   const response = await api.post(`/journals/${journalId}/comments`, { content })
   return response.data
