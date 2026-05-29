@@ -60,32 +60,39 @@ onMounted(() => {
 
     <section class="container py-4">
       <div class="community-hero mb-4">
-        <div>
+        <div class="hero-copy">
           <span class="eyebrow">Community Diaries</span>
-          <h1>Ocean stories from real explorers</h1>
+          <h1>Shared reef journals</h1>
           <p>
-            Browse public island journals, marine memories, and travel notes shared by the Reef Tales community.
+            Read island notes, marine sightings, and travel memories from other Reef Tales explorers.
           </p>
+
+          <div class="community-search">
+            <i class="bi bi-search"></i>
+            <input
+              v-model="search"
+              type="search"
+              placeholder="Search journals, islands, or authors..."
+            />
+          </div>
         </div>
 
-        <RouterLink to="/journal/create" class="btn btn-primary">
-          <i class="bi bi-pencil-square"></i>
-          Create Journal
-        </RouterLink>
-      </div>
+        <div class="hero-actions">
+          <div class="hero-stats">
+            <span>
+              <strong>{{ journals.length }}</strong>
+              diaries
+            </span>
+            <span>
+              <strong>{{ trendingIslands.length }}</strong>
+              islands
+            </span>
+          </div>
 
-      <div class="community-toolbar mb-4">
-        <div class="input-group search-box">
-          <span class="input-group-text">
-            <i class="bi bi-search"></i>
-          </span>
-
-          <input
-            v-model="search"
-            type="search"
-            class="form-control"
-            placeholder="Search journals, islands, or authors..."
-          />
+          <RouterLink to="/journal/create" class="create-journal-btn">
+            <i class="bi bi-pencil-square"></i>
+            Create Journal
+          </RouterLink>
         </div>
       </div>
 
@@ -117,7 +124,7 @@ onMounted(() => {
         <aside class="col-12 col-lg-4">
           <div class="community-sidebar">
             <section class="sidebar-card">
-              <h6>Trending Islands</h6>
+              <h6><i class="bi bi-compass"></i> Trending Islands</h6>
 
               <div
                 v-for="(island, index) in trendingIslands"
@@ -140,7 +147,7 @@ onMounted(() => {
             </section>
 
             <section class="sidebar-card">
-              <h6>Top Explorers</h6>
+              <h6><i class="bi bi-stars"></i> Top Explorers</h6>
 
               <div
                 v-for="explorer in topExplorers"
@@ -177,18 +184,31 @@ onMounted(() => {
 
 <style scoped>
 .community-hero {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  align-items: end;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 26px;
+  align-items: stretch;
   padding: 28px;
-  border-radius: 28px;
+  border-radius: 18px;
   background:
-    linear-gradient(rgba(251,249,241,0.88), rgba(251,249,241,0.95)),
-    url('/images/postcard.jpg');
-  background-size: cover;
-  background-position: center;
-  border: 1px solid #eadfca;
+    linear-gradient(90deg, rgba(251,249,241,0.98), rgba(251,249,241,0.88)),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(196,164,132,0.13) 0,
+      rgba(196,164,132,0.13) 1px,
+      transparent 1px,
+      transparent 32px
+    );
+  border: 1px dashed #d8cdbb;
+  box-shadow: 0 16px 34px rgba(47,72,88,0.10);
+  overflow: hidden;
+}
+
+.hero-copy,
+.hero-actions {
+  position: relative;
+  z-index: 1;
 }
 
 .eyebrow {
@@ -203,34 +223,96 @@ onMounted(() => {
   margin: 6px 0;
   color: #2f4858;
   font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  line-height: 1;
 }
 
 .community-hero p {
-  max-width: 620px;
+  max-width: 560px;
   color: #64748b;
-  margin: 0;
+  margin: 0 0 18px;
+  line-height: 1.65;
 }
 
-.community-hero .btn {
+.community-search {
+  max-width: 520px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #d8cdbb;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+}
+
+.community-search i {
+  color: #1897a0;
+}
+
+.community-search input {
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: #2f4858;
+  outline: none;
+}
+
+.community-search input::placeholder {
+  color: #8a9aaa;
+}
+
+.hero-actions {
+  min-width: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.hero-stats span {
+  padding: 12px;
+  border: 1px dashed rgba(24,151,160,0.35);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.58);
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.hero-stats strong {
+  display: block;
+  color: #2f4858;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.create-journal-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #1897a0;
+  color: #ffffff;
+  font-weight: 900;
+  text-decoration: none;
   white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(24,151,160,0.22);
 }
 
-.community-toolbar {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.search-box {
-  max-width: 420px;
-}
-
-.search-box .form-control,
-.search-box .input-group-text {
-  background: #fffdf8;
-  border-color: #d8cdbb;
+.create-journal-btn:hover {
+  background: #147d85;
+  color: #ffffff;
 }
 
 .community-sidebar {
@@ -241,18 +323,33 @@ onMounted(() => {
 }
 
 .sidebar-card {
+  position: relative;
   padding: 22px;
-  border-radius: 24px;
+  border-radius: 18px;
   background: #fbf9f1;
-  border: 1px solid #eadfca;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px dashed #d8cdbb;
+  box-shadow: 0 12px 26px rgba(47,72,88,0.08);
+}
+
+.sidebar-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 28px;
+  width: 76px;
+  height: 20px;
+  background: rgba(245,223,154,0.46);
+  transform: rotate(-3deg);
 }
 
 .sidebar-card h6 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 16px;
   color: #2f4858;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.78rem;
 }
@@ -269,10 +366,16 @@ onMounted(() => {
 }
 
 .trend-number {
-  color: #c4a484;
-  font-size: 1.4rem;
-  font-weight: 700;
-  min-width: 38px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+  font-size: 0.9rem;
+  font-weight: 900;
+  flex: 0 0 auto;
 }
 
 .trend-row strong,
@@ -325,24 +428,24 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .community-hero {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
   }
 
-  .community-toolbar {
-    justify-content: stretch;
-  }
-
-  .search-box {
-    max-width: none;
-    width: 100%;
+  .hero-actions {
+    min-width: 0;
   }
 }
 
 :global(body.dark-mode) .community-hero {
   background:
-    linear-gradient(rgba(37,50,68,0.9), rgba(37,50,68,0.95)),
-    url('/images/postcard-dark.jpg');
+    linear-gradient(90deg, rgba(37,50,68,0.98), rgba(37,50,68,0.92)),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.07) 0,
+      rgba(255,255,255,0.07) 1px,
+      transparent 1px,
+      transparent 32px
+    );
   border-color: rgba(255,255,255,0.1);
 }
 
@@ -358,6 +461,17 @@ onMounted(() => {
 :global(body.dark-mode) .explorer-row small,
 :global(body.dark-mode) .sidebar-empty {
   color: #cbd5e1;
+}
+
+:global(body.dark-mode) .community-search,
+:global(body.dark-mode) .hero-stats span {
+  background: #2d3748;
+  border-color: rgba(255,255,255,0.1);
+}
+
+:global(body.dark-mode) .community-search input,
+:global(body.dark-mode) .hero-stats strong {
+  color: #f8fafc;
 }
 
 :global(body.dark-mode) .sidebar-card {

@@ -152,8 +152,10 @@ watch(
   --media-strip-center: calc(var(--media-strip-padding) + (var(--media-stamp-size) / 2));
 
   position: relative;
+  align-self: start;
   z-index: 2;
-  transform: translateX(20px);
+  height: max-content;
+  transform: translate(20px, 30px);
   box-shadow:
     6px 0 12px rgba(0,0,0,0.05);
 }
@@ -360,6 +362,7 @@ watch(
   }
 
   .media-strip-shell {
+    transform: none;
     background:
       linear-gradient(#eee4be, #eee4be) center / 100% 64px no-repeat;
   }

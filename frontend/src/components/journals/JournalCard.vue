@@ -1,5 +1,11 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+
+import AppStampFrame from '@/components/common/AppStampFrame.vue'
+import { toggleJournalLike } from '@/services/journalService'
+import { toggleSavedJournal } from '@/services/savedJournalService'
+import { useAuthStore } from '@/stores/authStore'
+import { useToastStore } from '@/stores/toastStore'
 
 const props = defineProps({
   journal: {
@@ -7,6 +13,23 @@ const props = defineProps({
     required: true
   }
 })
+
+const authStore = useAuthStore()
+const toastStore = useToastStore()
+const actionLoading = ref(false)
+const likeCount = ref(Number(props.journal.like_count || 0))
+const commentCount = computed(() => Number(props.journal.comment_count || 0))
+const hasLiked = ref(Boolean(props.journal.is_liked || props.journal.liked))
+const hasSaved = ref(Boolean(props.journal.is_saved || props.journal.saved))
+
+watch(
+  () => props.journal,
+  journal => {
+    likeCount.value = Number(journal.like_count || 0)
+    hasLiked.value = Boolean(journal.is_liked || journal.liked)
+    hasSaved.value = Boolean(journal.is_saved || journal.saved)
+  }
+)
 
 function formatDate(date) {
   if (!date) return 'Recent journey'
@@ -35,6 +58,44 @@ const coverImage = computed(() => {
     props.journal.island_cover_image ||
     '/images/island-placeholder.jpg'
 })
+
+async function handleLike() {
+  if (!authStore.isLoggedIn) {
+    toastStore.danger('Please login to like journals.')
+    return
+  }
+
+  try {
+    actionLoading.value = true
+    const response = await toggleJournalLike(props.journal.id)
+    hasLiked.value = response.liked
+    likeCount.value = response.liked
+      ? likeCount.value + 1
+      : Math.max(0, likeCount.value - 1)
+  } catch {
+    toastStore.danger('Unable to update like.')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+async function handleSave() {
+  if (!authStore.isLoggedIn) {
+    toastStore.danger('Please login to save journals.')
+    return
+  }
+
+  try {
+    actionLoading.value = true
+    const response = await toggleSavedJournal(props.journal.id)
+    hasSaved.value = response.saved
+    toastStore.success(response.saved ? 'Journal saved.' : 'Removed from saved journals.')
+  } catch {
+    toastStore.danger('Unable to update saved journal.')
+  } finally {
+    actionLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -62,17 +123,24 @@ const coverImage = computed(() => {
       </div>
 
       <div class="postcard-image-wrap">
-        <img
-          :src="coverImage"
-          class="journal-cover"
+        <AppStampFrame
+          class="journal-cover-stamp"
+          :image="coverImage"
           alt="Journal cover"
+          :contain="false"
           @error="$event.target.src = '/images/island-placeholder.jpg'"
         />
       </div>
 
       <div class="journal-body">
-        <div v-if="journal.mood" class="mood-pill">
-          {{ journal.mood }}
+        <div class="journal-card-meta">
+          <div v-if="journal.mood" class="mood-pill">
+            {{ journal.mood }}
+          </div>
+          <span class="island-label">
+            <i class="bi bi-geo-alt"></i>
+            {{ journal.island_name }}
+          </span>
         </div>
 
         <h4>{{ journal.title }}</h4>
@@ -98,20 +166,32 @@ const coverImage = computed(() => {
         </div>
 
         <div class="journal-actions">
-          <span>
-            <i class="bi bi-heart"></i>
-            {{ journal.like_count || 0 }}
-          </span>
+          <button
+            type="button"
+            class="journal-action-btn"
+            :class="{ active: hasLiked }"
+            :disabled="actionLoading"
+            @click.prevent.stop="handleLike"
+          >
+            <i :class="hasLiked ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+            {{ likeCount }}
+          </button>
 
-          <span>
+          <span class="journal-action-static">
             <i class="bi bi-chat"></i>
-            {{ journal.comment_count || 0 }}
+            {{ commentCount }}
           </span>
 
-          <span>
-            <i class="bi bi-bookmark"></i>
-            Save
-          </span>
+          <button
+            type="button"
+            class="journal-action-btn"
+            :class="{ active: hasSaved }"
+            :disabled="actionLoading"
+            @click.prevent.stop="handleSave"
+            title="Save journal"
+          >
+            <i :class="hasSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+          </button>
         </div>
       </div>
     </article>
@@ -121,19 +201,42 @@ const coverImage = computed(() => {
 <style scoped>
 .journal-card-link {
   text-decoration: none;
+  display: block;
+  height: 100%;
 }
 
 .journal-card {
-  padding: 16px;
-  background: #fbf9f1;
-  border: 1px solid #eadfca;
-  border-radius: 24px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  background:
+    linear-gradient(180deg, #fffdf8 0%, #fbf7ef 100%);
+  border: 1px dashed #d8cdbb;
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(47,72,88,0.09);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.journal-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: 26px;
+  z-index: 2;
+  width: 84px;
+  height: 22px;
+  background: rgba(169,216,214,0.44);
+  border-left: 1px dashed rgba(47,72,88,0.12);
+  border-right: 1px dashed rgba(47,72,88,0.12);
+  transform: rotate(4deg);
 }
 
 .journal-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 18px 34px rgba(47,72,88,0.13);
 }
 
 .journal-header {
@@ -175,24 +278,44 @@ const coverImage = computed(() => {
 }
 
 .postcard-image-wrap {
-  padding: 10px 10px 24px;
-  background: #fffdf8;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+  position: relative;
+  margin: 4px 0 18px;
   transform: rotate(-0.8deg);
-  margin-bottom: 18px;
 }
 
-.journal-cover {
+.journal-cover-stamp {
   width: 100%;
-  height: 190px;
+  aspect-ratio: 1.45;
+  --stamp-radius: 5px;
+  --stamp-size: 16px;
+}
+
+.journal-cover-stamp :deep(img) {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 2px solid #475569;
+  border-color: rgba(47,72,88,0.22);
+}
+
+.journal-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.journal-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .journal-body h4 {
   margin: 8px 0;
   color: #2f4858;
-  font-weight: 800;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
 .journal-body p {
@@ -212,6 +335,16 @@ const coverImage = computed(() => {
   color: #1897a0;
   font-size: 0.72rem;
   font-weight: 700;
+}
+
+.island-label {
+  min-width: 0;
+  color: #7c6f63;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tag-row {
@@ -240,15 +373,41 @@ const coverImage = computed(() => {
 
 .journal-actions {
   display: flex;
+  justify-content: flex-end;
+  align-items: center;
   gap: 16px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed #eadfca;
   color: #64748b;
   font-size: 0.82rem;
 }
 
-.journal-actions span {
+.journal-action-btn,
+.journal-action-static {
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font: inherit;
+  font-weight: 800;
+}
+
+.journal-action-btn {
+  cursor: pointer;
+}
+
+.journal-action-btn:hover:not(:disabled),
+.journal-action-btn.active {
+  color: #1897a0;
+}
+
+.journal-action-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 :global(body.dark-mode) .journal-card {

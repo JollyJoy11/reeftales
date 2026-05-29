@@ -62,7 +62,7 @@ function formatActivityTime(time) {
           </div>
           <div class="timeline-card">
             <span class="timeline-icon">
-              <i class="bi bi-compass"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-parasol-icon lucide-parasol"><path d="M12.5 11.134 18.196 21"/><path d="M20.425 5.299a10 10 0 0 0-16.941 9.78c.183.563.843.774 1.355.478L20.16 6.711c.512-.296.66-.973.264-1.413"/><path d="M21 21H3"/></svg>
             </span>
             <div>
               <strong>{{ activityTitle(activity) }}</strong>
@@ -221,6 +221,11 @@ function formatActivityTime(time) {
   place-items: center;
   background: #deefec;
   color: #1897a0;
+}
+
+.timeline-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .timeline-card strong,

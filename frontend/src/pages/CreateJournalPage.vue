@@ -16,7 +16,7 @@ import AppDateRangePicker from '@/components/common/AppDateRangePicker.vue'
 import JournalScrapbookEditor from '@/components/journals/JournalScrapbookEditor.vue'
 import { useToastStore } from '@/stores/toastStore'
 
-import { createJournal } from '@/services/journalService'
+import { createJournal, uploadJournalMedia } from '@/services/journalService'
 import { getIslands } from '@/services/islandService'
 import { getSpecies } from '@/services/speciesService'
 import { getActivities } from '@/services/activityService'
@@ -113,6 +113,10 @@ function formatDateForMySQL(date) {
   return new Date(date).toISOString().split('T')[0]
 }
 
+function uploadedMediaType(file) {
+  return file?.type?.startsWith('video/') ? 'video' : 'photo'
+}
+
 async function loadData() {
   try {
     islands.value = await getIslands()
@@ -128,6 +132,16 @@ async function handleSubmit() {
     loading.value = true
     errorMessage.value = ''
 
+    const uploadableMedia = form.value.media.filter(item => item.file)
+    const uploadedFiles = uploadableMedia.length
+      ? await uploadJournalMedia(uploadableMedia.map(item => item.file))
+      : []
+
+    const uploadedById = new Map(uploadableMedia.map((item, index) => [
+      String(item.id),
+      uploadedFiles[index]
+    ]))
+
     const mediaById = new Map(form.value.media.map(item => [String(item.id), item]))
     const layoutItems = form.value.layoutItems.map(item => {
       if (item.type !== 'media' || !item.mediaId) return item
@@ -135,19 +149,32 @@ async function handleSubmit() {
       const sourceMedia = mediaById.get(String(item.mediaId))
       if (!sourceMedia) return item
 
+      const uploadedMedia = uploadedById.get(String(sourceMedia.id))
+      const mediaUrl = uploadedMedia?.url || sourceMedia.dataUrl || sourceMedia.previewUrl
+
       return {
         ...item,
-        previewUrl: item.previewUrl || sourceMedia.coverDataUrl || sourceMedia.previewUrl,
-        mediaUrl: sourceMedia.dataUrl || sourceMedia.previewUrl,
-        mediaType: sourceMedia.media_type
+        previewUrl: sourceMedia.media_type === 'video'
+          ? sourceMedia.coverDataUrl || item.previewUrl || mediaUrl
+          : mediaUrl,
+        mediaUrl,
+        mediaType: uploadedMediaType(sourceMedia.file)
       }
     })
+
+    const coverMediaId = form.value.coverImage?.mediaId
+    const coverSource = coverMediaId ? mediaById.get(String(coverMediaId)) : null
+    const uploadedCover = coverMediaId ? uploadedById.get(String(coverMediaId)) : null
+    const coverImage = coverSource?.media_type === 'video'
+      ? form.value.coverImage?.dataUrl || ''
+      : uploadedCover?.url || coverSource?.dataUrl || form.value.coverImage?.dataUrl ||
+      ''
 
     const payload = {
       island_id: form.value.island_id,
       title: form.value.title,
       content: form.value.content,
-      cover_image: form.value.coverImage?.dataUrl || '',
+      cover_image: coverImage,
       start_date: formatDateForMySQL(form.value.trip_dates?.[0]),
       end_date: formatDateForMySQL(form.value.trip_dates?.[1]),
       mood: form.value.mood,
@@ -174,8 +201,10 @@ async function handleSubmit() {
         })),
 
       media: form.value.media.map((item, index) => ({
-        media_url: item.dataUrl,
-        media_type: item.media_type,
+        media_url: uploadedById.get(String(item.id))?.url || item.dataUrl,
+        media_type: uploadedById.get(String(item.id))
+          ? uploadedMediaType(item.file)
+          : item.media_type,
         caption: item.caption,
 
         activity_id:

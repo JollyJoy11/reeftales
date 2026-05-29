@@ -4,6 +4,7 @@ import { useRoute, RouterLink } from 'vue-router'
 
 import MainLayout from '@/layouts/MainLayout.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
+import LoadingState from '@/components/common/LoadingState.vue'
 import JournalEncountersDisplay from '@/components/journals/JournalEncountersDisplay.vue'
 import JournalEngagementPanel from '@/components/journals/JournalEngagementPanel.vue'
 import JournalMediaShowcase from '@/components/journals/JournalMediaShowcase.vue'
@@ -75,10 +76,18 @@ const defaultBoardItems = computed(() => {
       hPct: 0.25,
       rotation: 3,
       attachment: 'tape'
+    },
+    {
+      xPct: 0.14,
+      yPct: 0.62,
+      wPct: 0.36,
+      hPct: 0.23,
+      rotation: 2,
+      attachment: 'tape'
     }
   ]
 
-  const mediaItems = (journal.value.media || []).slice(0, 2).map((media, index) => ({
+  const mediaItems = (journal.value.media || []).slice(0, 3).map((media, index) => ({
     id: `default-media-${media.id}`,
     type: 'media',
     mediaId: media.id,
@@ -87,8 +96,8 @@ const defaultBoardItems = computed(() => {
     mediaType: media.media_type,
     caption: media.caption,
     attachment: mediaPositions[index].attachment,
-    tapeColor: ['#a9d8d6', '#f3c3c7'][index],
-    tapePlacement: ['top-left', 'top-center'][index],
+    tapeColor: ['#a9d8d6', '#f3c3c7', '#f5df9a'][index],
+    tapePlacement: ['top-left', 'top-center', 'top-right'][index],
     rotation: mediaPositions[index].rotation,
     zIndex: index + 2,
     xPct: mediaPositions[index].xPct,
@@ -124,7 +133,7 @@ const defaultBoardItems = computed(() => {
     rotation: 4,
     zIndex: 20,
     xPct: 0.58,
-    yPct: 0.10,
+    yPct: 0.12,
     wPct: 0.26,
     hPct: 0.13
   })
@@ -338,9 +347,10 @@ onMounted(loadJournal)
     />
 
     <section class="container py-4">
-      <div v-if="loading" class="journal-loading">
-        Loading journal...
-      </div>
+      <LoadingState
+        v-if="loading"
+        message="Loading journal details..."
+      />
 
       <div v-else-if="journal" class="journal-book-shell">
         <div class="journal-page journal-left-page">
