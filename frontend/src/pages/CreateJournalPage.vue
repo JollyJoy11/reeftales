@@ -258,9 +258,16 @@ onMounted(loadData)
       <div class="journal-shell">
         <div class="journal-shell-inner">
           <div class="journal-header">
-            <span>Logbook Entry</span>
-            <h1>Document your island adventure</h1>
-            <p>Build a scrapbook-style travel journal with dates, media, activities, marine sightings, and your own arranged memory board.</p>
+            <div>
+              <span>Logbook Entry</span>
+              <h1>Document your island adventure</h1>
+              <p>Build a scrapbook-style travel journal with dates, media, activities, marine sightings, and your own arranged memory board.</p>
+            </div>
+
+            <RouterLink to="/community" class="cancel-journal-btn">
+              <i class="bi bi-x-lg"></i>
+              Cancel
+            </RouterLink>
           </div>
 
           <JournalStepIndicator
@@ -289,9 +296,7 @@ onMounted(loadData)
             </div>
 
             <div class="step-actions mt-4">
-              <RouterLink to="/community" class="btn btn-outline-primary">
-                Cancel
-              </RouterLink>
+              <span></span>
               <button class="btn btn-primary" @click="nextStep">
                 Continue
               </button>
@@ -408,6 +413,10 @@ onMounted(loadData)
 }
 
 .journal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
   margin-bottom: 24px;
 }
 
@@ -426,8 +435,41 @@ onMounted(loadData)
 }
 
 .journal-header p {
+  max-width: 760px;
   color: #64748b;
   margin: 0;
+}
+
+.cancel-journal-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px dashed rgba(220,53,69,0.42);
+  border-radius: 10px;
+  color: #b42334;
+  background: rgba(255,241,242,0.72);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.cancel-journal-btn:hover {
+  color: #8f1f2e;
+  background: #fff7f4;
+  border-color: rgba(220,53,69,0.58);
+  box-shadow:
+    0 0 0 4px rgba(220,53,69,0.08),
+    0 10px 22px rgba(47,72,88,0.10);
+  transform: translateY(-1px);
 }
 
 .step-card {
@@ -441,6 +483,16 @@ onMounted(loadData)
   display: flex;
   justify-content: space-between;
   gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .journal-header {
+    flex-direction: column;
+  }
+
+  .cancel-journal-btn {
+    align-self: flex-start;
+  }
 }
 
 :global(body.dark-mode) .journal-shell {
@@ -459,5 +511,11 @@ onMounted(loadData)
 
 :global(body.dark-mode) .journal-header p {
   color: #cbd5e1;
+}
+
+:global(body.dark-mode) .cancel-journal-btn {
+  background: rgba(127,29,29,0.28);
+  color: #fecdd3;
+  border-color: rgba(254,205,211,0.28);
 }
 </style>
