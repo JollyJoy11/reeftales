@@ -317,7 +317,7 @@ function setCoverImage(item) {
                 <img
                   v-if="item.media_type === 'photo'"
                   :src="item.previewUrl"
-                  alt="Uploaded preview"
+                  :alt="item.caption || `Uploaded photo ${index + 1} preview`"
                 />
 
                 <video

@@ -158,7 +158,7 @@ onMounted(() => {
                   v-if="explorer.profile_image"
                   :src="explorer.profile_image"
                   class="explorer-avatar"
-                  alt="Explorer avatar"
+                  :alt="`${explorer.username || 'Explorer'} profile photo`"
                 />
 
                 <div v-else class="explorer-avatar avatar-fallback">
@@ -340,6 +340,7 @@ onMounted(() => {
 .sidebar-card {
   position: relative;
   padding: 22px;
+  padding-bottom: 8px;
   border-radius: 18px;
   background: #fbf9f1;
   border: 1px dashed #d8cdbb;

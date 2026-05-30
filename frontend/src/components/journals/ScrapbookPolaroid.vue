@@ -9,6 +9,13 @@ defineProps({
     default: true
   }
 })
+
+function polaroidAlt(item) {
+  if (item.caption) return item.caption
+  return item.mediaType === 'video'
+    ? 'Arranged journal video'
+    : 'Arranged journal photo'
+}
 </script>
 
 <template>
@@ -33,7 +40,7 @@ defineProps({
     v-else
     :src="item.previewUrl"
     class="scrapbook-polaroid-media"
-    alt="Arranged journal media"
+    :alt="polaroidAlt(item)"
   />
 
   <span v-if="item.caption" class="scrapbook-polaroid-caption">

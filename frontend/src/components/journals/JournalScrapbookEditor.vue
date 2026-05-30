@@ -458,7 +458,10 @@ onBeforeUnmount(() => {
               :disabled="usedMediaIds.includes(item.id)"
               @click="addPhoto(item)"
             >
-              <img :src="item.coverDataUrl || item.previewUrl" alt="" />
+              <img
+                :src="item.coverDataUrl || item.previewUrl"
+                :alt="item.caption || `${item.media_type === 'video' ? 'Video' : 'Photo'} ${index + 1} available for the memory board`"
+              />
               <span>{{ item.media_type === 'video' ? 'Video' : 'Photo' }} {{ index + 1 }}</span>
             </button>
           </div>

@@ -29,6 +29,10 @@ const selectedMedia = computed(() => {
     props.mediaItems[0]
 })
 
+const selectedMediaAlt = computed(() => {
+  return selectedMedia.value?.label || 'Selected journal media'
+})
+
 function selectMedia(mediaId) {
   emit('update:selectedMediaId', mediaId)
 }
@@ -129,7 +133,7 @@ watch(
           :key="`image-${selectedMedia?.id}`"
           :src="selectedMedia?.url || coverImage"
           class="journal-cover"
-          alt="Selected journal media"
+          :alt="selectedMediaAlt"
           @error="$event.target.src = '/images/island-placeholder.jpg'"
         />
       </Transition>

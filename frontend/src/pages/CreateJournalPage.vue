@@ -302,10 +302,7 @@ onMounted(loadData)
 
           <div v-if="step === 1" class="step-card">
             <div class="section-heading">
-              <h5 class="section-title">
-                Journal Basics
-                <span class="requirement-badge required">Required</span>
-              </h5>
+              <h5 class="section-title">Journal Basics</h5>
               <p>Choose the island and title for this memory. Trip dates can be added if you know them.</p>
             </div>
 
@@ -417,10 +414,7 @@ onMounted(loadData)
 
           <div v-if="step === 6" class="step-card">
             <div class="section-heading">
-              <h5 class="section-title">
-                Review & Publish
-                <span class="requirement-badge required">Final Check</span>
-              </h5>
+              <h5 class="section-title">Review & Publish</h5>
               <p>Check the preview and choose public or private. Public journals can support island activity and species discovery.</p>
             </div>
 

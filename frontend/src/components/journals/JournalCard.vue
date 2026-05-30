@@ -59,6 +59,15 @@ const coverImage = computed(() => {
     '/images/island-placeholder.jpg'
 })
 
+const avatarAlt = computed(() => {
+  return `${props.journal.username || 'Explorer'} profile photo`
+})
+
+const coverAlt = computed(() => {
+  const island = props.journal.island_name ? ` at ${props.journal.island_name}` : ''
+  return `Cover image for ${props.journal.title || 'journal'}${island}`
+})
+
 async function handleLike() {
   if (!authStore.isLoggedIn) {
     toastStore.danger('Please login to like journals.')
@@ -106,7 +115,7 @@ async function handleSave() {
           v-if="journal.profile_image"
           :src="journal.profile_image"
           class="avatar"
-          alt="User avatar"
+          :alt="avatarAlt"
         />
 
         <div v-else class="avatar avatar-fallback">
@@ -126,7 +135,7 @@ async function handleSave() {
         <AppStampFrame
           class="journal-cover-stamp"
           :image="coverImage"
-          alt="Journal cover"
+          :alt="coverAlt"
           :contain="false"
           @error="$event.target.src = '/images/island-placeholder.jpg'"
         />

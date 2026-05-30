@@ -73,6 +73,13 @@ const dateText = computed(() => {
 
   return `${startText} - ${endText}`
 })
+
+const coverPreviewAlt = computed(() => {
+  const title = props.form.title || 'Untitled journal'
+  const island = selectedIsland.value?.name ? ` for ${selectedIsland.value.name}` : ''
+
+  return `Cover preview for ${title}${island}`
+})
 </script>
 
 <template>
@@ -92,7 +99,7 @@ const dateText = computed(() => {
 
           <img
             :src="form.coverImage?.previewUrl || '/images/island-placeholder.jpg'"
-            alt="Journal cover preview"
+            :alt="coverPreviewAlt"
           />
 
           <div class="polaroid-caption">
