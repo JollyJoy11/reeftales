@@ -1,0 +1,86 @@
+{
+  "maldives": {
+    "name": "Maldives",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150326/maldives_eiafmt.jpg",
+    "sourceUrl": "https://www.pexels.com/photo/beach-island-under-blue-sky-12807060/",
+    "creator": "Asad Photo Maldives",
+    "license": "Pexels License"
+  },
+  "bora-bora": {
+    "name": "Bora Bora",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150326/bora-bora_xqa7e0.jpg",
+    "sourceUrl": "https://www.pexels.com/photo/stunning-bora-bora-lagoon-and-overwater-bungalows-34095820/",
+    "creator": "Adrien Daurenjou",
+    "license": "Pexels License"
+  },
+  "maui": {
+    "name": "Maui",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150350/maui_crvqdv.jpg",
+    "sourceUrl": "https://unsplash.com/photos/a-lush-coastline-meets-the-blue-ocean-EmBdsQLLIzA",
+    "creator": "Cody McLain",
+    "license": "Unsplash License"
+  },
+  "sipadan": {
+    "name": "Sipadan Island",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150328/sipadan_reuojn.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sipadan_Island,_Sabah,_Malaysia.jpg",
+    "creator": "Eric and Kelly Chan",
+    "license": "Creative Commons license listed on Wikimedia Commons file page; keep attribution and license link"
+  },
+  "redang": {
+    "name": "Redang Island",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150332/redang_ecir7g.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Redang_Island.jpg",
+    "creator": "WorldTravleerAndPhotoTaker",
+    "license": "CC BY-SA 4.0; attribution and share-alike required"
+  },
+  "tioman": {
+    "name": "Tioman Island",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150338/tioman_cl2key.jpg",
+    "sourceUrl": "https://unsplash.com/photos/a-sandy-beach-with-a-small-island-in-the-distance--ZCIzM4mwxQ",
+    "creator": "Kharl Anthony Paica",
+    "license": "Unsplash License"
+  },
+  "perhentian": {
+    "name": "Perhentian Islands",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150328/perhentian_qnfcj8.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Perhentian_Islands,_Malaysia,_Palms_on_the_beach.jpg",
+    "creator": "Vyacheslav Argenberg",
+    "license": "CC BY 4.0; attribution required"
+  },
+  "great-barrier-reef": {
+    "name": "Great Barrier Reef",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150330/great-barrier-reef_ettrcl.jpg",
+    "sourceUrl": "https://www.pexels.com/photo/scenic-photo-of-coral-reef-3157890/",
+    "creator": "Francesco Ungaro",
+    "license": "Pexels License"
+  },
+  "raja-ampat": {
+    "name": "Raja Ampat",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150350/raja-ampat_pnelum.jpg",
+    "sourceUrl": "https://www.pexels.com/photo/breathtaking-aerial-view-of-raja-ampat-islands-32157316/",
+    "creator": "Angke Widya",
+    "license": "Pexels License"
+  },
+  "komodo": {
+    "name": "Komodo Island",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150332/komodo_npnyge.jpg",
+    "sourceUrl": "https://www.pexels.com/photo/top-view-of-komodo-national-park-indonesia-16281383/",
+    "creator": "Bayu Samudro",
+    "license": "Pexels License"
+  },
+  "palawan": {
+    "name": "Palawan",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150349/palawan_hpzlpq.jpg",
+    "sourceUrl": "https://unsplash.com/photos/an-aerial-view-of-a-tropical-island-with-a-lagoon-AtlL6kSJDik",
+    "creator": "Yasintha Perera",
+    "license": "Unsplash License"
+  },
+  "fiji": {
+    "name": "Fiji",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780150340/fiji_trpwja.jpg",
+    "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-houses-and-green-trees-near-mountains-and-body-of-water-4784462/",
+    "creator": "Jess Loiterton",
+    "license": "Pexels License"
+  }
+}

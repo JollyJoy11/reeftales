@@ -1,0 +1,227 @@
+{
+  "green-sea-turtle": {
+    "name": "Green Sea Turtle",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156439/reeftales/seeds/species/green-sea-turtle.jpg",
+    "sourceUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Hawaii_turtle_2.JPG",
+    "creator": "Brocken Inaglory",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Hawaii turtle 2.JPG"
+  },
+  "whale-shark": {
+    "name": "Whale Shark",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156452/reeftales/seeds/species/whale-shark.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Male_whale_shark_at_Georgia_Aquarium.jpg",
+    "creator": "Zac Wolf",
+    "license": "CC BY-SA 2.5",
+    "wikimediaTitle": "File:Male whale shark at Georgia Aquarium.jpg"
+  },
+  "clownfish": {
+    "name": "Clownfish",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156479/reeftales/seeds/species/clownfish.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Common_clownfish.jpg",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Common_clownfish.jpg",
+    "creator": "Janderk",
+    "license": "Public domain",
+    "wikimediaTitle": "File:Common clownfish.jpg"
+  },
+  "reef-manta-ray": {
+    "name": "Reef Manta Ray",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156484/reeftales/seeds/species/reef-manta-ray.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Manta_alfredi_fushivaru_thila.jpg",
+    "creator": "asands from London, UK",
+    "license": "CC BY-SA 2.0",
+    "wikimediaTitle": "File:Manta alfredi fushivaru thila.jpg"
+  },
+  "blacktip-reef-shark": {
+    "name": "Blacktip Reef Shark",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156487/reeftales/seeds/species/blacktip-reef-shark.jpg",
+    "sourceUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Carcharhinus_melanopterus_Luc_Viatour.jpg",
+    "creator": "Luc Viatour",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Carcharhinus melanopterus Luc Viatour.jpg"
+  },
+  "blue-tang": {
+    "name": "Blue Tang",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156500/reeftales/seeds/species/blue-tang.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by/2.5",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Blue_tang_(Paracanthurus_hepatus)_02.jpg",
+    "creator": "Tewy",
+    "license": "CC BY 2.5",
+    "wikimediaTitle": "File:Blue tang (Paracanthurus hepatus) 02.jpg"
+  },
+  "parrotfish": {
+    "name": "Parrotfish",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156509/reeftales/seeds/species/parrotfish.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Parrotfish_-_Shark_Reef_Aquarium_at_Mandalay_Bay.jpg",
+    "creator": "daryl_mitchell",
+    "license": "CC BY-SA 2.0",
+    "wikimediaTitle": "File:Parrotfish - Shark Reef Aquarium at Mandalay Bay.jpg"
+  },
+  "brain-coral": {
+    "name": "Brain Coral",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156580/reeftales/seeds/species/brain-coral.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Colpophyllia_natans_(Boulder_Brain_Coral)_entire_colony.jpg",
+    "creator": "Nhobgood Nick Hobgood",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Colpophyllia natans (Boulder Brain Coral) entire colony.jpg"
+  },
+  "sea-anemone": {
+    "name": "Sea Anemone",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156623/reeftales/seeds/species/sea-anemone.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Amphiprion_perideraion_(Pink_anemonefish)_in_Heteractis_magnifica_(Magnificent_sea_anemone).jpg",
+    "creator": "Nhobgood Nick Hobgood",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Amphiprion perideraion (Pink anemonefish) in Heteractis magnifica (Magnificent sea anemone).jpg"
+  },
+  "moon-jellyfish": {
+    "name": "Moon Jellyfish",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156629/reeftales/seeds/species/moon-jellyfish.jpg",
+    "sourceUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Moon_jelly_-_adult_(rev2).jpg",
+    "creator": "Dante Alighieri",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Moon jelly - adult (rev2).jpg"
+  },
+  "hawksbill-turtle": {
+    "name": "Hawksbill Turtle",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156664/reeftales/seeds/species/hawksbill-turtle.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Tortuga_carey_(Eretmochelys_imbricata),_parque_nacional_Ras_Muhammad,_Egipto,_2022-03-28,_DD_56.jpg",
+    "creator": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "wikimediaTitle": "File:Tortuga carey (Eretmochelys imbricata), parque nacional Ras Muhammad, Egipto, 2022-03-28, DD 56.jpg"
+  },
+  "great-barracuda": {
+    "name": "Great Barracuda",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156678/reeftales/seeds/species/great-barracuda.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by/2.5",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Sphyraena_barracuda01.jpg",
+    "creator": "Liné1",
+    "license": "CC BY 2.5",
+    "wikimediaTitle": "File:Sphyraena barracuda01.jpg"
+  },
+  "moorish-idol": {
+    "name": "Moorish Idol",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156747/reeftales/seeds/species/moorish-idol.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Idole_des_Maures_(Zanclus_cornutus).jpg",
+    "creator": "Philippe Bourjon",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Idole des Maures (Zanclus cornutus).jpg"
+  },
+  "giant-clam": {
+    "name": "Giant Clam",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156776/reeftales/seeds/species/giant-clam.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Giant_clam_or_Tridacna_gigas.jpg",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Giant_clam_or_Tridacna_gigas.jpg",
+    "creator": "Janderk",
+    "license": "Public domain",
+    "wikimediaTitle": "File:Giant clam or Tridacna gigas.jpg"
+  },
+  "staghorn-coral": {
+    "name": "Staghorn Coral",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156797/reeftales/seeds/species/staghorn-coral.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by/2.5",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Healthy_Staghorn.jpg",
+    "creator": "Joeschmitty at English Wikipedia",
+    "license": "CC BY 2.5",
+    "wikimediaTitle": "File:Healthy Staghorn.jpg"
+  },
+  "table-coral": {
+    "name": "Table Coral",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156827/reeftales/seeds/species/table-coral.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by/3.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Acropora_hyacinthus-multilevel.jpg",
+    "creator": "Chaloklum Diving",
+    "license": "CC BY 3.0",
+    "wikimediaTitle": "File:Acropora hyacinthus-multilevel.jpg"
+  },
+  "eagle-ray": {
+    "name": "Eagle Ray",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156873/reeftales/seeds/species/eagle-ray.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by/2.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Spotted_Eagle_Ray_(Aetobatus_narinari)2.jpg",
+    "creator": "john norton",
+    "license": "CC BY 2.0",
+    "wikimediaTitle": "File:Spotted Eagle Ray (Aetobatus narinari)2.jpg"
+  },
+  "blue-sea-star": {
+    "name": "Blue Sea Star",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156883/reeftales/seeds/species/blue-sea-star.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Linckia_laevigata_x2.jpg",
+    "creator": "Frédéric Ducarme",
+    "license": "CC BY-SA 4.0",
+    "wikimediaTitle": "File:Linckia laevigata x2.jpg"
+  },
+  "napoleon-wrasse": {
+    "name": "Napoleon Wrasse",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156896/reeftales/seeds/species/napoleon-wrasse.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Cheilinus_undulatus_1.jpg",
+    "creator": "Stan Shebs",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Cheilinus undulatus 1.jpg"
+  },
+  "octopus": {
+    "name": "Octopus",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156906/reeftales/seeds/species/octopus.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Octopus_at_Rheeder%27s_Reef_P2277130.JPG",
+    "creator": "Peter Southwood",
+    "license": "CC BY-SA 3.0",
+    "wikimediaTitle": "File:Octopus at Rheeder's Reef P2277130.JPG"
+  },
+  "grey-reef-shark": {
+    "name": "Grey Reef Shark",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156910/reeftales/seeds/species/grey-reef-shark.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Carcharhinus_amblyrhynchos_1.jpg",
+    "creator": "Richard Ling",
+    "license": "CC BY-SA 2.0",
+    "wikimediaTitle": "File:Carcharhinus amblyrhynchos 1.jpg"
+  },
+  "butterflyfish": {
+    "name": "Butterflyfish",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156914/reeftales/seeds/species/butterflyfish.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Bep_chaetodon_auriga_pemba.jpg",
+    "creator": "Bernard E. Picton BernardP",
+    "license": "CC BY-SA 4.0",
+    "wikimediaTitle": "File:Bep chaetodon auriga pemba.jpg"
+  },
+  "crown-jellyfish": {
+    "name": "Crown Jellyfish",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156917/reeftales/seeds/species/crown-jellyfish.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Cauliflour_Jellyfish,_Cephea_cephea_at_Marsa_Shouna,_Red_Sea,_Egypt_SCUBA.jpg",
+    "creator": "Derek Keats",
+    "license": "CC BY-SA 2.0",
+    "wikimediaTitle": "File:Cauliflour Jellyfish, Cephea cephea at Marsa Shouna, Red Sea, Egypt SCUBA.jpg"
+  },
+  "sea-fan-coral": {
+    "name": "Sea Fan Coral",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156921/reeftales/seeds/species/sea-fan-coral.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:FMIB_50049_Fan_Gorgon,_Gorgonia_flabellum_(linn).jpeg",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:FMIB_50049_Fan_Gorgon,_Gorgonia_flabellum_(linn).jpeg",
+    "creator": "Charles Bevalet",
+    "license": "Public domain",
+    "wikimediaTitle": "File:FMIB 50049 Fan Gorgon, Gorgonia flabellum (linn).jpeg"
+  },
+  "stingray": {
+    "name": "Stingray",
+    "cloudinaryUrl": "https://res.cloudinary.com/reeftales/image/upload/v1780156933/reeftales/seeds/species/stingray.jpg",
+    "sourceUrl": "https://creativecommons.org/licenses/by/2.0",
+    "commonsFile": "https://commons.wikimedia.org/wiki/File:Southern_stingray_buccoo_reef.jpg",
+    "creator": "Paul Mannix",
+    "license": "CC BY 2.0",
+    "wikimediaTitle": "File:Southern stingray buccoo reef.jpg"
+  }
+}

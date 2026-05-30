@@ -1,6 +1,6 @@
 # ReefTales
 
-ReefTales is a full-stack travel journal app for exploring islands, planning trips, and sharing marine travel experiences.
+ReefTales is a full-stack island discovery and travel journal app focused on marine experiences, trip planning, community journals, and reef species exploration.
 
 ## Live Demo
 
@@ -10,26 +10,27 @@ Hosted application:
 https://reeftales.vercel.app/
 ```
 
-The hosted backend is deployed separately on Render and connected to the frontend through `VITE_API_BASE_URL`. If the hosted app is slow to load, the Render free service may be waking up after inactivity.
+The frontend is hosted on Vercel. The backend is hosted on Render and may take a short time to wake up on the first request if it has been inactive.
 
 ## Tech Stack
 
 - Frontend: Vue 3, Vite, Pinia, Vue Router, Bootstrap
 - Backend: Node.js, Express
 - Database: MySQL
-- Hosting: Vercel frontend, Render backend, Aiven MySQL, Cloudinary uploads
+- Media storage: Cloudinary for hosted uploads
+- Hosting: Vercel frontend, Render backend, Aiven MySQL
 
 ## Project Structure
 
 ```text
 ReefTales/
-  backend/    Express API and MySQL setup
+  backend/    Express API, MySQL schema, seed data, upload routes
   frontend/   Vue/Vite client app
 ```
 
 ## Local Setup
 
-Use this if the hosted link is unavailable or if the app needs to be run locally for assessment.
+Use these steps if the hosted link is unavailable or if the app needs to be run locally for assessment.
 
 ### Prerequisites
 
@@ -51,7 +52,7 @@ npm install
 
 Create `backend/.env` from `backend/.env.example`.
 
-Example local MySQL configuration:
+Example local configuration:
 
 ```env
 PORT=5000
@@ -71,8 +72,7 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-The backend creates the database and tables automatically when it starts.
-With `USE_CLOUDINARY=false`, uploaded files are saved locally in `backend/src/uploads/`.
+The backend creates the database, tables, and seed data automatically when it starts. With `USE_CLOUDINARY=false`, uploads are saved locally in `backend/src/uploads/`.
 
 ### 3. Run Backend
 
@@ -81,7 +81,7 @@ cd backend
 npm run dev
 ```
 
-The API should run at:
+Backend URL:
 
 ```text
 http://localhost:5000
@@ -96,7 +96,7 @@ cd frontend
 npm run dev
 ```
 
-The frontend should run at:
+Frontend URL:
 
 ```text
 http://localhost:5173
@@ -108,18 +108,64 @@ By default, the local frontend calls:
 http://localhost:5000/api
 ```
 
-## Environment Variables
+## Deployment Environment Variables
 
-Do not commit real `.env` files. Use the example files as templates:
+Do not commit real `.env` files. Set deployment variables in the hosting dashboards.
 
-- `backend/.env.example`
-- `frontend/.env.example`
+Render backend:
 
-For deployment, environment variables should be set in Vercel and Render dashboards instead of stored in GitHub.
+```env
+DB_HOST=your_aiven_host
+DB_PORT=your_aiven_port
+DB_USER=avnadmin
+DB_PASSWORD=your_aiven_password
+DB_NAME=defaultdb
+JWT_SECRET=change_me_to_a_long_random_secret
+GEMINI_API_KEY=your_gemini_api_key
+USE_CLOUDINARY=true
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+Vercel frontend:
+
+```env
+VITE_API_BASE_URL=https://your-render-backend-url.onrender.com/api
+```
+
+## Seed Images
+
+Seed image metadata is stored in:
+
+```text
+backend/src/database/seedIslandImages.generated.json
+backend/src/database/seedSpeciesImages.generated.json
+```
+
+Image source and license notes are listed in [IMAGE_CREDITS.md](IMAGE_CREDITS.md).
+
+To regenerate species seed images from Wikimedia Commons and upload them to Cloudinary:
+
+```bash
+cd backend
+npm run upload:species-images
+```
+
+This command requires Cloudinary credentials in local `backend/.env`.
+
+To regenerate island seed images from local downloaded files, place images in `backend/seed-images/islands/` using filenames such as `maldives.jpg`, `bora-bora.jpg`, and `fiji.jpg`, then run:
+
+```bash
+cd backend
+npm run upload:island-images
+```
+
+The `backend/seed-images/` folder is ignored by Git because it is only temporary local input for uploading.
 
 ## Notes For Assessment
 
 - If the live link is unavailable, run the app locally using the steps above.
-- Render free services may sleep after inactivity, so the first backend request can take longer.
+- Render free services may sleep after inactivity, so the first hosted request can take longer.
 - Uploaded files are ignored locally through `backend/src/uploads/`.
-- Local uploads are not reliable on free backend hosting, so the hosted backend should use Cloudinary.
+- Hosted uploads should use Cloudinary because free backend filesystems are not persistent.

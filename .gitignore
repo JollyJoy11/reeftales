@@ -19,3 +19,4 @@ frontend/dist/
 
 # Backend local files
 backend/src/uploads/
+backend/seed-images/
