@@ -73,6 +73,110 @@ async function getPublicJournals(filters = {}) {
   return rows
 }
 
+async function getUserJournals(userId) {
+  const [rows] = await db.query(`
+    SELECT
+      journals.id,
+      journals.island_id,
+      journals.title,
+      journals.content,
+      journals.cover_image,
+      journals.start_date,
+      journals.end_date,
+      journals.mood,
+      journals.visibility,
+      journals.created_at,
+
+      users.username,
+      users.profile_image,
+
+      islands.name AS island_name,
+      islands.country,
+      islands.cover_image AS island_cover_image,
+
+      (
+        SELECT COUNT(*)
+        FROM likes
+        WHERE likes.journal_id = journals.id
+      ) AS like_count,
+
+      (
+        SELECT COUNT(*)
+        FROM comments
+        WHERE comments.journal_id = journals.id
+      ) AS comment_count,
+
+      (
+        SELECT COUNT(*)
+        FROM journal_media
+        WHERE journal_media.journal_id = journals.id
+      ) AS media_count,
+
+      (
+        SELECT COUNT(*)
+        FROM journal_sightings
+        WHERE journal_sightings.journal_id = journals.id
+      ) AS sighting_count,
+
+      (
+        SELECT GROUP_CONCAT(DISTINCT COALESCE(species.name, journal_sightings.custom_species_name))
+        FROM journal_sightings
+        LEFT JOIN species ON journal_sightings.species_id = species.id
+        WHERE journal_sightings.journal_id = journals.id
+      ) AS species,
+
+      (
+        SELECT GROUP_CONCAT(journal_media.media_url ORDER BY journal_media.display_order ASC, journal_media.id ASC SEPARATOR '||')
+        FROM journal_media
+        WHERE journal_media.journal_id = journals.id
+      ) AS media_urls,
+
+      (
+        SELECT GROUP_CONCAT(journal_media.media_type ORDER BY journal_media.display_order ASC, journal_media.id ASC SEPARATOR '||')
+        FROM journal_media
+        WHERE journal_media.journal_id = journals.id
+      ) AS media_types
+    FROM journals
+    JOIN users ON journals.user_id = users.id
+    JOIN islands ON journals.island_id = islands.id
+    WHERE journals.user_id = ?
+    ORDER BY journals.created_at DESC
+  `, [userId])
+
+  return rows
+}
+
+async function getUserJournalSummary(userId) {
+  const [rows] = await db.query(`
+    SELECT
+      (
+        SELECT COUNT(*)
+        FROM journals
+        WHERE journals.user_id = ?
+      ) AS journal_count,
+      (
+        SELECT COUNT(*)
+        FROM journals
+        WHERE journals.user_id = ? AND journals.visibility = 'public'
+      ) AS public_count,
+      (
+        SELECT COUNT(*)
+        FROM journal_media
+        JOIN journals ON journal_media.journal_id = journals.id
+        WHERE journals.user_id = ?
+      ) AS media_count,
+      (
+        SELECT COUNT(DISTINCT COALESCE(species.name, journal_sightings.custom_species_name))
+        FROM journal_sightings
+        JOIN journals ON journal_sightings.journal_id = journals.id
+        LEFT JOIN species ON journal_sightings.species_id = species.id
+        WHERE journals.user_id = ?
+      ) AS species_count
+  `, [userId, userId, userId, userId])
+
+  return rows[0]
+}
+
 async function getJournalById(id) {
   const [rows] = await db.query(`
     SELECT 
@@ -346,6 +450,8 @@ async function createJournal(data) {
 
 module.exports = {
   getPublicJournals,
+  getUserJournals,
+  getUserJournalSummary,
   getJournalById,
   getTrendingIslands,
   getTopExplorers,

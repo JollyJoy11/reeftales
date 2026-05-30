@@ -56,6 +56,8 @@ async function initializeDatabase() {
         best_visit_time VARCHAR(100),
         latitude DECIMAL(10,8),
         longitude DECIMAL(11,8),
+        marine_latitude DECIMAL(10,8),
+        marine_longitude DECIMAL(11,8),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 		`);
@@ -335,10 +337,13 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS itinerary_activities (
         id INT AUTO_INCREMENT PRIMARY KEY,
         itinerary_id INT NOT NULL,
-        activity_id INT NOT NULL,
+        activity_id INT NULL,
+        custom_activity_name VARCHAR(150),
         day_number INT NOT NULL,
         activity_time TIME,
+        duration_minutes INT,
         notes TEXT,
+        display_order INT DEFAULT 0,
 
         FOREIGN KEY (itinerary_id)
 					REFERENCES itineraries(id)
@@ -346,8 +351,38 @@ async function initializeDatabase() {
 
         FOREIGN KEY (activity_id)
 					REFERENCES activities(id)
-					ON DELETE CASCADE
+					ON DELETE SET NULL
     )
+    `);
+
+		// ITINERARY_CHECKLIST
+		await run(`
+      CREATE TABLE IF NOT EXISTS itinerary_checklist (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        itinerary_id INT NOT NULL,
+        label VARCHAR(150) NOT NULL,
+        is_checked BOOLEAN DEFAULT FALSE,
+        display_order INT DEFAULT 0,
+
+        FOREIGN KEY (itinerary_id)
+          REFERENCES itineraries(id)
+          ON DELETE CASCADE
+      )
+    `);
+
+		// ITINERARY_BUDGET_ITEMS
+		await run(`
+      CREATE TABLE IF NOT EXISTS itinerary_budget_items (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        itinerary_id INT NOT NULL,
+        label VARCHAR(120) NOT NULL,
+        amount DECIMAL(10,2) DEFAULT 0,
+        display_order INT DEFAULT 0,
+
+        FOREIGN KEY (itinerary_id)
+          REFERENCES itineraries(id)
+          ON DELETE CASCADE
+      )
     `);
 
     console.log('Database initialized');

@@ -1,5 +1,5 @@
 async function getWeather(req, res) {
-  const { latitude, longitude } = req.query
+  const { latitude, longitude, start_date, end_date } = req.query
 
   if (!latitude || !longitude) {
     return res.status(400).json({ message: 'Latitude and longitude are required' })
@@ -13,7 +13,13 @@ async function getWeather(req, res) {
     endpoint.searchParams.set('current', 'temperature_2m,weather_code,wind_speed_10m')
     endpoint.searchParams.set('daily', 'temperature_2m_max,temperature_2m_min,precipitation_probability_max')
     endpoint.searchParams.set('timezone', 'auto')
-    endpoint.searchParams.set('forecast_days', '3')
+
+    if (start_date && end_date) {
+      endpoint.searchParams.set('start_date', start_date)
+      endpoint.searchParams.set('end_date', end_date)
+    } else {
+      endpoint.searchParams.set('forecast_days', '3')
+    }
 
     const response = await fetch(endpoint)
 
@@ -26,7 +32,8 @@ async function getWeather(req, res) {
     res.json({
       current: data.current,
       daily: data.daily,
-      timezone: data.timezone
+      timezone: data.timezone,
+      requested_range: start_date && end_date ? { start_date, end_date } : null
     })
   } catch (error) {
     console.error(error)

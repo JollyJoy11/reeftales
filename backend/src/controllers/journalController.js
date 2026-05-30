@@ -1,5 +1,7 @@
 const {
   getPublicJournals,
+  getUserJournals,
+  getUserJournalSummary,
   getJournalById,
   getTrendingIslands,
   getTopExplorers,
@@ -20,6 +22,26 @@ async function fetchPublicJournals(req, res) {
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Failed to fetch journals' })
+  }
+}
+
+async function fetchMyJournals(req, res) {
+  try {
+    const journals = await getUserJournals(req.user.id)
+    res.json(journals)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to fetch your journals' })
+  }
+}
+
+async function fetchMyJournalSummary(req, res) {
+  try {
+    const summary = await getUserJournalSummary(req.user.id)
+    res.json(summary)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to fetch your journal summary' })
   }
 }
 
@@ -132,6 +154,8 @@ async function toggleJournalLike(req, res) {
 
 module.exports = {
   fetchPublicJournals,
+  fetchMyJournals,
+  fetchMyJournalSummary,
   fetchJournalById,
   fetchTrendingIslands,
   fetchTopExplorers,

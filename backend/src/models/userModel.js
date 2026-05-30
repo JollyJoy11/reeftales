@@ -42,7 +42,8 @@ async function findUserById(id) {
       username,
       email,
       profile_image,
-      bio
+      bio,
+      created_at
     FROM users
     WHERE id = ?
     `,

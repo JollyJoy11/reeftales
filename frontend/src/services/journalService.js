@@ -10,6 +10,16 @@ export async function getPublicJournals(params = {}) {
   return response.data
 }
 
+export async function getMyJournals() {
+  const response = await api.get('/journals/me/list')
+  return response.data
+}
+
+export async function getMyJournalSummary() {
+  const response = await api.get('/journals/me/summary')
+  return response.data
+}
+
 export async function getJournalById(id) {
   const response = await api.get(`/journals/${id}`)
   return response.data

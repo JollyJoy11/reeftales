@@ -38,7 +38,9 @@ async function seedDatabase(connection) {
         description,
         best_visit_time,
         latitude,
-        longitude
+        longitude,
+        marine_latitude,
+        marine_longitude
       )
       VALUES
 
@@ -50,6 +52,8 @@ async function seedDatabase(connection) {
         'Asia',
         'Crystal clear waters and luxury islands',
         'November - April',
+        3.2028,
+        73.2207,
         3.2028,
         73.2207
       ),
@@ -63,6 +67,8 @@ async function seedDatabase(connection) {
         'Famous turquoise lagoon destination',
         'May - October',
         -16.5004,
+        -151.7415,
+        -16.5004,
         -151.7415
       ),
 
@@ -75,7 +81,9 @@ async function seedDatabase(connection) {
         'Volcanic islands with rich marine life',
         'April - October',
         19.8968,
-        -155.5828
+        -155.5828,
+        19.6399,
+        -156.0456
       ),
 
       (
@@ -86,6 +94,8 @@ async function seedDatabase(connection) {
         'Asia',
         'World-famous scuba diving destination',
         'April - December',
+        4.1148,
+        118.6287,
         4.1148,
         118.6287
       ),
@@ -98,6 +108,8 @@ async function seedDatabase(connection) {
         'Asia',
         'Popular snorkeling paradise',
         'March - October',
+        5.7833,
+        103.0333,
         5.7833,
         103.0333
       )

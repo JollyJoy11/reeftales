@@ -25,7 +25,6 @@ const routes = [
   { path: '/register', component: Register },
 
   { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-  { path: '/saved-islands', redirect: '/dashboard' },
   { path: '/journal/create', component: CreateJournal, meta: { requiresAuth: true } },
   { path: '/planner', component: Planner, meta: { requiresAuth: true } },
   { path: '/settings', component: Settings, meta: { requiresAuth: true } },

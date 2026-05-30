@@ -1,8 +1,13 @@
 import api from './api'
 
-export async function getWeather(latitude, longitude) {
+export async function getWeather(latitude, longitude, params = {}) {
   const response = await api.get('/weather', {
-    params: { latitude, longitude }
+    params: {
+      latitude,
+      longitude,
+      start_date: params.startDate,
+      end_date: params.endDate
+    }
   })
 
   return response.data

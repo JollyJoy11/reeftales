@@ -84,7 +84,9 @@ async function login(req, res) {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        profile_image: user.profile_image,
+        created_at: user.created_at
       }
     })
 
