@@ -331,6 +331,10 @@ function selectItem(id) {
   selectedItemId.value = id
 }
 
+function clearSelectedItem() {
+  selectedItemId.value = ''
+}
+
 function syncMobileCanvas() {
   isMobileCanvas.value = mobileMediaQuery?.matches || false
 }
@@ -368,7 +372,8 @@ onBeforeUnmount(() => {
     <div class="scrapbook-heading">
       <div>
         <h5 class="section-title">Arrange Your Memory Board</h5>
-        <p>Drag, resize, and place your selected memories before publishing.</p>
+        <span class="requirement-badge optional">Optional</span>
+        <p>Arrange your memories into a scrapbook board, or continue without one.</p>
       </div>
 
       <div class="scrapbook-actions">
@@ -471,7 +476,11 @@ onBeforeUnmount(() => {
           Mobile uses a vertical page. Tap an item to show its tools.
         </div>
 
-        <ScrapbookBoard ref="boardRef" :items="layoutItems">
+        <ScrapbookBoard
+          ref="boardRef"
+          :items="layoutItems"
+          @blank-select="clearSelectedItem"
+        >
           <VueDraggableResizable
             v-for="item in layoutItems"
             :key="item.id"
@@ -523,9 +532,30 @@ onBeforeUnmount(() => {
 }
 
 .section-title {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px;
   color: #2f4858;
   font-weight: 800;
   margin-bottom: 4px;
+}
+
+.requirement-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.requirement-badge.optional {
+  background: #eef2f7;
+  color: #475569;
+  border: 1px solid rgba(71,85,105,0.16);
 }
 
 .scrapbook-heading p {

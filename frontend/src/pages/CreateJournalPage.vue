@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import MainLayout from '@/layouts/MainLayout.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
@@ -22,6 +22,7 @@ import { getSpecies } from '@/services/speciesService'
 import { getActivities } from '@/services/activityService'
 
 const router = useRouter()
+const route = useRoute()
 const toastStore = useToastStore()
 
 const step = ref(1)
@@ -113,6 +114,10 @@ function formatDateForMySQL(date) {
   return new Date(date).toISOString().split('T')[0]
 }
 
+function firstQueryValue(value) {
+  return Array.isArray(value) ? value[0] : value
+}
+
 function uploadedMediaType(file) {
   return file?.type?.startsWith('video/') ? 'video' : 'photo'
 }
@@ -122,8 +127,28 @@ async function loadData() {
     islands.value = await getIslands()
     speciesList.value = await getSpecies()
     activities.value = await getActivities()
+    applyTripPrefill()
   } catch {
     errorMessage.value = 'Failed to load journal form data.'
+  }
+}
+
+function applyTripPrefill() {
+  const islandId = firstQueryValue(route.query.island_id)
+  const startDate = firstQueryValue(route.query.start_date)
+  const endDate = firstQueryValue(route.query.end_date)
+  const title = firstQueryValue(route.query.title)
+
+  if (islandId && !form.value.island_id) {
+    form.value.island_id = String(islandId)
+  }
+
+  if ((startDate || endDate) && !form.value.trip_dates.length) {
+    form.value.trip_dates = [startDate, endDate || startDate].filter(Boolean)
+  }
+
+  if (title && !form.value.title) {
+    form.value.title = String(title)
   }
 }
 
@@ -276,6 +301,14 @@ onMounted(loadData)
           />
 
           <div v-if="step === 1" class="step-card">
+            <div class="section-heading">
+              <h5 class="section-title">
+                Journal Basics
+                <span class="requirement-badge required">Required</span>
+              </h5>
+              <p>Choose the island and title for this memory. Trip dates can be added if you know them.</p>
+            </div>
+
             <div class="row g-4">
               <div class="col-12 col-lg-6">
                 <IslandMapPicker
@@ -285,7 +318,10 @@ onMounted(loadData)
               </div>
 
               <div class="col-12 col-lg-6">
-                <label class="form-label fw-bold">Journal Title</label>
+                <label class="form-label fw-bold label-with-badge">
+                  Journal Title
+                  <span class="requirement-badge required">Required</span>
+                </label>
                 <input v-model="form.title" class="form-control mb-3" placeholder="Swimming with turtles at Sipadan..." />
 
               <AppDateRangePicker
@@ -304,9 +340,20 @@ onMounted(loadData)
           </div>
 
           <div v-if="step === 2" class="step-card">
+            <div class="section-heading">
+              <h5 class="section-title">
+                Story & Mood
+                <span class="requirement-badge required">Required</span>
+              </h5>
+              <p>Write the main story of your trip. The mood stamp simply sets the feeling of the journal.</p>
+            </div>
+
             <MoodSelector v-model="form.mood" />
 
-            <label class="form-label fw-bold mt-4">Your Story</label>
+            <label class="form-label fw-bold mt-4 label-with-badge">
+              Your Story
+              <span class="requirement-badge required">Required</span>
+            </label>
             <textarea
               v-model="form.content"
               rows="10"
@@ -369,6 +416,14 @@ onMounted(loadData)
           </div>
 
           <div v-if="step === 6" class="step-card">
+            <div class="section-heading">
+              <h5 class="section-title">
+                Review & Publish
+                <span class="requirement-badge required">Final Check</span>
+              </h5>
+              <p>Check the preview and choose public or private. Public journals can support island activity and species discovery.</p>
+            </div>
+
             <JournalPreview
               :form="form"
               :islands="islands"
@@ -479,8 +534,68 @@ onMounted(loadData)
   padding: 26px;
 }
 
+.section-heading {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #2f4858;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.section-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.label-with-badge {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.requirement-badge {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.requirement-badge.required {
+  background: #fff1f2;
+  color: #b42334;
+  border: 1px solid rgba(180,35,52,0.24);
+}
+
+.requirement-badge.recommended {
+  background: #fff8db;
+  color: #8a5b00;
+  border: 1px solid rgba(201,145,46,0.28);
+}
+
+.requirement-badge.optional {
+  background: #eef2f7;
+  color: #475569;
+  border: 1px solid rgba(71,85,105,0.16);
+}
+
 .step-actions {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
@@ -493,6 +608,11 @@ onMounted(loadData)
   .cancel-journal-btn {
     align-self: flex-start;
   }
+
+  .step-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 
 :global(body.dark-mode) .journal-shell {
@@ -503,6 +623,14 @@ onMounted(loadData)
 :global(body.dark-mode) .step-card {
   background: #2d3748;
   border-color: rgba(255,255,255,0.1);
+}
+
+:global(body.dark-mode) .section-heading p {
+  color: #cbd5e1;
+}
+
+:global(body.dark-mode) .section-title {
+  color: #f8fafc;
 }
 
 :global(body.dark-mode) .journal-header h1 {

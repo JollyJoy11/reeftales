@@ -251,6 +251,14 @@ function setCoverImage(item) {
 
 <template>
   <div>
+    <div class="section-heading">
+      <h5 class="section-title">
+        Photos & Videos
+        <span class="requirement-badge optional">Optional</span>
+      </h5>
+      <p>Upload up to 10 photos or videos, then link them to an activity or species if helpful.</p>
+    </div>
+
     <div
       class="drag-drop-zone"
       :class="{ 'drag-over': isDragging }"
@@ -444,6 +452,44 @@ function setCoverImage(item) {
   display: grid;
   gap: 4px;
   color: #64748b;
+}
+
+.section-heading {
+  margin-bottom: 14px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #2f4858;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.section-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.requirement-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.requirement-badge.optional {
+  background: #eef2f7;
+  color: #475569;
+  border: 1px solid rgba(71,85,105,0.16);
 }
 
 .drag-drop-zone i {

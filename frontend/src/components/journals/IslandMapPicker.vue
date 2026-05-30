@@ -102,7 +102,10 @@ onMounted(async () => {
 
 <template>
   <div>
-    <label class="form-label fw-bold">Select Island</label>
+    <label class="form-label fw-bold label-with-badge">
+      Select Island
+      <span class="requirement-badge required">Required</span>
+    </label>
 
     <select
       :value="modelValue"
@@ -164,6 +167,31 @@ onMounted(async () => {
 .bi-geo-fill {
   color: #1897a0;
   padding-right: 5px;
+}
+
+.label-with-badge {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.requirement-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.requirement-badge.required {
+  background: #fff1f2;
+  color: #b42334;
+  border: 1px solid rgba(180,35,52,0.24);
 }
 
 :deep(.island-marker) {

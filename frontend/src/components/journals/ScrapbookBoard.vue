@@ -19,13 +19,18 @@ defineProps({
 })
 
 const rootEl = ref(null)
-const emit = defineEmits(['media-select'])
+const emit = defineEmits(['media-select', 'blank-select'])
 
 defineExpose({ rootEl })
 </script>
 
 <template>
-  <div ref="rootEl" class="scrapbook-board" :class="{ empty: !items.length }">
+  <div
+    ref="rootEl"
+    class="scrapbook-board"
+    :class="{ empty: !items.length }"
+    @pointerdown.self="emit('blank-select')"
+  >
     <div v-if="!items.length" class="scrapbook-empty-state">
       <slot name="empty">
         <i class="bi bi-layout-wtf"></i>

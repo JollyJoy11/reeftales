@@ -37,7 +37,15 @@ function removeEntry(index) {
 
 <template>
   <div>
-    <h5 class="section-title">Marine Sightings</h5>
+    <div class="section-heading">
+      <div>
+        <h5 class="section-title">
+          Marine Sightings Found Here
+          <span class="requirement-badge recommended">Recommended</span>
+        </h5>
+        <p>Add marine life you spotted. Public sightings help ReefTales show resident species for this island.</p>
+      </div>
+    </div>
 
     <div
       v-for="(sighting, index) in modelValue"
@@ -123,9 +131,41 @@ function removeEntry(index) {
 
 <style scoped>
 .section-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   color: #2f4858;
   font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.section-heading {
   margin-bottom: 14px;
+}
+
+.section-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.requirement-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.requirement-badge.recommended {
+  background: #fff8db;
+  color: #8a5b00;
+  border: 1px solid rgba(201,145,46,0.28);
 }
 
 .paper-entry {
