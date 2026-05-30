@@ -229,7 +229,7 @@ watch(
             <img
               v-if="authStore.user?.profile_image"
               :src="authStore.user.profile_image"
-              alt="Profile"
+              :alt="`${authStore.user?.username || 'User'} profile photo`"
             />
             <span v-else>{{ profileInitial }}</span>
           </a>
@@ -239,7 +239,7 @@ watch(
               <img
                 v-if="authStore.user?.profile_image"
                 :src="authStore.user.profile_image"
-                alt="Profile"
+                :alt="`${authStore.user?.username || 'User'} profile photo`"
               />
               <span v-else>{{ profileInitial }}</span>
 

@@ -33,6 +33,14 @@ const depthLabel = computed(() => {
 
   return `${props.species.min_depth}-${props.species.max_depth} m`
 })
+
+const speciesImageAlt = computed(() => {
+  const scientificName = props.species.scientific_name
+    ? `, ${props.species.scientific_name}`
+    : ''
+
+  return `${props.species.name || 'Marine species'}${scientificName}`
+})
 </script>
 
 <template>
@@ -41,7 +49,7 @@ const depthLabel = computed(() => {
       <img
         :src="species.image_url || '/images/island-placeholder.jpg'"
         class="species-image"
-        alt="Marine species image"
+        :alt="speciesImageAlt"
         @error="$event.target.src = '/images/island-placeholder.jpg'"
       />
     </div>

@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { identifyMarineImage } from '@/services/wormsService'
 
 const fileInput = ref(null)
@@ -12,6 +12,21 @@ const savedIdentification = ref(null)
 const isDragging = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
+
+const previewAlt = computed(() => {
+  const commonName = aiPrediction.value?.commonName
+  const scientificName = aiPrediction.value?.scientificName
+
+  if (commonName && scientificName) {
+    return `Uploaded marine photo identified as ${commonName}, ${scientificName}`
+  }
+
+  if (commonName || scientificName) {
+    return `Uploaded marine photo identified as ${commonName || scientificName}`
+  }
+
+  return 'Uploaded marine photo for AI identification'
+})
 
 function openFilePicker() {
   fileInput.value?.click()
@@ -116,7 +131,7 @@ onBeforeUnmount(() => {
         v-if="previewUrl"
         :src="previewUrl"
         class="preview-image"
-        alt="Uploaded marine species"
+        :alt="previewAlt"
       />
 
       <div v-else class="drop-placeholder">
