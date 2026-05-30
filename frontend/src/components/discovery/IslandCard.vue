@@ -52,6 +52,10 @@ function extraCount(list, limit = 2) {
 
 const activities = computed(() => splitList(props.island.activities))
 const species = computed(() => splitList(props.island.species))
+const islandImageAlt = computed(() => {
+  const location = [props.island.location, props.island.country].filter(Boolean).join(', ')
+  return `${props.island.name || 'Island destination'}${location ? ` in ${location}` : ''}`
+})
 </script>
 
 <template>
@@ -69,7 +73,7 @@ const species = computed(() => splitList(props.island.species))
         <img
           :src="island.cover_image || '/images/island-placeholder.jpg'"
           class="island-image"
-          alt="Island image"
+          :alt="islandImageAlt"
         />
       </div>
 

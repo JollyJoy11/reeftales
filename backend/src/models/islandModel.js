@@ -161,7 +161,8 @@ async function getIslandResidentSpecies(islandId) {
       species.conservation_status,
       species.habitats,
       species.description,
-      COUNT(journal_sightings.id) AS sighting_count
+      COUNT(journal_sightings.id) AS sighting_count,
+      MAX(journals.created_at) AS last_seen_at
     FROM journal_sightings
     INNER JOIN journals
       ON journal_sightings.journal_id = journals.id
@@ -178,10 +179,58 @@ async function getIslandResidentSpecies(islandId) {
   return rows
 }
 
+async function getIslandRecentSightings(islandId) {
+  const [rows] = await db.query(`
+    SELECT
+      species.id AS species_id,
+      species.name,
+      species.image_url,
+      journals.created_at,
+      journals.id AS journal_id,
+      journals.title AS journal_title,
+      users.username,
+      journal_sightings.quantity,
+      journal_sightings.notes
+    FROM journal_sightings
+    INNER JOIN journals
+      ON journal_sightings.journal_id = journals.id
+    INNER JOIN species
+      ON journal_sightings.species_id = species.id
+    INNER JOIN users
+      ON journals.user_id = users.id
+    WHERE journals.island_id = ?
+      AND journals.visibility = 'public'
+      AND journal_sightings.species_id IS NOT NULL
+    ORDER BY journals.created_at DESC, journal_sightings.id DESC
+    LIMIT 5
+  `, [islandId])
+
+  return rows
+}
+
+async function getIslandActivities(islandId) {
+  const [rows] = await db.query(`
+    SELECT
+      activities.id,
+      activities.name,
+      activities.description,
+      activities.icon
+    FROM island_activities
+    INNER JOIN activities
+      ON island_activities.activity_id = activities.id
+    WHERE island_activities.island_id = ?
+    ORDER BY activities.name ASC
+  `, [islandId])
+
+  return rows
+}
+
 module.exports = {
   getAllIslands,
   getIslandById,
   getIslandCommunityMedia,
   getIslandJournals,
-  getIslandResidentSpecies
+  getIslandResidentSpecies,
+  getIslandRecentSightings,
+  getIslandActivities
 }

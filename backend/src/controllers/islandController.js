@@ -3,7 +3,9 @@ const {
   getIslandById,
   getIslandCommunityMedia,
   getIslandJournals,
-  getIslandResidentSpecies
+  getIslandResidentSpecies,
+  getIslandRecentSightings,
+  getIslandActivities
 } = require('../models/islandModel')
 
 async function fetchIslands(req, res) {
@@ -66,10 +68,32 @@ async function fetchIslandResidentSpecies(req, res) {
   }
 }
 
+async function fetchIslandRecentSightings(req, res) {
+  try {
+    const sightings = await getIslandRecentSightings(req.params.id)
+    res.json(sightings)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to fetch island recent sightings' })
+  }
+}
+
+async function fetchIslandActivities(req, res) {
+  try {
+    const activities = await getIslandActivities(req.params.id)
+    res.json(activities)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to fetch island activities' })
+  }
+}
+
 module.exports = {
   fetchIslands,
   fetchIslandById,
   fetchIslandCommunityMedia,
   fetchIslandJournals,
-  fetchIslandResidentSpecies
+  fetchIslandResidentSpecies,
+  fetchIslandRecentSightings,
+  fetchIslandActivities
 }

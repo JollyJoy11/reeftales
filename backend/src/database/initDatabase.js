@@ -179,7 +179,7 @@ async function initializeDatabase() {
     )
     `)
 
-		// AI IDENTIFICATIONS
+		// AI_IDENTIFICATIONS
 		await run(`
       CREATE TABLE IF NOT EXISTS ai_identifications (
         id INT AUTO_INCREMENT PRIMARY KEY,

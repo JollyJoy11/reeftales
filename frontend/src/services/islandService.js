@@ -37,3 +37,13 @@ export async function getIslandResidentSpecies(id) {
   const response = await api.get(`/islands/${id}/resident-species`)
   return response.data
 }
+
+export async function getIslandRecentSightings(id) {
+  const response = await api.get(`/islands/${id}/recent-sightings`)
+  return response.data
+}
+
+export async function getIslandActivities(id) {
+  const response = await api.get(`/islands/${id}/activities`)
+  return response.data
+}
