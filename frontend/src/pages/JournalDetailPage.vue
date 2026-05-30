@@ -323,6 +323,7 @@ async function loadJournal() {
   try {
     loading.value = true
     journal.value = await getJournalById(route.params.id)
+    document.title = `${journal.value.title} | ReefTales`
     selectedTimelineDay.value = null
     selectedMediaId.value = 'cover'
     hasLiked.value = false

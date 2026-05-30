@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
+import { getMyJournalSummary } from '@/services/journalService'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
@@ -13,6 +14,15 @@ const showSuggestions = ref(false)
 
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
 const currentLanguage = ref(localStorage.getItem('language') || 'English')
+const journalSummary = ref({
+  journal_count: 0,
+  species_count: 0,
+  public_count: 0
+})
+
+const profileInitial = computed(() => {
+  return authStore.user?.username?.charAt(0)?.toUpperCase() || 'U'
+})
 
 const mainNavLinks = [
   {
@@ -56,6 +66,39 @@ function handleLogout() {
   savedIslandStore.clear()
 }
 
+const userLevel = computed(() => {
+  const journalCount = Number(journalSummary.value.journal_count || 0)
+  const speciesCount = Number(journalSummary.value.species_count || 0)
+  const publicCount = Number(journalSummary.value.public_count || 0)
+  const score = journalCount + Math.floor(speciesCount / 3) + publicCount
+
+  if (score >= 12) return 'Ocean Explorer III'
+  if (score >= 7) return 'Reef Explorer II'
+  if (score >= 3) return 'Island Voyager I'
+  return 'New Tide Explorer'
+})
+
+async function loadProfileStats() {
+  if (!authStore.isLoggedIn) {
+    journalSummary.value = {
+      journal_count: 0,
+      species_count: 0,
+      public_count: 0
+    }
+    return
+  }
+
+  try {
+    journalSummary.value = await getMyJournalSummary()
+  } catch {
+    journalSummary.value = {
+      journal_count: 0,
+      species_count: 0,
+      public_count: 0
+    }
+  }
+}
+
 const suggestions = [
   { label: 'Maldives', type: 'Island', path: '/discovery/island/1' },
   { label: 'Sea Turtle', type: 'Marine Life', path: '/discovery?mode=marine' },
@@ -75,7 +118,13 @@ function changeLanguage(language) {
 
 onMounted(() => {
   document.body.classList.toggle('dark-mode', currentTheme.value === 'dark')
+  loadProfileStats()
 })
+
+watch(
+  () => authStore.isLoggedIn,
+  () => loadProfileStats()
+)
 </script>
 
 <template>
@@ -176,16 +225,49 @@ onMounted(() => {
 
         <!-- Logged-in profile dropdown -->
         <li v-if="authStore.isLoggedIn" class="nav-item dropdown ms-lg-2">
-          <a class="nav-action-btn" href="#" role="button" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle fs-4"></i>
+          <a class="profile-trigger" href="#" role="button" data-bs-toggle="dropdown">
+            <img
+              v-if="authStore.user?.profile_image"
+              :src="authStore.user.profile_image"
+              alt="Profile"
+            />
+            <span v-else>{{ profileInitial }}</span>
           </a>
 
-          <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown">
-            <li><RouterLink to="/dashboard" class="dropdown-item">My Journeys</RouterLink></li>
-            <li><RouterLink to="/" class="dropdown-item">Saved Islands</RouterLink></li>
-            <li><RouterLink to="/settings" class="dropdown-item">Settings</RouterLink></li>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown profile-dropdown">
+            <li class="profile-dropdown-header">
+              <img
+                v-if="authStore.user?.profile_image"
+                :src="authStore.user.profile_image"
+                alt="Profile"
+              />
+              <span v-else>{{ profileInitial }}</span>
+
+              <div>
+                <small>Hi, {{ authStore.user?.username || 'Explorer' }}</small>
+                <strong>{{ userLevel }}</strong>
+              </div>
+            </li>
+
+            <li>
+              <RouterLink to="/dashboard" class="dropdown-item profile-menu-item">
+                <i class="bi bi-journal-richtext"></i>
+                My Logbook
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/settings" class="dropdown-item profile-menu-item">
+                <i class="bi bi-gear"></i>
+                Settings
+              </RouterLink>
+            </li>
             <li><hr class="dropdown-divider" /></li>
-            <li><button class="dropdown-item" @click="handleLogout">Logout</button></li>
+            <li>
+              <button class="dropdown-item profile-menu-item" @click="handleLogout">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+              </button>
+            </li>
           </ul>
         </li>
       </ul>
@@ -258,8 +340,7 @@ onMounted(() => {
         </template>
 
         <template v-else>
-          <li><RouterLink to="/dashboard" class="nav-link">My Journeys</RouterLink></li>
-          <li><RouterLink to="/saved-islands" class="nav-link">Saved Islands</RouterLink></li>
+          <li><RouterLink to="/dashboard" class="nav-link">My Logbook</RouterLink></li>
           <li><RouterLink to="/settings" class="nav-link">Settings</RouterLink></li>
           <li><button class="btn btn-outline-danger w-100 mt-3" @click="handleLogout">Logout</button></li></template>
       </ul>
@@ -393,6 +474,89 @@ nav{
   text-decoration: none;
 }
 
+.profile-trigger {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fffdf8;
+  border: 1px solid rgba(24,151,160,0.24);
+  color: #1897a0;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(47,72,88,0.08);
+  overflow: hidden;
+}
+
+.profile-trigger img,
+.profile-dropdown-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-dropdown {
+  min-width: 250px;
+  padding: 10px;
+  border: 1px dashed #d8cdbb !important;
+  border-radius: 18px;
+  background: #fffdf8;
+}
+
+.profile-dropdown-header {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 10px 12px;
+  border-bottom: 1px dashed #d8cdbb;
+  margin-bottom: 8px;
+}
+
+.profile-dropdown-header > span,
+.profile-dropdown-header > img {
+  width: 50px;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+  font-weight: 900;
+}
+
+.profile-dropdown-header small,
+.profile-dropdown-header strong {
+  display: block;
+}
+
+.profile-dropdown-header small {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.profile-dropdown-header strong {
+  color: #2f4858;
+  font-size: 0.9rem;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  padding: 9px 10px;
+  font-weight: 800;
+}
+
+.profile-menu-item:hover {
+  background: #deefec;
+  color: #147d84;
+}
+
 .main-nav-item .nav-link.section-active,
 .offcanvas .mobile-nav-link.section-active  {
   color: #1ba7b1 !important;
@@ -449,5 +613,29 @@ nav{
     display: flex;
     align-items: center;
   }
+}
+
+:global(body.dark-mode) .profile-trigger,
+:global(body.dark-mode) .profile-dropdown {
+  background: #253244;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+
+:global(body.dark-mode) .profile-dropdown-header {
+  border-color: rgba(255,255,255,0.12);
+}
+
+:global(body.dark-mode) .profile-dropdown-header strong,
+:global(body.dark-mode) .profile-menu-item {
+  color: #f8fafc;
+}
+
+:global(body.dark-mode) .profile-dropdown-header small {
+  color: #cbd5e1;
+}
+
+:global(body.dark-mode) .profile-menu-item:hover {
+  background: rgba(38,210,222,0.14);
+  color: #62c3c9;
 }
 </style>

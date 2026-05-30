@@ -221,27 +221,4 @@ function removeEntry(index) {
     max-width: none;
   }
 }
-
-:global(body.dark-mode) .section-title {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .paper-entry {
-  background: #253244;
-  border-color: rgba(255,255,255,0.12);
-}
-
-:global(body.dark-mode) .remove-icon-btn {
-  background: #2d3748;
-  border-color: rgba(255,255,255,0.1);
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .encounter-label {
-  color: #62c3c9;
-}
-
-:global(body.dark-mode) .form-label {
-  color: #f8fafc;
-}
 </style>

@@ -257,15 +257,37 @@ function toggleArrayValue(array, value, eventName) {
 .filter-panel {
   position: sticky;
   top: 25px;
-  padding: 20px;
-  border-radius: 22px;
+  overflow: visible;
+  padding: 22px;
+  border-radius: 18px;
   background: #fbf9f1;
-  border: 1px solid #eadfca;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border: 1px dashed #d8cdbb;
+  box-shadow: 0 12px 26px rgba(47,72,88,0.08);
+}
+
+.filter-panel::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  left: 28px;
+  z-index: 2;
+  width: 76px;
+  height: 20px;
+  background: rgba(245,223,154,0.48);
+  border-left: 1px dashed rgba(47,72,88,0.12);
+  border-right: 1px dashed rgba(47,72,88,0.12);
+  box-shadow: 0 5px 12px rgba(47,72,88,0.08);
+  transform: rotate(-3deg);
 }
 
 .filter-section {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(216,205,187,0.72);
+}
+
+.filter-section:last-of-type {
+  border-bottom: none;
 }
 
 .mode-card-group {
@@ -278,12 +300,12 @@ function toggleArrayValue(array, value, eventName) {
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #eadfca;
-  border-radius: 12px;
+  border: 1px dashed #d8cdbb;
+  border-radius: 14px;
   padding: 10px 14px;
-  background: #fffdf8;
+  background: rgba(255,255,255,0.68);
   color: #2f4858;
-  font-weight: 600;
+  font-weight: 800;
   text-align: left;
   transition: 0.2s ease;
 }
@@ -295,6 +317,7 @@ function toggleArrayValue(array, value, eventName) {
 .mode-card:hover {
   transform: translateY(-1px);
   border-color: #1897a0;
+  box-shadow: 0 8px 18px rgba(47,72,88,0.08);
 }
 
 .mode-card.active {
@@ -308,8 +331,9 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .form-control {
-  border-color: #c4a484;
-  background: #fffdf8;
+  border-color: #d8cdbb;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.72);
 }
 
 .form-check {
@@ -388,10 +412,17 @@ function toggleArrayValue(array, value, eventName) {
 .filter-header {
   gap: 12px;
   cursor: default;
+  padding-bottom: 14px;
+  margin-bottom: 4px;
+  border-bottom: 1px dashed rgba(216,205,187,0.8);
 }
 
 .filter-header h5 {
   gap: 8px;
+  color: #2f4858;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .filter-arrow {
@@ -439,13 +470,13 @@ function toggleArrayValue(array, value, eventName) {
 
   .filter-panel {
     position: static;
+    overflow: visible;
   }
 }
 
 @media (min-width: 992px) {
   .filter-panel {
     max-height: calc(100vh - 50px);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
@@ -459,7 +490,12 @@ function toggleArrayValue(array, value, eventName) {
   .reset-filter-btn {
     position: sticky;
     bottom: 0;
-    background: #fbf9f1;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(251,249,241,0),
+        #fbf9f1 34%
+      );
     padding-top: 12px;
   }
 }

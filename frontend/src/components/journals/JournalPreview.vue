@@ -332,41 +332,6 @@ const dateText = computed(() => {
   color: #0f766e;
 }
 
-:global(body.dark-mode) .journal-preview-card {
-  background: #253244;
-  border-color: rgba(255,255,255,0.12);
-}
-
-:global(body.dark-mode) .preview-narrative {
-  background: #2d3748;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .preview-narrative h2 {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .story-preview {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .included-panel {
-  border-color: rgba(255,255,255,0.12);
-}
-
-:global(body.dark-mode) .included-title {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .included-item {
-  background: #253244;
-}
-
-:global(body.dark-mode) .included-item.active {
-  background: rgba(98,195,201,0.16);
-  color: #62c3c9;
-}
-
 @media (max-width: 768px) {
   .preview-topline {
     align-items: flex-start;

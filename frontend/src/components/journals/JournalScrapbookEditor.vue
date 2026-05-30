@@ -711,24 +711,6 @@ onBeforeUnmount(() => {
   border-color: #fff;
 }
 
-:global(body.dark-mode) .section-title {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .scrapbook-heading p,
-:global(body.dark-mode) .arrange-empty-source {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .media-pick,
-:global(body.dark-mode) .sticker-pick,
-:global(body.dark-mode) .piece-action-btn,
-:global(body.dark-mode) .arrange-sidebar,
-:global(body.dark-mode) .arrange-empty-source {
-  background-color: #253244;
-  border-color: rgba(255,255,255,0.14);
-}
-
 @media (max-width: 992px) {
   .scrapbook-heading {
     flex-direction: column;

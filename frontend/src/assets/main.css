@@ -273,14 +273,26 @@ body.dark-mode .btn-outline-primary:hover {
 
 body.dark-mode .filter-panel {
   background: #253244 !important;
-  border-color: #3b6568;
+  border-color: rgba(255,255,255,0.14) !important;
   color: #f8fafc !important;
   box-shadow: 0 12px 30px rgba(0,0,0,0.35) !important;
 }
 
+body.dark-mode .filter-panel::before {
+  background: rgba(141,185,183,0.26);
+}
+
+body.dark-mode .filter-header {
+  border-color: rgba(255,255,255,0.12);
+}
+
+body.dark-mode .filter-section {
+  border-color: rgba(255,255,255,0.1);
+}
+
 body.dark-mode .mode-card {
   background: #2d3748;
-  border-color: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
   color: #f8fafc;
 }
 
@@ -545,5 +557,116 @@ body.dark-mode .species-mini-card p {
 
 body.dark-mode .selected-species-note {
   background: rgba(37,50,68,0.92);
+  color: #f8fafc;
+}
+
+body.dark-mode .journal-card {
+  background: #253244;
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark-mode .postcard-image-wrap {
+  background: #2d3748;
+}
+
+body.dark-mode .journal-header strong,
+body.dark-mode .journal-body h4 {
+  color: #f8fafc;
+}
+
+body.dark-mode .journal-header span,
+body.dark-mode .journal-body p,
+body.dark-mode .journal-actions {
+  color: #cbd5e1;
+}
+
+
+:global(body.dark-mode) .uploaded-card {
+  background: #253244;
+  border-color: rgba(255,255,255,0.1);
+}
+
+:global(body.dark-mode) .media-preview-panel {
+  background: #2d3748;
+  border-color: rgba(255,255,255,0.12);
+}
+
+:global(body.dark-mode) .uploaded-fields .form-label {
+  color: #f8fafc;
+}
+
+:global(body.dark-mode) .journal-preview-card {
+  background: #253244;
+  border-color: rgba(255,255,255,0.12);
+}
+
+:global(body.dark-mode) .preview-narrative {
+  background: #2d3748;
+  border-color: rgba(255,255,255,0.1);
+}
+
+:global(body.dark-mode) .preview-narrative h2 {
+  color: #f8fafc;
+}
+
+:global(body.dark-mode) .story-preview {
+  color: #cbd5e1;
+}
+
+:global(body.dark-mode) .included-panel {
+  border-color: rgba(255,255,255,0.12);
+}
+
+:global(body.dark-mode) .included-title {
+  color: #cbd5e1;
+}
+
+:global(body.dark-mode) .included-item {
+  background: #253244;
+}
+
+:global(body.dark-mode) .included-item.active {
+  background: rgba(98,195,201,0.16);
+  color: #62c3c9;
+}
+
+:global(body.dark-mode) .section-title {
+  color: #f8fafc;
+}
+
+:global(body.dark-mode) .scrapbook-heading p,
+:global(body.dark-mode) .arrange-empty-source {
+  color: #cbd5e1;
+}
+
+:global(body.dark-mode) .media-pick,
+:global(body.dark-mode) .sticker-pick,
+:global(body.dark-mode) .piece-action-btn,
+:global(body.dark-mode) .arrange-sidebar,
+:global(body.dark-mode) .arrange-empty-source {
+  background-color: #253244;
+  border-color: rgba(255,255,255,0.14);
+}
+
+:global(body.dark-mode) .section-title {
+  color: #f8fafc;
+}
+
+:global(body.dark-mode) .paper-entry {
+  background: #253244;
+  border-color: rgba(255,255,255,0.12);
+}
+
+:global(body.dark-mode) .remove-icon-btn {
+  background: #2d3748;
+  border-color: rgba(255,255,255,0.1);
+  color: #cbd5e1;
+}
+
+:global(body.dark-mode) .encounter-label {
+  color: #62c3c9;
+}
+
+:global(body.dark-mode) .form-label {
   color: #f8fafc;
 }

@@ -409,24 +409,4 @@ async function handleSave() {
   opacity: 0.55;
   cursor: not-allowed;
 }
-
-:global(body.dark-mode) .journal-card {
-  background: #253244;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .postcard-image-wrap {
-  background: #2d3748;
-}
-
-:global(body.dark-mode) .journal-header strong,
-:global(body.dark-mode) .journal-body h4 {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .journal-header span,
-:global(body.dark-mode) .journal-body p,
-:global(body.dark-mode) .journal-actions {
-  color: #cbd5e1;
-}
 </style>
