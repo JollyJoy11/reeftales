@@ -13,21 +13,21 @@ import Planner from '../pages/TripPlannerPage.vue'
 import Settings from '../pages/SettingsPage.vue'
 
 const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: Home, meta: { title: 'Home' } },
 
-  { path: '/discovery', component: Discovery },
-  { path: '/discovery/island/:id', component: IslandDetails },
+  { path: '/discovery', component: Discovery, meta: { title: 'Discovery' } },
+  { path: '/discovery/island/:id', component: IslandDetails, meta: { title: 'Island Details' } },
 
-  { path: '/community', component: Community },
-  { path: '/journal/:id', component: Journal },
+  { path: '/community', component: Community, meta: { title: 'Community' } },
+  { path: '/journal/:id', component: Journal, meta: { title: 'Journal Details' } },
 
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
+  { path: '/login', component: Login, meta: { title: 'Log In' } },
+  { path: '/register', component: Register, meta: { title: 'Create Account' } },
 
-  { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-  { path: '/journal/create', component: CreateJournal, meta: { requiresAuth: true } },
-  { path: '/planner', component: Planner, meta: { requiresAuth: true } },
-  { path: '/settings', component: Settings, meta: { requiresAuth: true } },
+  { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true, title: 'My Logbook' } },
+  { path: '/journal/create', component: CreateJournal, meta: { requiresAuth: true, title: 'Create Journal' } },
+  { path: '/planner', component: Planner, meta: { requiresAuth: true, title: 'Trip Planner' } },
+  { path: '/settings', component: Settings, meta: { requiresAuth: true, title: 'Settings' } },
 ]
 
 const router = createRouter({
@@ -44,6 +44,12 @@ router.beforeEach((to) => {
       query: { redirect: to.fullPath }
     }
   }
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title
+    ? `${to.meta.title} | ReefTales`
+    : 'ReefTales'
 })
 
 export default router
