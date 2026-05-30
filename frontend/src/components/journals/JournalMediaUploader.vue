@@ -27,6 +27,8 @@ const toastStore = useToastStore()
 
 const isDragging = ref(false)
 const fileInput = ref(null)
+const maxFileSize = 10 * 1024 * 1024
+const maxMediaFiles = 10
 
 const draggableMedia = computed({
   get() {
@@ -141,6 +143,7 @@ async function processFiles(files) {
   const updated = [...props.media]
   let skippedType = 0
   let skippedLimit = 0
+  let skippedSize = 0
 
   for (const file of files) {
     if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
@@ -148,7 +151,12 @@ async function processFiles(files) {
       continue
     }
 
-    if (updated.length >= 10) {
+    if (file.size > maxFileSize) {
+      skippedSize++
+      continue
+    }
+
+    if (updated.length >= maxMediaFiles) {
       skippedLimit++
       continue
     }
@@ -191,6 +199,10 @@ async function processFiles(files) {
 
   if (skippedLimit) {
     toastStore.danger('Only 10 media files can be uploaded for one journal.')
+  }
+
+  if (skippedSize) {
+    toastStore.danger('Some files were skipped. Each file must be 10 MB or smaller.')
   }
 
   if (!files.length) {
@@ -627,19 +639,5 @@ function setCoverImage(item) {
 .cover-select-btn.selected {
   background: #1897a0;
   color: white;
-}
-
-:global(body.dark-mode) .uploaded-card {
-  background: #253244;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .media-preview-panel {
-  background: #2d3748;
-  border-color: rgba(255,255,255,0.12);
-}
-
-:global(body.dark-mode) .uploaded-fields .form-label {
-  color: #f8fafc;
 }
 </style>

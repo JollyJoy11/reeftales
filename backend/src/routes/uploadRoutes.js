@@ -10,6 +10,8 @@ const router = express.Router()
 
 const uploadDir = path.join(__dirname, '..', 'uploads', 'journals')
 const useCloudinary = process.env.USE_CLOUDINARY === 'true'
+const maxUploadSize = 10 * 1024 * 1024
+const maxUploadFiles = 10
 
 fs.mkdirSync(uploadDir, { recursive: true })
 
@@ -40,8 +42,8 @@ const storage = multer.diskStorage({
 const localUpload = multer({
   storage,
   limits: {
-    files: 12,
-    fileSize: 25 * 1024 * 1024
+    files: maxUploadFiles,
+    fileSize: maxUploadSize
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
@@ -56,8 +58,8 @@ const localUpload = multer({
 const cloudUpload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    files: 12,
-    fileSize: 25 * 1024 * 1024
+    files: maxUploadFiles,
+    fileSize: maxUploadSize
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
@@ -94,7 +96,7 @@ function uploadToCloudinary(file) {
   })
 }
 
-router.post('/journal-media', authMiddleware, upload.array('files', 12), async (req, res) => {
+router.post('/journal-media', authMiddleware, upload.array('files', maxUploadFiles), async (req, res) => {
   if (useCloudinary) {
     try {
       const uploads = await Promise.all(
@@ -132,6 +134,28 @@ router.post('/journal-media', authMiddleware, upload.array('files', 12), async (
       url: `${baseUrl}/uploads/journals/${file.filename}`
     }))
   })
+})
+
+router.use((error, req, res, next) => {
+  if (error.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      message: 'Each uploaded file must be 10 MB or smaller.'
+    })
+  }
+
+  if (error.code === 'LIMIT_FILE_COUNT') {
+    return res.status(400).json({
+      message: 'You can upload up to 10 files at a time.'
+    })
+  }
+
+  if (error.message === 'Only image and video uploads are allowed.') {
+    return res.status(400).json({
+      message: error.message
+    })
+  }
+
+  next(error)
 })
 
 module.exports = router
