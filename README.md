@@ -17,7 +17,7 @@ The hosted backend is deployed separately on Render and connected to the fronten
 - Frontend: Vue 3, Vite, Pinia, Vue Router, Bootstrap
 - Backend: Node.js, Express
 - Database: MySQL
-- Hosting: Vercel frontend, Render backend, Aiven MySQL
+- Hosting: Vercel frontend, Render backend, Aiven MySQL, Cloudinary uploads
 
 ## Project Structure
 
@@ -64,9 +64,15 @@ DB_NAME=reeftales_db
 
 JWT_SECRET=change_me_to_a_long_random_secret
 GEMINI_API_KEY=your_gemini_api_key
+
+USE_CLOUDINARY=false
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
 The backend creates the database and tables automatically when it starts.
+With `USE_CLOUDINARY=false`, uploaded files are saved locally in `backend/src/uploads/`.
 
 ### 3. Run Backend
 
@@ -116,4 +122,4 @@ For deployment, environment variables should be set in Vercel and Render dashboa
 - If the live link is unavailable, run the app locally using the steps above.
 - Render free services may sleep after inactivity, so the first backend request can take longer.
 - Uploaded files are ignored locally through `backend/src/uploads/`.
-- Local uploads are not reliable on free backend hosting, so production/demo uploads should use external storage such as Cloudinary.
+- Local uploads are not reliable on free backend hosting, so the hosted backend should use Cloudinary.
