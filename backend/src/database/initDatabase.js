@@ -179,6 +179,29 @@ async function initializeDatabase() {
     )
     `)
 
+		// AI IDENTIFICATIONS
+		await run(`
+      CREATE TABLE IF NOT EXISTS ai_identifications (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        image_url TEXT,
+        common_name VARCHAR(150),
+        scientific_name VARCHAR(150),
+        confidence VARCHAR(80),
+        reason TEXT,
+        aphia_id INT,
+        accepted_name VARCHAR(150),
+        taxonomy_status VARCHAR(80),
+        rank_name VARCHAR(80),
+        worms_url TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (user_id)
+          REFERENCES users(id)
+          ON DELETE CASCADE
+      )
+    `)
+
 		// JOURNAL_ACTIVITIES
 		await run(`
       CREATE TABLE IF NOT EXISTS journal_activities (

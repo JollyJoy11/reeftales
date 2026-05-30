@@ -7,6 +7,7 @@ const previewUrl = ref('')
 const selectedFile = ref(null)
 const matches = ref([])
 const aiPrediction = ref(null)
+const savedIdentification = ref(null)
 
 const isDragging = ref(false)
 const loading = ref(false)
@@ -32,6 +33,7 @@ function setImage(file) {
   errorMessage.value = ''
   matches.value = []
   aiPrediction.value = null
+  savedIdentification.value = null
 }
 
 function handleFileChange(event) {
@@ -59,6 +61,7 @@ async function identifySpecies() {
 
     aiPrediction.value = result.aiPrediction
     matches.value = result.wormsMatches || []
+    savedIdentification.value = result.savedIdentification
 
     if (!matches.value.length) {
       errorMessage.value =
@@ -169,6 +172,9 @@ onBeforeUnmount(() => {
       </div>
 
       <p v-if="errorMessage" class="lookup-message">{{ errorMessage }}</p>
+      <p v-if="savedIdentification" class="saved-message">
+        Saved to My Marine Life.
+      </p>
 
       <div v-if="matches.length" class="match-list">
         <div v-for="match in matches" :key="match.aphiaId" class="match-row">
@@ -307,6 +313,13 @@ onBeforeUnmount(() => {
   margin: 10px 0 0;
   font-size: 0.78rem;
   color: #b45309;
+}
+
+.saved-message {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: #20856d;
+  font-weight: 800;
 }
 
 .match-list {

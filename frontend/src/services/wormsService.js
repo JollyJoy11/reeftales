@@ -25,3 +25,8 @@ export async function identifyMarineImage(file) {
 
   return response.data
 }
+
+export async function getMyAiIdentifications() {
+  const response = await api.get('/worms/identifications/me')
+  return response.data
+}
