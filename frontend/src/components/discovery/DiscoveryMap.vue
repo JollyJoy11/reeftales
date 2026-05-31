@@ -22,7 +22,16 @@ let map = null
 let markersLayer = null
 
 function createMap() {
-  map = L.map(mapContainer.value).setView([4.2105, 101.9758], 4)
+  map = L.map(mapContainer.value, {
+    minZoom: 2,
+    maxZoom: 8,
+    worldCopyJump: false,
+    maxBounds: [
+      [-85, -180],
+      [85, 180]
+    ],
+    maxBoundsViscosity: 1.0
+  }).setView([4.2105, 101.9758], 4)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   }).addTo(map)

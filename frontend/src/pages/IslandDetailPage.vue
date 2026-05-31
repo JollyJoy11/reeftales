@@ -209,7 +209,16 @@ function initMap() {
   const lat = Number(island.value.latitude) || 4.2
   const lng = Number(island.value.longitude) || 118.6
 
-  map = L.map('islandMap').setView([lat, lng], 9)
+  map = L.map('islandMap', {
+    minZoom: 2,
+    maxZoom: 8,
+    worldCopyJump: false,
+    maxBounds: [
+      [-85, -180],
+      [85, 180]
+    ],
+    maxBoundsViscosity: 1.0
+  }).setView([lat, lng], 9)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   }).addTo(map)
