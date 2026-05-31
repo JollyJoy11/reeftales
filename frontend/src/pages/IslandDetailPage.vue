@@ -44,17 +44,6 @@ function journalCover(journal) {
   return journal.cover_image || island.value?.cover_image || '/images/island-placeholder.jpg'
 }
 
-function communityMediaAlt(index) {
-  const media = communityMedia.value[index]
-  const islandName = island.value?.name || 'this island'
-
-  if (media?.caption) return media.caption
-  if (media?.species_name) return `${media.species_name} sighting shared from ${islandName}`
-  if (media?.activity_name) return `${media.activity_name} memory shared from ${islandName}`
-
-  return `Community memory from ${islandName}`
-}
-
 function journalCoverAlt(journal) {
   return `Cover image for ${journal.title || 'community diary'} from ${island.value?.name || journal.island_name || 'this island'}`
 }
@@ -84,36 +73,60 @@ const diaryPrefillRoute = computed(() => {
 })
 
 const heroPolaroidImages = computed(() => {
-  const images = []
-  const seen = new Set()
+  const photos = communityMedia.value.filter(
+    media =>
+      media.media_type === 'image' &&
+      media.media_url
+  )
 
-  // ALWAYS first image = island cover
-  images.push({
+  const islandCover = {
     src:
       island.value?.cover_image ||
       '/images/island-placeholder.jpg',
     alt: `${island.value?.name || 'Island'} cover`
-  })
+  }
 
-  seen.add(island.value?.cover_image)
+  if (!photos.length) {
+    return [islandCover]
+  }
 
-  communityMedia.value.forEach((media) => {
-    if (!media?.media_url) return
-    if (seen.has(media.media_url)) return
+  const newestPhoto = photos[0]
 
-    seen.add(media.media_url)
+  const remainingPhotos = photos.filter(
+    photo => photo.id !== newestPhoto.id
+  )
 
-    images.push({
-      src: media.media_url,
+  const randomPhoto =
+    remainingPhotos.length
+      ? remainingPhotos[
+          Math.floor(Math.random() * remainingPhotos.length)
+        ]
+      : null
+
+  const result = [
+    islandCover,
+    {
+      src: newestPhoto.media_url,
       alt:
-        media.caption ||
-        media.species_name ||
-        media.activity_name ||
-        `Community memory from ${island.value?.name || 'this island'}`
-    })
-  })
+        newestPhoto.caption ||
+        newestPhoto.species_name ||
+        newestPhoto.activity_name ||
+        'Recent community memory'
+    }
+  ]
 
-  return images.slice(0, 3)
+  if (randomPhoto) {
+    result.push({
+      src: randomPhoto.media_url,
+      alt:
+        randomPhoto.caption ||
+        randomPhoto.species_name ||
+        randomPhoto.activity_name ||
+        'Traveler memory'
+    })
+  }
+
+  return result
 })
 
 function formatDateForQuery(date) {
