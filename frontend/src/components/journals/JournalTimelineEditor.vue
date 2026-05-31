@@ -75,7 +75,7 @@ watch(
     <div class="section-heading">
       <div>
         <h5 class="section-title">
-          Trip Timeline
+          Trip Timeline ({{ maxDays }}-day Trip)
           <span class="requirement-badge recommended">Recommended</span>
         </h5>
         <p>Add the activities you did by day so this island journal has useful trip context.</p>
@@ -130,7 +130,6 @@ watch(
                 class="form-control"
                 @input="updateItem(index, 'day_number', $event.target.value)"
               />
-              <small class="day-limit-hint">Max Day {{ maxDays }}</small>
             </div>
 
             <div class="field-small">
@@ -148,7 +147,7 @@ watch(
                 class="form-select"
                 @change="updateItem(index, 'activity_id', $event.target.value)"
               >
-                <option value="">Choose existing activity</option>
+                <option value="">Choose activity</option>
                 <option
                   v-for="activity in activities"
                   :key="activity.id"
@@ -156,10 +155,13 @@ watch(
                 >
                   {{ activity.name }}
                 </option>
+                <option value="custom">
+                  Other activity
+                </option>
               </select>
             </div>
 
-            <div class="field-medium">
+            <div v-if="entry.activity_id === 'custom'" class="field-medium">
               <label class="form-label">Custom activity</label>
               <input
                 :value="entry.custom_activity_name"
@@ -315,14 +317,6 @@ watch(
 .form-label {
   color: #2f4858;
   font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.day-limit-hint {
-  display: block;
-  margin-top: 4px;
-  color: #7c6f63;
-  font-size: 0.72rem;
   font-weight: 700;
 }
 

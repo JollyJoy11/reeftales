@@ -92,8 +92,10 @@ async function getIslandCommunityMedia(islandId) {
       journal_media.caption,
       journal_media.activity_id,
       journal_media.species_id,
-      activities.name AS activity_name,
-      species.name AS species_name,
+      journal_media.custom_activity_name,
+      journal_media.custom_species_name,
+      COALESCE(activities.name, journal_media.custom_activity_name) AS activity_name,
+      COALESCE(species.name, journal_media.custom_species_name) AS species_name,
       journals.id AS journal_id,
       journals.title AS journal_title,
       users.username
@@ -111,6 +113,8 @@ async function getIslandCommunityMedia(islandId) {
       AND (
         journal_media.activity_id IS NOT NULL
         OR journal_media.species_id IS NOT NULL
+        OR journal_media.custom_activity_name IS NOT NULL
+        OR journal_media.custom_species_name IS NOT NULL
       )
     ORDER BY journal_media.created_at DESC
     LIMIT 6

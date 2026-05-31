@@ -210,8 +210,8 @@ async function getJournalById(id) {
   const [media] = await db.query(`
     SELECT
       journal_media.*,
-      species.name AS species_name,
-      activities.name AS activity_name
+      COALESCE(species.name, journal_media.custom_species_name) AS species_name,
+      COALESCE(activities.name, journal_media.custom_activity_name) AS activity_name
     FROM journal_media
     LEFT JOIN species ON journal_media.species_id = species.id
     LEFT JOIN activities ON journal_media.activity_id = activities.id
@@ -420,16 +420,20 @@ async function createJournal(data) {
             journal_id,
             species_id,
             activity_id,
+            custom_species_name,
+            custom_activity_name,
             media_url,
             media_type,
             caption,
             display_order
           )
-          VALUES (?, ?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
           journalId,
           item.species_id || null,
           item.activity_id || null,
+          item.custom_species_name || null,
+          item.custom_activity_name || null,
           item.media_url,
           item.media_type || 'photo',
           item.caption || null,

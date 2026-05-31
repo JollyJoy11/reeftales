@@ -19,6 +19,14 @@ const props = defineProps({
   speciesList: {
     type: Array,
     default: () => []
+  },
+  timeline: {
+    type: Array,
+    default: () => []
+  },
+  sightings: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -37,6 +45,22 @@ const draggableMedia = computed({
   set(value) {
     emit('update:media', value)
   }
+})
+
+const customActivityOptions = computed(() => {
+  return uniqueNames(
+    props.timeline
+      .filter(entry => entry.activity_id === 'custom')
+      .map(entry => entry.custom_activity_name)
+  )
+})
+
+const customSpeciesOptions = computed(() => {
+  return uniqueNames(
+    props.sightings
+      .filter(sighting => sighting.species_id === 'custom')
+      .map(sighting => sighting.custom_species_name)
+  )
 })
 
 function openFilePicker() {
@@ -233,6 +257,64 @@ function updateMedia(index, key, value) {
   emit('update:media', updated)
 }
 
+function updateMediaFields(index, fields) {
+  const updated = [...props.media]
+  updated[index] = { ...updated[index], ...fields }
+  emit('update:media', updated)
+}
+
+function uniqueNames(names) {
+  const seen = new Set()
+
+  return names
+    .map(name => name?.trim())
+    .filter(Boolean)
+    .filter((name) => {
+      const key = name.toLowerCase()
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+}
+
+function linkValue(item, idKey, customKey) {
+  if (item[idKey] === 'custom' && item[customKey]) {
+    return `custom:${item[customKey]}`
+  }
+
+  return item[idKey]
+}
+
+function updateActivityLink(index, value) {
+  if (value.startsWith('custom:')) {
+    updateMediaFields(index, {
+      activity_id: 'custom',
+      custom_activity_name: value.replace(/^custom:/, '')
+    })
+    return
+  }
+
+  updateMediaFields(index, {
+    activity_id: value,
+    custom_activity_name: ''
+  })
+}
+
+function updateSpeciesLink(index, value) {
+  if (value.startsWith('custom:')) {
+    updateMediaFields(index, {
+      species_id: 'custom',
+      custom_species_name: value.replace(/^custom:/, '')
+    })
+    return
+  }
+
+  updateMediaFields(index, {
+    species_id: value,
+    custom_species_name: ''
+  })
+}
+
 function removeMedia(index) {
   const removedItem = props.media[index]
   const updated = props.media.filter((_, i) => i !== index)
@@ -374,9 +456,9 @@ function setCoverImage(item) {
               <div class="uploaded-fields">
                 <select
                   v-if="item.link_type === 'activity'"
-                  :value="item.activity_id"
+                  :value="linkValue(item, 'activity_id', 'custom_activity_name')"
                   class="form-select"
-                  @change="updateMedia(index, 'activity_id', $event.target.value)"
+                  @change="updateActivityLink(index, $event.target.value)"
                 >
                   <option value="">Choose activity</option>
                   <option
@@ -386,22 +468,20 @@ function setCoverImage(item) {
                   >
                     {{ activity.name }}
                   </option>
+                  <option
+                    v-for="customActivity in customActivityOptions"
+                    :key="`custom-activity-${customActivity}`"
+                    :value="`custom:${customActivity}`"
+                  >
+                    {{ customActivity }}
+                  </option>
                 </select>
-
-                <input
-                  v-if="item.link_type === 'activity'"
-                  :value="item.custom_activity_name"
-                  type="text"
-                  class="form-control"
-                  placeholder="Or describe another activity..."
-                  @input="updateMedia(index, 'custom_activity_name', $event.target.value)"
-                />
 
                 <select
                   v-if="item.link_type === 'species'"
-                  :value="item.species_id"
+                  :value="linkValue(item, 'species_id', 'custom_species_name')"
                   class="form-select"
-                  @change="updateMedia(index, 'species_id', $event.target.value)"
+                  @change="updateSpeciesLink(index, $event.target.value)"
                 >
                   <option value="">Choose species</option>
                   <option
@@ -411,16 +491,14 @@ function setCoverImage(item) {
                   >
                     {{ species.name }}
                   </option>
+                  <option
+                    v-for="customSpecies in customSpeciesOptions"
+                    :key="`custom-species-${customSpecies}`"
+                    :value="`custom:${customSpecies}`"
+                  >
+                    {{ customSpecies }}
+                  </option>
                 </select>
-
-                <input
-                  v-if="item.link_type === 'species'"
-                  :value="item.custom_species_name"
-                  type="text"
-                  class="form-control"
-                  placeholder="Or type another species..."
-                  @input="updateMedia(index, 'custom_species_name', $event.target.value)"
-                />
 
                 <div class="media-actions">
                   <button

@@ -31,6 +31,20 @@ async function initializeDatabase() {
 			await connection.query(sql);
 		}
 
+		async function addColumnIfMissing(table, column, definition) {
+			const [rows] = await connection.query(`
+				SELECT COLUMN_NAME
+				FROM INFORMATION_SCHEMA.COLUMNS
+				WHERE TABLE_SCHEMA = ?
+					AND TABLE_NAME = ?
+					AND COLUMN_NAME = ?
+			`, [process.env.DB_NAME, table, column]);
+
+			if (!rows.length) {
+				await connection.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+			}
+		}
+
 		// USERS
     await run(`
     	CREATE TABLE IF NOT EXISTS users (
@@ -230,6 +244,8 @@ async function initializeDatabase() {
         journal_id INT NOT NULL,
         species_id INT NULL,
         activity_id INT NULL,
+        custom_species_name VARCHAR(150),
+        custom_activity_name VARCHAR(150),
         media_url LONGTEXT NOT NULL,
         media_type ENUM('photo', 'video') NOT NULL,
         caption TEXT,

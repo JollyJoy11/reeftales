@@ -22,7 +22,7 @@ const activeDay = computed(() => {
 })
 
 function activityTitle(activity) {
-  return activity.activity_name || activity.custom_activity_name || 'Activity'
+  return activity.activity_name || activity.custom_activity_name || 'Untitled activity'
 }
 
 function formatActivityTime(time) {

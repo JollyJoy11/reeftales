@@ -207,21 +207,21 @@ async function handleSubmit() {
       layout_items: layoutItems,
 
       activities: form.value.timeline
-        .filter(item => item.activity_id || item.custom_activity_name || item.notes)
+        .filter(item => item.activity_id || item.custom_activity_name?.trim() || item.notes?.trim())
         .map(item => ({
-          activity_id: item.activity_id || null,
-          custom_activity_name: item.custom_activity_name || null,
+          activity_id: item.activity_id && item.activity_id !== 'custom' ? Number(item.activity_id) : null,
+          custom_activity_name: item.activity_id === 'custom' ? item.custom_activity_name || null : null,
           day_number: item.day_number || null,
           activity_time: item.activity_time || null,
           notes: item.notes || null
         })),
 
       sightings: form.value.sightings
-        .filter(item => item.species_id || item.custom_species_name)
+        .filter(item => item.species_id || item.custom_species_name?.trim())
         .map(item => ({
-          species_id: item.species_id || null,
-          custom_species_name: item.custom_species_name || null,
-          quantity: item.quantity || 1,
+          species_id: item.species_id && item.species_id !== 'custom' ? Number(item.species_id) : null,
+          custom_species_name: item.species_id === 'custom' ? item.custom_species_name || null : null,
+          quantity: Number(item.quantity) || 1,
           notes: item.notes || null
         })),
 
@@ -233,7 +233,7 @@ async function handleSubmit() {
         caption: item.caption,
 
         activity_id:
-          item.link_type === 'activity'
+          item.link_type === 'activity' && item.activity_id !== 'custom'
             ? item.activity_id || null
             : null,
 
@@ -243,7 +243,7 @@ async function handleSubmit() {
             : null,
 
         species_id:
-          item.link_type === 'species'
+          item.link_type === 'species' && item.species_id !== 'custom'
             ? item.species_id || null
             : null,
 
@@ -321,10 +321,10 @@ onMounted(loadData)
                 </label>
                 <input v-model="form.title" class="form-control mb-3" placeholder="Swimming with turtles at Sipadan..." />
 
-              <AppDateRangePicker
-                v-model="form.trip_dates"
-                label="Trip Duration"
-              />
+                <AppDateRangePicker
+                  v-model="form.trip_dates"
+                  label="Trip Duration"
+                />
               </div>
             </div>
 
@@ -391,6 +391,8 @@ onMounted(loadData)
               v-model:coverImage="form.coverImage"
               :activities="activities"
               :species-list="speciesList"
+              :timeline="form.timeline"
+              :sightings="form.sightings"
             />
 
             <div class="step-actions mt-4">
