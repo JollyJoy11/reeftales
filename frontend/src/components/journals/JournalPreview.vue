@@ -98,8 +98,7 @@ const coverPreviewAlt = computed(() => {
           </span>
 
           <img
-            :src="form.coverImage?.previewUrl || '/images/island-placeholder.jpg'"
-            :alt="coverPreviewAlt"
+            :src="form.coverImage?.previewUrl || selectedIsland?.cover_image || '/images/island-placeholder.jpg'"
           />
 
           <div class="polaroid-caption">
