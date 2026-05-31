@@ -44,52 +44,54 @@ const speciesImageAlt = computed(() => {
 </script>
 
 <template>
-  <article class="species-label-card h-100">
-    <div class="stamp-image-area" :class="`stamp-tilt-${tiltVariant % 3}`">
-      <img
-        :src="species.image_url || '/images/island-placeholder.jpg'"
-        class="species-image"
-        :alt="speciesImageAlt"
-        @error="$event.target.src = '/images/island-placeholder.jpg'"
-      />
-    </div>
-
-    <div class="label-body">
-      <h4>{{ species.name }}</h4>
-
-      <p class="subtitle">
-        {{ species.conservation_status || 'Unknown status' }}
-        •
-        {{ species.scientific_name || 'Scientific name unavailable' }}
-      </p>
-
-      <div class="info-grid">
-        <div>
-          <span>Habitats</span>
-          <strong>{{ species.habitats || 'Not specified' }}</strong>
-        </div>
-
-        <div>
-          <span>Depth</span>
-          <strong>{{ depthLabel }}</strong>
-        </div>
+  <RouterLink :to="`/discovery/species/${species.id}`" class="text-decoration-none">
+    <article class="species-label-card h-100">
+      <div class="stamp-image-area" :class="`stamp-tilt-${tiltVariant % 3}`">
+        <img
+          :src="species.image_url || '/images/island-placeholder.jpg'"
+          class="species-image"
+          :alt="speciesImageAlt"
+          @error="$event.target.src = '/images/island-placeholder.jpg'"
+        />
       </div>
 
-      <p class="species-desc">
-        {{ species.description }}
-      </p>
+      <div class="label-body">
+        <h4>{{ species.name }}</h4>
 
-      <div class="badge-section">
-        <span
-          v-for="tag in tags"
-          :key="tag"
-          class="badge rounded-pill species-badge"
-        >
-          {{ tag }}
-        </span>
+        <p class="subtitle">
+          {{ species.conservation_status || 'Unknown status' }}
+          •
+          {{ species.scientific_name || 'Scientific name unavailable' }}
+        </p>
+
+        <div class="info-grid">
+          <div>
+            <span>Habitats</span>
+            <strong>{{ species.habitats || 'Not specified' }}</strong>
+          </div>
+
+          <div>
+            <span>Depth</span>
+            <strong>{{ depthLabel }}</strong>
+          </div>
+        </div>
+
+        <p class="species-desc">
+          {{ species.description }}
+        </p>
+
+        <div class="badge-section">
+          <span
+            v-for="tag in tags"
+            :key="tag"
+            class="badge rounded-pill species-badge"
+          >
+            {{ tag }}
+          </span>
+        </div>
       </div>
-    </div>
-  </article>
+    </article>
+  </RouterLink>
 </template>
 
 <style scoped>

@@ -11,12 +11,14 @@ import Dashboard from '../pages/DashboardPage.vue'
 import CreateJournal from '../pages/CreateJournalPage.vue'
 import Planner from '../pages/TripPlannerPage.vue'
 import Settings from '../pages/SettingsPage.vue'
+import SpeciesDetail from '../pages/SpeciesDetailPage.vue'
 
 const routes = [
   { path: '/', component: Home, meta: { title: 'Home' } },
 
   { path: '/discovery', component: Discovery, meta: { title: 'Discovery' } },
   { path: '/discovery/island/:id', component: IslandDetails, meta: { title: 'Island Details' } },
+  { path: '/discovery/species/:id', component: SpeciesDetail, meta: { title: 'Species Details'} },
 
   { path: '/community', component: Community, meta: { title: 'Community' } },
   { path: '/journal/:id', component: Journal, meta: { title: 'Journal Details' } },

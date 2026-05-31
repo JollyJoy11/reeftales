@@ -84,7 +84,7 @@ function speciesImageAlt(item) {
             <span>{{ item.sighting_count || 0 }} sightings</span>
 
             <RouterLink
-              :to="`/species/${item.id}`"
+              :to="`/discovery/species/${item.id}`"
               class="view-species-link"
               @click.stop
             >

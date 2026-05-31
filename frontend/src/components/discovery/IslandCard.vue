@@ -51,7 +51,6 @@ function extraCount(list, limit = 2) {
 }
 
 const activities = computed(() => splitList(props.island.activities))
-const species = computed(() => splitList(props.island.species))
 const islandImageAlt = computed(() => {
   const location = [props.island.location, props.island.country].filter(Boolean).join(', ')
   return `${props.island.name || 'Island destination'}${location ? ` in ${location}` : ''}`
