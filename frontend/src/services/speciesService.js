@@ -12,3 +12,13 @@ export async function getSpecies(params = {}) {
 
   return response.data
 }
+
+export async function getSpeciesById(id) {
+  const response = await api.get(`/species/${id}`)
+  return response.data
+}
+
+export async function getSpeciesOccurrences(id) {
+  const response = await api.get(`/species/${id}/occurrences`)
+  return response.data
+}

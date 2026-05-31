@@ -3,10 +3,12 @@ const router = express.Router()
 
 const {
   fetchSpecies,
-  fetchSpeciesById
+  fetchSpeciesById,
+  fetchSpeciesOccurrences
 } = require('../controllers/speciesController')
 
 router.get('/', fetchSpecies)
+router.get('/:id/occurrences', fetchSpeciesOccurrences)
 router.get('/:id', fetchSpeciesById)
 
 module.exports = router
