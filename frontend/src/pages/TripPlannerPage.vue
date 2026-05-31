@@ -1,10 +1,17 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import draggable from 'vuedraggable'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
+import AppTimePicker from '@/components/common/AppTimePicker.vue'
+import AppDateRangePicker from '@/components/common/AppDateRangePicker.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
+import PlannedTripSidebar from '@/components/planner/PlannedTripSidebar.vue'
+import PlannerWeatherPanel from '@/components/planner/PlannerWeatherPanel.vue'
+import PlannerActivitySuitability from '@/components/planner/PlannerActivitySuitability.vue'
+
 import { getActivities } from '@/services/activityService'
 import { getIslands } from '@/services/islandService'
 import {
@@ -16,6 +23,9 @@ import {
 } from '@/services/itineraryService'
 import { getMarineWeather, getWeather } from '@/services/weatherService'
 import { useToastStore } from '@/stores/toastStore'
+import { getSavedIslands } from '@/services/savedIslandService'
+import { getSavedJournals } from '@/services/savedJournalService'
+import { getJournalById } from '@/services/journalService'
 
 const toastStore = useToastStore()
 
@@ -24,18 +34,22 @@ const saving = ref(false)
 const weatherLoading = ref(false)
 const activeItineraryId = ref(null)
 const activeDay = ref(1)
+const activeTab = ref('details')
+
 const islands = ref([])
 const activities = ref([])
 const itineraries = ref([])
 const weather = ref(null)
 const marineWeather = ref(null)
 const weatherUnavailable = ref('')
+const savedIslands = ref([])
+const savedJournals = ref([])
 
 const form = ref(emptyTrip())
 
 function emptyTrip() {
   return {
-    title: 'Borneo Dive Expedition 2026',
+    title: 'Untitled island trip',
     island_id: '',
     start_date: '',
     end_date: '',
@@ -44,30 +58,40 @@ function emptyTrip() {
       {
         local_id: crypto.randomUUID(),
         activity_id: '',
-        title: 'Arrival and orientation',
+        title: 'Arrival and check-in',
         day_number: 1,
         start_time: '14:00',
         duration_minutes: 90,
-        notes: 'Check in, rest, and equipment setup'
+        notes: 'Rest, settle in, and prepare for the island trip.',
+        display_order: 0
       }
     ],
     checklist: [
-      { local_id: crypto.randomUUID(), label: 'Dive certification card', is_checked: true },
-      { local_id: crypto.randomUUID(), label: 'Underwater camera', is_checked: false },
-      { local_id: crypto.randomUUID(), label: 'Reef-safe sunscreen', is_checked: true },
-      { local_id: crypto.randomUUID(), label: 'Journal and waterproof pen', is_checked: false }
+      { local_id: crypto.randomUUID(), label: 'Reef-safe sunscreen', is_checked: false },
+      { local_id: crypto.randomUUID(), label: 'Swimwear', is_checked: false },
+      { local_id: crypto.randomUUID(), label: 'Waterproof bag', is_checked: false },
+      { local_id: crypto.randomUUID(), label: 'Travel journal', is_checked: false }
     ],
     budget: [
-      { local_id: crypto.randomUUID(), label: 'Flights', amount: 820 },
-      { local_id: crypto.randomUUID(), label: 'Accommodation', amount: 1250 },
-      { local_id: crypto.randomUUID(), label: 'Dive packages', amount: 1100 },
-      { local_id: crypto.randomUUID(), label: 'Food and misc', amount: 360 }
+      { local_id: crypto.randomUUID(), label: 'Boat transfer', amount: 0 },
+      { local_id: crypto.randomUUID(), label: 'Island stay', amount: 0 },
+      { local_id: crypto.randomUUID(), label: 'Meals', amount: 0 }
     ]
   }
 }
 
 const selectedIsland = computed(() => {
   return islands.value.find(island => Number(island.id) === Number(form.value.island_id)) || null
+})
+
+const dateRange = computed({
+  get() {
+    return [form.value.start_date, form.value.end_date].filter(Boolean)
+  },
+  set(value) {
+    form.value.start_date = value?.[0] || ''
+    form.value.end_date = value?.[1] || ''
+  }
 })
 
 const tripDays = computed(() => {
@@ -92,6 +116,7 @@ const selectedDayItems = computed({
   },
   set(items) {
     const otherItems = form.value.items.filter(item => Number(item.day_number) !== Number(activeDay.value))
+
     form.value.items = [
       ...otherItems,
       ...items.map((item, index) => ({
@@ -104,17 +129,32 @@ const selectedDayItems = computed({
 })
 
 const suggestedActivities = computed(() => {
-  if (!selectedIsland.value?.activities) return activities.value.slice(0, 5)
+  if (!selectedIsland.value?.activities) return activities.value.slice(0, 6)
 
   const availableNames = selectedIsland.value.activities
     .split(',')
     .map(item => item.trim().toLowerCase())
 
-  return activities.value.filter(activity => availableNames.includes(activity.name.toLowerCase()))
+  return activities.value
+    .filter(activity => availableNames.includes(activity.name.toLowerCase()))
+    .slice(0, 6)
 })
 
 const budgetTotal = computed(() => {
   return form.value.budget.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+})
+
+const currentJournalRoute = computed(() => {
+  return buildJournalRoute({
+    island_id: form.value.island_id,
+    start_date: form.value.start_date,
+    end_date: form.value.end_date,
+    title: form.value.title
+  })
+})
+
+const canPrefillCurrentJournal = computed(() => {
+  return Boolean(form.value.island_id)
 })
 
 const suitability = computed(() => {
@@ -132,6 +172,7 @@ const suitability = computed(() => {
   const avgRain = rain.length
     ? rain.reduce((sum, value) => sum + Number(value || 0), 0) / rain.length
     : 0
+
   const wind = Number(weather.value?.current?.wind_speed_10m || 0)
   const wave = Number(marineWeather.value?.current?.wave_height || 0)
 
@@ -155,7 +196,7 @@ const suitability = computed(() => {
     return {
       label: 'Plan with care',
       tone: 'okay',
-      detail: `Some weather risk. Keep flexible indoor or light island activities ready.`
+      detail: 'Some weather risk. Keep flexible indoor or light island activities ready.'
     }
   }
 
@@ -166,30 +207,23 @@ const suitability = computed(() => {
   }
 })
 
-const weatherDays = computed(() => {
-  const daily = weather.value?.daily
-  if (!daily?.time) return []
-
-  return daily.time.map((date, index) => ({
-    date,
-    max: daily.temperature_2m_max?.[index],
-    min: daily.temperature_2m_min?.[index],
-    rain: daily.precipitation_probability_max?.[index]
-  }))
-})
-
-function formatDate(date) {
-  if (!date) return 'Select dates'
-
-  return new Date(date).toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'short'
-  })
+function normalizeDateForQuery(date) {
+  if (!date) return ''
+  return String(date).slice(0, 10)
 }
 
-function tripDateLabel(trip) {
-  if (!trip.start_date || !trip.end_date) return 'Dates not set'
-  return `${formatDate(trip.start_date)} - ${formatDate(trip.end_date)}`
+function buildJournalRoute(source) {
+  const query = {}
+
+  if (source.island_id) query.island_id = source.island_id
+  if (source.start_date) query.start_date = normalizeDateForQuery(source.start_date)
+  if (source.end_date || source.start_date) query.end_date = normalizeDateForQuery(source.end_date || source.start_date)
+  if (source.title) query.title = source.title
+
+  return {
+    path: '/journal/create',
+    query
+  }
 }
 
 function createLocalItem(data = {}) {
@@ -240,6 +274,10 @@ function addChecklistItem() {
   })
 }
 
+function removeChecklistItem(localId) {
+  form.value.checklist = form.value.checklist.filter(item => item.local_id !== localId)
+}
+
 function addBudgetItem() {
   form.value.budget.push({
     local_id: crypto.randomUUID(),
@@ -248,9 +286,14 @@ function addBudgetItem() {
   })
 }
 
+function removeBudgetItem(localId) {
+  form.value.budget = form.value.budget.filter(item => item.local_id !== localId)
+}
+
 function resetPlanner() {
   activeItineraryId.value = null
   activeDay.value = 1
+  activeTab.value = 'details'
   weather.value = null
   marineWeather.value = null
   weatherUnavailable.value = ''
@@ -260,34 +303,49 @@ function resetPlanner() {
 async function loadItinerary(id) {
   try {
     const trip = await getItineraryById(id)
+
     activeItineraryId.value = trip.id
     activeDay.value = 1
+    activeTab.value = 'details'
+
     form.value = {
       title: trip.title,
       island_id: trip.island_id,
       start_date: trip.start_date?.slice(0, 10) || '',
       end_date: trip.end_date?.slice(0, 10) || '',
       notes: trip.notes || '',
-      items: trip.items.map(item => ({
+      items: (trip.items || []).map(item => ({
         local_id: crypto.randomUUID(),
         activity_id: item.activity_id || '',
-        title: item.title,
-        day_number: item.day_number,
+        title: item.title || item.activity_name || item.custom_activity_name || '',
+        day_number: item.day_number || 1,
         start_time: item.start_time?.slice(0, 5) || '',
         duration_minutes: item.duration_minutes || 60,
         notes: item.notes || '',
         display_order: item.display_order || 0
       })),
-      checklist: trip.checklist.map(item => ({
+      checklist: (trip.checklist || []).map(item => ({
         local_id: crypto.randomUUID(),
         label: item.label,
         is_checked: Boolean(item.is_checked)
       })),
-      budget: trip.budget.map(item => ({
+      budget: (trip.budget || []).map(item => ({
         local_id: crypto.randomUUID(),
         label: item.label,
         amount: Number(item.amount || 0)
       }))
+    }
+
+    if (!form.value.items.length) {
+      form.value.items = emptyTrip().items
+    }
+
+    if (!form.value.checklist.length) {
+      form.value.checklist = emptyTrip().checklist
+    }
+
+    if (!form.value.budget.length) {
+      form.value.budget = emptyTrip().budget
     }
   } catch {
     toastStore.danger('Unable to open itinerary.')
@@ -306,6 +364,7 @@ function buildPayload() {
       .map((item, index) => ({
         activity_id: item.activity_id || null,
         title: item.title,
+        custom_activity_name: item.activity_id ? null : item.title,
         day_number: Number(item.day_number || 1),
         start_time: item.start_time || null,
         duration_minutes: Number(item.duration_minutes || 0) || null,
@@ -398,19 +457,80 @@ async function loadWeather() {
 async function loadInitialData() {
   try {
     loading.value = true
-    const [islandData, activityData, itineraryData] = await Promise.all([
+
+    const [islandData, activityData, itineraryData, savedIslandData, savedJournalData] = await Promise.all([
       getIslands(),
       getActivities(),
-      getItineraries()
+      getItineraries(),
+      getSavedIslands(),
+      getSavedJournals()
     ])
 
     islands.value = islandData
     activities.value = activityData
     itineraries.value = itineraryData
+    savedIslands.value = savedIslandData
+    savedJournals.value = savedJournalData
   } catch {
     toastStore.danger('Unable to load trip planner.')
   } finally {
     loading.value = false
+  }
+}
+
+function useSavedIsland(island) {
+  form.value.island_id = island.id
+  activeTab.value = 'details'
+}
+
+async function useSavedJournalTemplate(journal) {
+  try {
+    const fullJournal = await getJournalById(journal.id)
+
+    const start = new Date()
+    start.setDate(start.getDate() + 1)
+
+    const journalStart = fullJournal.start_date
+      ? new Date(fullJournal.start_date)
+      : null
+
+    const journalEnd = fullJournal.end_date
+      ? new Date(fullJournal.end_date)
+      : journalStart
+
+    const journalDays = journalStart && journalEnd
+      ? Math.max(1, Math.round((journalEnd - journalStart) / 86400000) + 1)
+      : 1
+
+    const end = new Date(start)
+    end.setDate(start.getDate() + journalDays - 1)
+
+    form.value.title = `Trip inspired by ${fullJournal.title}`
+    form.value.island_id = fullJournal.island_id
+    form.value.start_date = start.toISOString().slice(0, 10)
+    form.value.end_date = end.toISOString().slice(0, 10)
+    form.value.notes = fullJournal.content || ''
+
+    form.value.items = (fullJournal.activities || []).map((activity, index) => ({
+      local_id: crypto.randomUUID(),
+      activity_id: activity.activity_id || '',
+      title: activity.activity_name || activity.custom_activity_name || 'Planned activity',
+      day_number: Number(activity.day_number || 1),
+      start_time: activity.activity_time?.slice(0, 5) || activity.start_time?.slice(0, 5) || '09:00',
+      duration_minutes: activity.duration_minutes || 60,
+      notes: activity.notes || '',
+      display_order: activity.display_order ?? index
+    }))
+
+    if (!form.value.items.length) {
+      form.value.items = emptyTrip().items
+    }
+
+    activeDay.value = 1
+
+    toastStore.success('Journal template applied.')
+  } catch {
+    toastStore.danger('Unable to use journal template.')
   }
 }
 
@@ -436,244 +556,278 @@ onMounted(loadInitialData)
         <section class="planner-hero">
           <div>
             <span>Trip Planner</span>
-            <h1>Plan your island days before they become journals.</h1>
+            <h1>Design your island adventure before it becomes a memory</h1>
             <p>
-              Check weather, build a draggable timeline, and turn popular island activities into a practical plan.
+              Organise activities, check sea and weather conditions, plan your budget,
+              and turn every journey into a Reef Tales diary.
             </p>
           </div>
-
-          <button type="button" class="new-trip-btn" @click="resetPlanner">
-            <i class="bi bi-plus-circle"></i>
-            New trip
-          </button>
         </section>
 
-        <section class="trip-ticket-grid">
-          <article
-            v-for="trip in itineraries"
-            :key="trip.id"
-            class="trip-ticket"
-            :class="{ active: activeItineraryId === trip.id }"
-          >
-            <AppStampFrame
-              class="ticket-stamp"
-              :image="trip.island_cover_image || '/images/island-placeholder.jpg'"
-              alt="Trip island"
-              :contain="false"
-            />
+        <section class="planner-layout">
+          <PlannedTripSidebar
+            :trips="itineraries"
+            :saved-islands="savedIslands"
+            :saved-journals="savedJournals"
+            :active-id="activeItineraryId"
+            @new="resetPlanner"
+            @open="loadItinerary"
+            @delete="removeTrip"
+            @select-island="useSavedIsland"
+            @use-journal="useSavedJournalTemplate"
+          />
 
-            <div class="ticket-body">
-              <span>{{ tripDateLabel(trip) }}</span>
-              <h2>{{ trip.title }}</h2>
-              <p>{{ trip.island_name || 'Island not set' }} · {{ trip.item_count || 0 }} activities</p>
-            </div>
-
-            <div class="ticket-price">
-              <strong>RM {{ Number(trip.budget_total || 0).toLocaleString() }}</strong>
-              <button type="button" @click="loadItinerary(trip.id)">Open</button>
-              <button type="button" class="delete-ticket" @click="removeTrip(trip.id)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-          </article>
-        </section>
-
-        <section class="planner-workspace">
-          <div class="planner-left">
-            <section class="paper-panel trip-setup">
+          <div class="planner-main">
+            <section class="paper-panel trip-current-panel">
               <div class="panel-title">
-                <span>Current trip</span>
-                <button type="button" :disabled="saving" @click="savePlanner">
-                  <i class="bi bi-save"></i>
-                  {{ saving ? 'Saving...' : 'Save itinerary' }}
-                </button>
-              </div>
-
-              <div class="setup-grid">
-                <label>
-                  Trip title
-                  <input v-model="form.title" type="text" />
-                </label>
-
-                <label>
-                  Island
-                  <select v-model="form.island_id">
-                    <option value="">Choose island</option>
-                    <option v-for="island in islands" :key="island.id" :value="island.id">
-                      {{ island.name }}, {{ island.country }}
-                    </option>
-                  </select>
-                </label>
-
-                <label>
-                  Start date
-                  <input v-model="form.start_date" type="date" />
-                </label>
-
-                <label>
-                  End date
-                  <input v-model="form.end_date" type="date" :min="form.start_date" />
-                </label>
-
-                <label class="setup-note">
-                  Trip notes
-                  <textarea
-                    v-model="form.notes"
-                    rows="3"
-                    placeholder="Permits, meeting points, operator reminders, or anything you want to remember before the trip"
-                  ></textarea>
-                </label>
-              </div>
-
-              <div class="map-weather-row">
-                <div class="mini-map">
-                  <span class="map-marker"><i class="bi bi-geo-alt-fill"></i></span>
-                  <strong>{{ selectedIsland?.name || 'Select an island' }}</strong>
-                  <small v-if="selectedIsland">
-                    {{ selectedIsland.latitude }}, {{ selectedIsland.longitude }}
-                  </small>
+                <div>
+                  <span>Current Trip</span>
+                  <h2>{{ form.title || 'Untitled island trip' }}</h2>
                 </div>
 
-                <div class="weather-score" :class="suitability.tone">
-                  <small>{{ weatherLoading ? 'Checking weather...' : 'Weather suitability' }}</small>
-                  <strong>{{ suitability.label }}</strong>
-                  <p>{{ suitability.detail }}</p>
+                <div class="panel-actions">
+                  <RouterLink
+                    v-if="canPrefillCurrentJournal"
+                    :to="currentJournalRoute"
+                    class="ghost-btn"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    Create journal
+                  </RouterLink>
+
+                  <button type="button" :disabled="saving" class="primary-btn" @click="savePlanner">
+                    <i class="bi bi-save"></i>
+                    {{ saving ? 'Saving...' : 'Save itinerary' }}
+                  </button>
                 </div>
               </div>
-            </section>
 
-            <section class="paper-panel timeline-panel">
-              <div class="panel-title">
-                <span>Day timeline</span>
-                <button type="button" @click="addBlankActivity">
-                  <i class="bi bi-plus-circle"></i>
-                  Add activity
+              <div class="planner-tabs">
+                <button type="button" :class="{ active: activeTab === 'details' }" @click="activeTab = 'details'">
+                  Details
+                </button>
+                <button type="button" :class="{ active: activeTab === 'timeline' }" @click="activeTab = 'timeline'">
+                  Timeline
+                </button>
+                <button type="button" :class="{ active: activeTab === 'packing' }" @click="activeTab = 'packing'">
+                  Packing
+                </button>
+                <button type="button" :class="{ active: activeTab === 'budget' }" @click="activeTab = 'budget'">
+                  Budget
                 </button>
               </div>
 
-              <div class="day-tabs">
-                <button
-                  v-for="day in dayTabs"
-                  :key="day"
-                  type="button"
-                  :class="{ active: activeDay === day }"
-                  @click="activeDay = day"
-                >
-                  Day {{ day }}
-                </button>
-              </div>
+              <div v-if="activeTab === 'details'" class="tab-content-area">
+                <div class="details-grid">
+                  <div class="setup-fields">
+                    <label>
+                      Trip title
+                      <input v-model="form.title" type="text" placeholder="e.g. Sipadan weekend dive" />
+                    </label>
 
-              <draggable
-                v-model="selectedDayItems"
-                item-key="local_id"
-                handle=".drag-handle"
-                class="timeline-list"
-              >
-                <template #item="{ element, index }">
-                  <article class="timeline-item">
-                    <button type="button" class="drag-handle" aria-label="Drag activity">
-                      <i class="bi bi-grip-vertical"></i>
-                    </button>
+                    <label>
+                      Island
+                      <select v-model="form.island_id">
+                        <option value="">Choose island</option>
+                        <option v-for="island in islands" :key="island.id" :value="island.id">
+                          {{ island.name }}, {{ island.country }}
+                        </option>
+                      </select>
+                    </label>
 
-                    <span class="timeline-dot">{{ index + 1 }}</span>
+                    <AppDateRangePicker
+                      v-model="dateRange"
+                      label="Trip dates"
+                    />
 
-                    <div class="timeline-fields">
-                      <div class="activity-line">
-                        <input v-model="element.start_time" type="time" />
-                        <input
-                          v-model="element.day_number"
-                          type="number"
-                          min="1"
-                          :max="tripDays"
-                          title="Day number"
-                        />
-                        <input v-model="element.title" type="text" placeholder="Activity title" />
-                        <input v-model="element.duration_minutes" type="number" min="0" step="15" />
+                    <label>
+                      Trip notes
+                      <textarea
+                        v-model="form.notes"
+                        rows="4"
+                        placeholder="Permits, ferry reminders, meeting points, or island notes..."
+                      ></textarea>
+                    </label>
+
+                    <PlannerActivitySuitability
+                      :weather="weather"
+                      :marine="marineWeather"
+                    />
+                  </div>
+
+                  <div class="destination-sidebar">
+                    <div class="trip-preview-card">
+                      <AppStampFrame
+                        class="trip-preview-stamp"
+                        :image="selectedIsland?.cover_image || '/images/island-placeholder.jpg'"
+                        :alt="`${selectedIsland?.name || 'Selected island'} cover`"
+                        :contain="false"
+                      />
+
+                      <div>
+                        <span>Destination</span>
+                        <strong>{{ selectedIsland?.name || 'No island selected' }}</strong>
+                        <p v-if="selectedIsland">
+                          {{ selectedIsland.location || selectedIsland.country }}
+                        </p>
+                        <p v-else>
+                          Choose an island to preview the trip destination.
+                        </p>
                       </div>
-
-                      <textarea v-model="element.notes" rows="2" placeholder="Notes for this activity"></textarea>
                     </div>
 
-                    <button type="button" class="remove-btn" @click="removeActivity(element.local_id)">
-                      <i class="bi bi-x-lg"></i>
-                    </button>
-                  </article>
-                </template>
-              </draggable>
+                    <PlannerWeatherPanel
+                      :weather="weather"
+                      :marine="marineWeather"
+                      :loading="weatherLoading"
+                      :unavailable="weatherUnavailable"
+                      :suitability="suitability"
+                    />
+                  </div>
+                </div>
+              </div>
 
-              <div v-if="!selectedDayItems.length" class="empty-timeline">
-                Drop activities into this day or add one manually.
+              <div v-if="activeTab === 'timeline'" class="tab-content-area">
+                <div class="timeline-header">
+                  <div>
+                    <h3>Day Timeline</h3>
+                    <p>Arrange activities by day. Drag activities to reorder within the selected day.</p>
+                  </div>
+
+                  <button type="button" class="primary-btn" @click="addBlankActivity">
+                    <i class="bi bi-plus-circle"></i>
+                    Add activity
+                  </button>
+                </div>
+
+                <div class="day-tabs">
+                  <button
+                    v-for="day in dayTabs"
+                    :key="day"
+                    type="button"
+                    :class="{ active: activeDay === day }"
+                    @click="activeDay = day"
+                  >
+                    Day {{ day }}
+                  </button>
+                </div>
+
+                <div v-if="suggestedActivities.length" class="suggestion-strip">
+                  <span>Popular here</span>
+
+                  <button
+                    v-for="activity in suggestedActivities"
+                    :key="activity.id"
+                    type="button"
+                    @click="addSuggestedActivity(activity)"
+                  >
+                    <i class="bi bi-plus-circle"></i>
+                    {{ activity.name }}
+                  </button>
+                </div>
+
+                <draggable
+                  v-model="selectedDayItems"
+                  item-key="local_id"
+                  handle=".drag-handle"
+                  ghost-class="timeline-ghost"
+                  chosen-class="timeline-chosen"
+                  drag-class="timeline-active"
+                  class="timeline-list"
+                >
+                  <template #item="{ element, index }">
+                    <article class="timeline-item">
+                      <button type="button" class="drag-handle" aria-label="Drag activity">
+                        <i class="bi bi-grip-vertical"></i>
+                      </button>
+
+                      <span class="timeline-dot">{{ index + 1 }}</span>
+
+                      <div class="timeline-fields">
+                        <div class="activity-line">
+                          <AppTimePicker v-model="element.start_time" />
+
+                          <input
+                            v-model="element.title"
+                            type="text"
+                            placeholder="Activity title"
+                          />
+
+                          <input
+                            v-model="element.duration_minutes"
+                            type="number"
+                            min="0"
+                            step="15"
+                            placeholder="Minutes"
+                          />
+                        </div>
+
+                        <textarea
+                          v-model="element.notes"
+                          rows="2"
+                          placeholder="Notes for this activity..."
+                        ></textarea>
+                      </div>
+
+                      <button type="button" class="remove-btn" @click="removeActivity(element.local_id)">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </article>
+                  </template>
+                </draggable>
+
+                <div v-if="!selectedDayItems.length" class="empty-timeline">
+                  No activities planned for Day {{ activeDay }} yet.
+                </div>
+              </div>
+
+              <div v-if="activeTab === 'packing'" class="tab-content-area">
+                <div class="panel-subtitle">
+                  <h3>Packing Checklist</h3>
+                  <button type="button" class="ghost-btn" @click="addChecklistItem">
+                    <i class="bi bi-plus"></i>
+                    Add item
+                  </button>
+                </div>
+
+                <div class="checklist-grid">
+                  <label v-for="item in form.checklist" :key="item.local_id" class="check-item">
+                    <input v-model="item.is_checked" type="checkbox" />
+                    <input v-model="item.label" type="text" placeholder="Checklist item" />
+
+                    <button type="button" class="tiny-remove-btn" @click="removeChecklistItem(item.local_id)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </label>
+                </div>
+              </div>
+
+              <div v-if="activeTab === 'budget'" class="tab-content-area">
+                <div class="panel-subtitle">
+                  <h3>Budget Notes</h3>
+                  <button type="button" class="ghost-btn" @click="addBudgetItem">
+                    <i class="bi bi-plus"></i>
+                    Add budget
+                  </button>
+                </div>
+
+                <div class="budget-list">
+                  <div v-for="item in form.budget" :key="item.local_id" class="budget-row">
+                    <input v-model="item.label" type="text" placeholder="Budget item" />
+                    <input v-model="item.amount" type="number" min="0" step="10" />
+
+                    <button type="button" class="tiny-remove-btn" @click="removeBudgetItem(item.local_id)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <strong class="budget-total">
+                  Estimated Total RM {{ budgetTotal.toLocaleString() }}
+                </strong>
               </div>
             </section>
           </div>
-
-          <aside class="planner-side">
-            <section class="paper-panel suggestions-panel">
-              <div class="panel-title">
-                <span>Popular here</span>
-              </div>
-
-              <div class="suggestion-list">
-                <button
-                  v-for="activity in suggestedActivities"
-                  :key="activity.id"
-                  type="button"
-                  @click="addSuggestedActivity(activity)"
-                >
-                  <i class="bi bi-plus-circle"></i>
-                  {{ activity.name }}
-                </button>
-              </div>
-            </section>
-
-            <section class="paper-panel weather-panel">
-              <div class="panel-title">
-                <span>Selected dates</span>
-              </div>
-
-              <div v-if="weatherDays.length" class="weather-days">
-                <div v-for="day in weatherDays" :key="day.date" class="weather-day">
-                  <strong>{{ formatDate(day.date) }}</strong>
-                  <span>{{ Math.round(day.min) }}° - {{ Math.round(day.max) }}°</span>
-                  <small>{{ day.rain ?? '-' }}% rain</small>
-                </div>
-              </div>
-
-              <p v-else class="side-empty">
-                Select an island and dates to show the forecast.
-              </p>
-            </section>
-
-            <section class="paper-panel checklist-panel">
-              <div class="panel-title">
-                <span>Packing checklist</span>
-                <button type="button" @click="addChecklistItem">
-                  <i class="bi bi-plus"></i>
-                </button>
-              </div>
-
-              <label v-for="item in form.checklist" :key="item.local_id" class="check-item">
-                <input v-model="item.is_checked" type="checkbox" />
-                <input v-model="item.label" type="text" placeholder="Checklist item" />
-              </label>
-            </section>
-
-            <section class="paper-panel budget-panel">
-              <div class="panel-title">
-                <span>Budget notes</span>
-                <button type="button" @click="addBudgetItem">
-                  <i class="bi bi-plus"></i>
-                </button>
-              </div>
-
-              <div v-for="item in form.budget" :key="item.local_id" class="budget-row">
-                <input v-model="item.label" type="text" placeholder="Budget item" />
-                <input v-model="item.amount" type="number" min="0" step="10" />
-              </div>
-
-              <strong class="budget-total">Total RM {{ budgetTotal.toLocaleString() }}</strong>
-            </section>
-          </aside>
         </section>
       </div>
     </main>
@@ -685,53 +839,52 @@ onMounted(loadInitialData)
   min-height: calc(100vh - 80px);
   padding: 34px 0 64px;
   background:
-    radial-gradient(circle at top left, rgba(169,216,214,0.38), transparent 32%),
+    radial-gradient(circle at top left, rgba(169,216,214,0.35), transparent 32%),
     linear-gradient(180deg, #fffdf8 0%, #f6ecdc 100%);
 }
 
 .planner-shell {
-  width: min(1220px, calc(100% - 32px));
+  width: min(1240px, calc(100% - 32px));
   margin: 0 auto;
 }
 
 .planner-hero,
-.paper-panel,
-.trip-ticket {
+.paper-panel {
   position: relative;
   border: 1px dashed #d8cdbb;
-  border-radius: 18px;
+  border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255,253,248,0.96), rgba(251,247,239,0.96)),
-    repeating-linear-gradient(0deg, transparent 0 31px, rgba(216,205,187,0.36) 32px);
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(216,205,187,0.28) 32px);
   box-shadow: 0 16px 34px rgba(47,72,88,0.09);
 }
 
 .planner-hero {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
-  align-items: center;
   padding: 30px;
+  margin-bottom: 20px;
 }
 
-.planner-hero::before,
 .paper-panel::before {
   content: '';
   position: absolute;
-  top: -12px;
-  right: 42px;
+  top: -11px;
+  right: 46px;
   width: 86px;
-  height: 24px;
-  background: rgba(235,116,82,0.34);
-  border-left: 1px dashed rgba(47,72,88,0.14);
-  border-right: 1px dashed rgba(47,72,88,0.14);
+  height: 23px;
+  background: rgba(169,216,214,0.55);
+  border-left: 1px dashed rgba(47,72,88,0.12);
+  border-right: 1px dashed rgba(47,72,88,0.12);
   transform: rotate(3deg);
 }
 
 .planner-hero span,
 .panel-title span {
   color: #1897a0;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -740,170 +893,154 @@ onMounted(loadInitialData)
 .planner-hero h1 {
   max-width: 720px;
   margin: 6px 0;
+  color: #2f4858;
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1.05;
+}
+
+.planner-hero p {
+  max-width: 720px;
+  margin: 0;
+  color: #64748b;
+  line-height: 1.65;
+}
+
+.planner-layout {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.planner-main {
+  min-width: 0;
+}
+
+.paper-panel {
+  padding: 24px;
+}
+
+.panel-title,
+.panel-subtitle,
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.panel-title h2,
+.panel-subtitle h3,
+.timeline-header h3 {
+  margin: 3px 0 0;
+  color: #2f4858;
   font-weight: 900;
 }
 
-.planner-hero p,
-.side-empty,
-.weather-score p {
-  margin: 0;
+.destination-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline-header p {
+  margin: 4px 0 0;
   color: #64748b;
 }
 
-.new-trip-btn,
-.panel-title button,
-.trip-ticket button:not(.delete-ticket) {
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primary-btn,
+.ghost-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border: 1px solid #1897a0;
   border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: 0.18s ease;
+}
+
+.primary-btn {
+  border: 1px solid #1897a0;
   background: #1897a0;
-  color: #fff;
-  font-weight: 800;
+  color: white;
   box-shadow: 0 10px 20px rgba(24,151,160,0.18);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease,
-    color 0.18s ease;
 }
 
-.new-trip-btn {
-  padding: 12px 18px;
+.ghost-btn {
+  border: 1px solid #1897a0;
+  background: #fffdf8;
+  color: #1897a0;
 }
 
-.panel-title button,
-.trip-ticket button:not(.delete-ticket) {
-  padding: 7px 12px;
-  font-size: 0.82rem;
-}
-
-.new-trip-btn:hover,
-.panel-title button:hover,
-.trip-ticket button:not(.delete-ticket):hover,
-.new-trip-btn:focus-visible,
-.panel-title button:focus-visible,
-.trip-ticket button:not(.delete-ticket):focus-visible {
-  background: #147d84;
-  color: #fff;
+.primary-btn:hover,
+.ghost-btn:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0 14px 26px rgba(24,151,160,0.24),
-    0 0 0 4px rgba(24,151,160,0.12);
 }
 
-.new-trip-btn:active,
-.panel-title button:active,
-.trip-ticket button:not(.delete-ticket):active {
-  transform: translateY(0);
-  box-shadow: 0 8px 16px rgba(24,151,160,0.18);
-}
-
-.trip-ticket-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin: 18px 0;
-}
-
-.trip-ticket {
-  display: grid;
-  grid-template-columns: 92px minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: center;
-  padding: 14px;
-  overflow: hidden;
-}
-
-.trip-ticket::after {
-  content: '';
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 30px;
-  height: 70px;
-  background: repeating-linear-gradient(90deg, #bd704e 0 3px, transparent 3px 6px);
-  opacity: 0.45;
-}
-
-.trip-ticket.active {
-  border-color: #1897a0;
-  box-shadow: 0 0 0 4px rgba(24,151,160,0.1);
-}
-
-.ticket-stamp {
-  aspect-ratio: 1;
-  --stamp-radius: 5px;
-  --stamp-size: 15px;
-}
-
-.ticket-body span,
-.ticket-body p {
-  color: #64748b;
-}
-
-.ticket-body h2 {
-  margin: 4px 0;
-  color: #2f4858;
-  font-size: 1.2rem;
-}
-
-.ticket-price {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  justify-items: end;
-  gap: 8px;
-}
-
-.ticket-price strong {
-  color: #bd704e;
-}
-
-.delete-ticket {
-  width: 34px;
-  height: 34px;
-  padding: 0 !important;
-  border-color: #e07a6f !important;
-  background: #fff1ed !important;
-  color: #c24135 !important;
-}
-
-.planner-workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 18px;
-  align-items: start;
-}
-
-.planner-left,
-.planner-side {
-  display: grid;
-  gap: 18px;
-}
-
-.paper-panel {
-  padding: 22px;
-}
-
-.panel-title {
+.planner-tabs {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 16px;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #d8cdbb;
 }
 
-.setup-grid {
+.planner-tabs button {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 15px;
+  background: #fffdf8;
+  color: #64748b;
+  font-weight: 900;
+}
+
+.planner-tabs button.active {
+  background: #deefec;
+  color: #1897a0;
+}
+
+.tab-content-area {
+  padding-top: 18px;
+}
+
+.details-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.setup-fields {
+  display: grid;
   gap: 14px;
 }
 
-.setup-note {
-  grid-column: 1 / -1;
+.timeline-chosen {
+  border-color: #1897a0 !important;
+  background: #deefec !important;
+}
+
+.timeline-active {
+  opacity: 0.85;
+  transform: rotate(0.5deg);
+}
+
+.timeline-ghost {
+  opacity: 0.35;
+  border: 2px dashed #1897a0 !important;
 }
 
 label {
@@ -918,12 +1055,11 @@ select,
 textarea {
   width: 100%;
   border: 1px solid #d8cdbb;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px 12px;
   background: #fffdf8;
   color: #1f2937;
   font: inherit;
-  box-shadow: none;
 }
 
 textarea {
@@ -938,83 +1074,40 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(24,151,160,0.12);
 }
 
-.map-weather-row {
+.trip-preview-card {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 14px;
-  margin-top: 16px;
-}
-
-.mini-map,
-.weather-score {
-  min-height: 130px;
-  display: grid;
-  align-content: center;
-  gap: 6px;
-  border-radius: 16px;
-  padding: 18px;
-  border: 1px solid rgba(216,205,187,0.85);
-}
-
-.mini-map {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 30% 35%, rgba(24,151,160,0.32), transparent 9%),
-    radial-gradient(circle at 70% 62%, rgba(235,116,82,0.24), transparent 10%),
-    linear-gradient(135deg, #cce8e7 0%, #f7efe2 100%);
-}
-
-.mini-map::before {
-  content: '';
-  position: absolute;
-  inset: 18px;
-  border: 2px dashed rgba(47,72,88,0.2);
-  border-radius: 48% 52% 42% 58%;
-}
-
-.map-marker {
-  position: relative;
-  z-index: 1;
-  width: 42px;
-  height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  gap: 12px;
+  padding: 16px;
+  border: 1px dashed #d8cdbb;
+  border-radius: 20px;
   background: #fffdf8;
+}
+
+.trip-preview-stamp {
+  width: 100%;
+  aspect-ratio: 1.5;
+  --stamp-radius: 5px;
+  --stamp-size: 15px;
+}
+
+.trip-preview-card span {
   color: #1897a0;
-  box-shadow: 0 8px 18px rgba(47,72,88,0.15);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.mini-map strong,
-.mini-map small {
-  position: relative;
-  z-index: 1;
-}
-
-.weather-score.good {
-  background: rgba(222,239,236,0.82);
-  border-color: rgba(24,151,160,0.24);
-}
-
-.weather-score.okay {
-  background: rgba(255,243,205,0.78);
-  border-color: rgba(212,160,23,0.24);
-}
-
-.weather-score.risky {
-  background: rgba(255,241,237,0.86);
-  border-color: rgba(224,122,111,0.26);
-}
-
-.weather-score.neutral {
-  background: rgba(255,253,248,0.82);
-}
-
-.weather-score strong {
+.trip-preview-card strong {
+  display: block;
   color: #2f4858;
-  font-size: 1.08rem;
+  font-size: 1.2rem;
+}
+
+.trip-preview-card p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.86rem;
 }
 
 .day-tabs {
@@ -1022,22 +1115,49 @@ textarea:focus {
   gap: 10px;
   overflow-x: auto;
   margin-bottom: 16px;
-  border-bottom: 1px solid #d8cdbb;
 }
 
 .day-tabs button {
-  border: none;
-  border-bottom: 3px solid transparent;
-  padding: 8px 4px 10px;
-  background: transparent;
-  color: #486174;
+  border: 1px solid #d8cdbb;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #fffdf8;
+  color: #64748b;
   font-weight: 900;
   white-space: nowrap;
 }
 
 .day-tabs button.active {
   border-color: #1897a0;
+  background: #deefec;
   color: #1897a0;
+}
+
+.suggestion-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #fbf9f1;
+}
+
+.suggestion-strip span {
+  color: #7c6f63;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.suggestion-strip button {
+  border: 1px solid rgba(24,151,160,0.28);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: #deefec;
+  color: #147d84;
+  font-weight: 800;
 }
 
 .timeline-list {
@@ -1051,8 +1171,8 @@ textarea:focus {
   gap: 12px;
   align-items: start;
   padding: 14px;
-  border: 1px solid rgba(216,205,187,0.85);
-  border-radius: 16px;
+  border: 1px solid #eadfca;
+  border-radius: 18px;
   background: #fffdf8;
 }
 
@@ -1070,13 +1190,29 @@ textarea:focus {
   cursor: grab;
 }
 
+.drag-handle:hover {
+  background: #e8ddd0;
+  color: #5f554b;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.timeline-chosen .drag-handle,
+.timeline-active .drag-handle {
+  background: rgba(24,151,160,0.16);
+  color: #1897a0;
+}
+
 .timeline-dot {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  border: 1px solid rgba(24,151,160,0.2);
   background: #deefec;
   color: #1897a0;
   font-weight: 900;
@@ -1089,54 +1225,30 @@ textarea:focus {
 
 .activity-line {
   display: grid;
-  grid-template-columns: 110px 72px minmax(0, 1fr) 90px;
+  grid-template-columns: 150px minmax(0, 1fr) 110px;
   gap: 9px;
 }
 
 .empty-timeline {
   padding: 18px;
   border: 1px dashed #d8cdbb;
-  border-radius: 14px;
+  border-radius: 16px;
   color: #64748b;
+  background: #fbf9f1;
 }
 
-.suggestion-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-}
-
-.suggestion-list button {
-  border: 1px solid rgba(24,151,160,0.28);
-  border-radius: 999px;
-  padding: 8px 12px;
-  background: #deefec;
-  color: #147d84;
-  font-weight: 800;
-}
-
-.weather-days {
+.checklist-grid {
   display: grid;
-  gap: 9px;
-}
-
-.weather-day {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2px 10px;
-  padding-bottom: 9px;
-  border-bottom: 1px dashed #d8cdbb;
-}
-
-.weather-day small {
-  grid-column: 1 / -1;
-  color: #64748b;
+  gap: 10px;
 }
 
 .check-item {
-  grid-template-columns: 20px minmax(0, 1fr);
+  grid-template-columns: 20px minmax(0, 1fr) 32px;
   align-items: center;
-  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #fffdf8;
+  border: 1px solid #eadfca;
 }
 
 .check-item input[type='checkbox'] {
@@ -1146,46 +1258,36 @@ textarea:focus {
   accent-color: #1897a0;
 }
 
-.budget-row {
+.budget-list {
   display: grid;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
 }
 
 .budget-row {
-  grid-template-columns: minmax(0, 1fr) 110px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 32px;
+  gap: 10px;
+}
+
+.tiny-remove-btn {
+  border: none;
+  border-radius: 50%;
+  background: #fff1f2;
+  color: #dc3545;
 }
 
 .budget-total {
   display: block;
-  padding-top: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
   border-top: 1px dashed #d8cdbb;
   color: #2f4858;
   text-align: right;
 }
 
-@media (max-width: 1050px) {
-  .planner-workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .planner-side {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .planner-shell {
-    width: min(100% - 20px, 1220px);
-  }
-
-  .planner-hero,
-  .trip-ticket,
-  .setup-grid,
-  .map-weather-row,
-  .planner-side,
-  .trip-ticket-grid,
-  .activity-line {
+@media (max-width: 991px) {
+  .planner-layout,
+  .details-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1193,13 +1295,22 @@ textarea:focus {
     align-items: flex-start;
     flex-direction: column;
   }
+}
 
-  .trip-ticket {
-    justify-items: stretch;
+@media (max-width: 760px) {
+  .planner-shell {
+    width: min(100% - 20px, 1240px);
   }
 
-  .ticket-price {
-    justify-items: start;
+  .panel-title,
+  .panel-subtitle,
+  .timeline-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .panel-actions {
+    justify-content: flex-start;
   }
 
   .timeline-item {
@@ -1208,6 +1319,12 @@ textarea:focus {
 
   .timeline-dot {
     display: none;
+  }
+
+  .activity-line,
+  .budget-row,
+  .check-item {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1219,10 +1336,9 @@ textarea:focus {
 
 :global(body.dark-mode) .planner-hero,
 :global(body.dark-mode) .paper-panel,
-:global(body.dark-mode) .trip-ticket,
+:global(body.dark-mode) .trip-preview-card,
 :global(body.dark-mode) .timeline-item,
-:global(body.dark-mode) .mini-map,
-:global(body.dark-mode) .weather-score {
+:global(body.dark-mode) .check-item {
   background: #253244;
   border-color: rgba(255,255,255,0.13);
   color: #f8fafc;
@@ -1230,27 +1346,29 @@ textarea:focus {
 
 :global(body.dark-mode) input,
 :global(body.dark-mode) select,
-:global(body.dark-mode) textarea {
+:global(body.dark-mode) textarea,
+:global(body.dark-mode) .ghost-btn,
+:global(body.dark-mode) .planner-tabs button,
+:global(body.dark-mode) .day-tabs button {
   background: #2d3748;
   border-color: rgba(255,255,255,0.14);
   color: #f8fafc;
 }
 
-:global(body.dark-mode) .planner-hero p,
-:global(body.dark-mode) .ticket-body span,
-:global(body.dark-mode) .ticket-body p,
-:global(body.dark-mode) .weather-score p,
-:global(body.dark-mode) .side-empty,
-:global(body.dark-mode) .weather-day small,
-:global(body.dark-mode) .empty-timeline {
-  color: #cbd5e1;
-}
-
 :global(body.dark-mode) .planner-hero h1,
-:global(body.dark-mode) .ticket-body h2,
+:global(body.dark-mode) .panel-title h2,
+:global(body.dark-mode) .panel-subtitle h3,
+:global(body.dark-mode) .timeline-header h3,
 :global(body.dark-mode) label,
-:global(body.dark-mode) .weather-score strong,
+:global(body.dark-mode) .trip-preview-card strong,
 :global(body.dark-mode) .budget-total {
   color: #f8fafc;
+}
+
+:global(body.dark-mode) .planner-hero p,
+:global(body.dark-mode) .timeline-header p,
+:global(body.dark-mode) .trip-preview-card p,
+:global(body.dark-mode) .empty-timeline {
+  color: #cbd5e1;
 }
 </style>

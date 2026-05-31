@@ -4,6 +4,8 @@ async function getUserItineraries(userId) {
   const [rows] = await db.query(`
     SELECT
       itineraries.*,
+      DATE_FORMAT(itineraries.start_date, '%Y-%m-%d') AS start_date,
+      DATE_FORMAT(itineraries.end_date, '%Y-%m-%d') AS end_date,
       islands.name AS island_name,
       islands.country,
       islands.cover_image AS island_cover_image,
@@ -31,6 +33,8 @@ async function getItineraryById(id, userId) {
   const [rows] = await db.query(`
     SELECT
       itineraries.*,
+      DATE_FORMAT(itineraries.start_date, '%Y-%m-%d') AS start_date,
+      DATE_FORMAT(itineraries.end_date, '%Y-%m-%d') AS end_date,
       islands.name AS island_name,
       islands.country,
       islands.cover_image AS island_cover_image,

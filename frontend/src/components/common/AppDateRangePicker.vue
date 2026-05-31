@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 
 const props = defineProps({
@@ -75,16 +75,41 @@ function handleUpdate(value) {
 }
 
 function toggleOneDayTrip() {
-  oneDayTrip.value = !oneDayTrip.value
+  if (!oneDayTrip.value) {
+    oneDayTrip.value = true
 
-  if (oneDayTrip.value && props.modelValue[0]) {
-    emit('update:modelValue', [props.modelValue[0], props.modelValue[0]])
+    if (props.modelValue[0]) {
+      emit('update:modelValue', [
+        props.modelValue[0],
+        props.modelValue[0]
+      ])
+    }
+  } else {
+    oneDayTrip.value = false
+
+    if (props.modelValue[0]) {
+      emit('update:modelValue', [
+        props.modelValue[0],
+        props.modelValue[0]
+      ])
+    }
   }
 }
 
 function syncMediaQuery() {
   isWideScreen.value = mediaQuery?.matches || false
 }
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    const start = value?.[0]
+    const end = value?.[1]
+
+    oneDayTrip.value = Boolean(start && end && start === end)
+  },
+  { immediate: true }
+)
 
 onMounted(() => {
   mediaQuery = window.matchMedia('(min-width: 768px)')
