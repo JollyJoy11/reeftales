@@ -159,7 +159,7 @@ watch(
   align-self: start;
   z-index: 2;
   height: max-content;
-  transform: translate(20px, 30px);
+  transform: translate(20px, 18px);
   box-shadow:
     6px 0 12px rgba(0,0,0,0.05);
 }
@@ -167,8 +167,8 @@ watch(
 .media-side-strip {
   display: grid;
   align-content: start;
-  gap: 10px;
-  max-height: 330px;
+  gap: 5px;
+  max-height: 240px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 28px var(--media-strip-padding);
