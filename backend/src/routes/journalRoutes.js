@@ -13,16 +13,16 @@ const {
   toggleJournalLike
 } = require('../controllers/journalController')
 
-const authMiddleware = require('../middleware/authMiddleware')
+const { protect, optionalAuth } = require('../middleware/authMiddleware')
 
-router.get('/', fetchPublicJournals)
-router.post('/', authMiddleware, addJournal)
-router.get('/me/summary', authMiddleware, fetchMyJournalSummary)
-router.get('/me/list', authMiddleware, fetchMyJournals)
-router.post('/:id/comments', authMiddleware, addJournalComment)
-router.post('/:id/like', authMiddleware, toggleJournalLike)
+router.get('/', optionalAuth, fetchPublicJournals)
+router.post('/', protect, addJournal)
+router.get('/me/summary', protect, fetchMyJournalSummary)
+router.get('/me/list', protect, fetchMyJournals)
+router.post('/:id/comments', protect, addJournalComment)
+router.post('/:id/like', protect, toggleJournalLike)
 router.get('/trending/islands', fetchTrendingIslands)
 router.get('/top/explorers', fetchTopExplorers)
-router.get('/:id', fetchJournalById)
+router.get('/:id', optionalAuth, fetchJournalById)
 
 module.exports = router

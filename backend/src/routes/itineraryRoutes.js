@@ -9,12 +9,12 @@ const {
   removeItinerary
 } = require('../controllers/itineraryController')
 
-const authMiddleware = require('../middleware/authMiddleware')
+const { protect } = require('../middleware/authMiddleware')
 
-router.get('/', authMiddleware, fetchItineraries)
-router.post('/', authMiddleware, addItinerary)
-router.get('/:id', authMiddleware, fetchItineraryById)
-router.put('/:id', authMiddleware, editItinerary)
-router.delete('/:id', authMiddleware, removeItinerary)
+router.get('/', protect, fetchItineraries)
+router.post('/', protect, addItinerary)
+router.get('/:id', protect, fetchItineraryById)
+router.put('/:id', protect, editItinerary)
+router.delete('/:id', protect, removeItinerary)
 
 module.exports = router

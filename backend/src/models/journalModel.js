@@ -1,14 +1,14 @@
 const db = require('../config/db')
 
-async function getPublicJournals(filters = {}) {
+async function getPublicJournals(filters = {}, userId = null) {
   let sql = `
     SELECT 
       journals.id,
       journals.title,
       journals.content,
       journals.cover_image,
-      journals.start_date,
-      journals.end_date,
+      DATE_FORMAT(journals.start_date, '%Y-%m-%d') AS start_date,
+      DATE_FORMAT(journals.end_date, '%Y-%m-%d') AS end_date,
       journals.mood,
       journals.created_at,
 
@@ -21,6 +21,20 @@ async function getPublicJournals(filters = {}) {
 
       COUNT(DISTINCT likes.id) AS like_count,
       COUNT(DISTINCT comments.id) AS comment_count,
+
+      EXISTS (
+        SELECT 1
+        FROM likes user_likes
+        WHERE user_likes.journal_id = journals.id
+          AND user_likes.user_id = ?
+      ) AS is_liked,
+
+      EXISTS (
+        SELECT 1
+        FROM saved_journals
+        WHERE saved_journals.journal_id = journals.id
+          AND saved_journals.user_id = ?
+      ) AS is_saved,
 
       GROUP_CONCAT(DISTINCT COALESCE(activities.name, journal_activities.custom_activity_name)) AS activities,
       GROUP_CONCAT(DISTINCT COALESCE(species.name, journal_sightings.custom_species_name)) AS species
@@ -40,7 +54,7 @@ async function getPublicJournals(filters = {}) {
     WHERE journals.visibility = 'public'
   `
 
-  const values = []
+  const values = [userId || 0, userId || 0]
 
   if (filters.search) {
     sql += `
@@ -177,7 +191,7 @@ async function getUserJournalSummary(userId) {
   return rows[0]
 }
 
-async function getJournalById(id) {
+async function getJournalById(id, userId = null) {
   const [rows] = await db.query(`
     SELECT 
       journals.*,
@@ -187,7 +201,22 @@ async function getJournalById(id) {
       islands.country,
       islands.cover_image AS island_cover_image,
       COUNT(DISTINCT likes.id) AS like_count,
-      COUNT(DISTINCT comments.id) AS comment_count
+      COUNT(DISTINCT comments.id) AS comment_count,
+
+      EXISTS (
+        SELECT 1
+        FROM likes user_likes
+        WHERE user_likes.journal_id = journals.id
+          AND user_likes.user_id = ?
+      ) AS is_liked,
+
+      EXISTS (
+        SELECT 1
+        FROM saved_journals
+        WHERE saved_journals.journal_id = journals.id
+          AND saved_journals.user_id = ?
+      ) AS is_saved
+
     FROM journals
     JOIN users ON journals.user_id = users.id
     JOIN islands ON journals.island_id = islands.id
@@ -195,7 +224,7 @@ async function getJournalById(id) {
     LEFT JOIN comments ON comments.journal_id = journals.id
     WHERE journals.id = ?
     GROUP BY journals.id
-  `, [id])
+  `, [userId || 0, userId || 0, id])
 
   if (!rows[0]) return null
 

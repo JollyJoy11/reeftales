@@ -14,9 +14,12 @@ const {
 
 async function fetchPublicJournals(req, res) {
   try {
-    const journals = await getPublicJournals({
-      search: req.query.search
-    })
+    const journals = await getPublicJournals(
+      {
+        search: req.query.search
+      },
+      req.user?.id || 0
+    )
 
     res.json(journals)
   } catch (error) {
@@ -47,7 +50,7 @@ async function fetchMyJournalSummary(req, res) {
 
 async function fetchJournalById(req, res) {
   try {
-    const journal = await getJournalById(req.params.id)
+    const journal = await getJournalById(req.params.id, req.user?.id || 0)
 
     if (!journal) {
       return res.status(404).json({ message: 'Journal not found' })

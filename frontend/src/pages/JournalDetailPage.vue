@@ -312,6 +312,8 @@ async function handleComment() {
     await addJournalComment(journal.value.id, content)
     commentText.value = ''
     journal.value = await getJournalById(route.params.id)
+    hasLiked.value = Boolean(journal.value.is_liked || journal.value.liked)
+    hasSaved.value = Boolean(journal.value.is_saved || journal.value.saved)
   } catch {
     toastStore.danger('Unable to post comment.')
   } finally {
@@ -323,11 +325,14 @@ async function loadJournal() {
   try {
     loading.value = true
     journal.value = await getJournalById(route.params.id)
+
     document.title = `${journal.value.title} | ReefTales`
+
     selectedTimelineDay.value = null
     selectedMediaId.value = 'cover'
-    hasLiked.value = false
-    hasSaved.value = false
+
+    hasLiked.value = Boolean(journal.value.is_liked || journal.value.liked)
+    hasSaved.value = Boolean(journal.value.is_saved || journal.value.saved)
   } catch (error) {
     errorMessage.value = error.response?.data?.message || 'Failed to load journal.'
   } finally {

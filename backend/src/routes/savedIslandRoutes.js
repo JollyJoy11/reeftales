@@ -1,14 +1,14 @@
 const express = require('express')
 const router = express.Router()
 
-const authMiddleware = require('../middleware/authMiddleware')
+const { protect } = require('../middleware/authMiddleware')
 
 const {
   fetchSavedIslands,
   toggleSavedIsland
 } = require('../controllers/savedIslandController')
 
-router.get('/', authMiddleware, fetchSavedIslands)
-router.post('/:islandId/toggle', authMiddleware, toggleSavedIsland)
+router.get('/', protect, fetchSavedIslands)
+router.post('/:islandId/toggle', protect, toggleSavedIsland)
 
 module.exports = router

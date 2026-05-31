@@ -1,14 +1,14 @@
 const express = require('express')
 const router = express.Router()
 
-const authMiddleware = require('../middleware/authMiddleware')
+const { protect } = require('../middleware/authMiddleware')
 
 const {
   fetchSavedJournals,
   toggleSavedJournal
 } = require('../controllers/savedJournalController')
 
-router.get('/', authMiddleware, fetchSavedJournals)
-router.post('/:journalId/toggle', authMiddleware, toggleSavedJournal)
+router.get('/', protect, fetchSavedJournals)
+router.post('/:journalId/toggle', protect, toggleSavedJournal)
 
 module.exports = router

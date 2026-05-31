@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const { v2: cloudinary } = require('cloudinary')
 
-const authMiddleware = require('../middleware/authMiddleware')
+const { protect, optionalAuth } = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
@@ -96,7 +96,7 @@ function uploadToCloudinary(file) {
   })
 }
 
-router.post('/journal-media', authMiddleware, upload.array('files', maxUploadFiles), async (req, res) => {
+router.post('/journal-media', protect, upload.array('files', maxUploadFiles), async (req, res) => {
   if (useCloudinary) {
     try {
       const uploads = await Promise.all(

@@ -1,10 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-function protect(
-  req,
-  res,
-  next
-) {
+function protect(req, res, next) {
   try {
     const authHeader = req.headers.authorization
 
@@ -27,4 +23,28 @@ function protect(
   }
 }
 
-module.exports = protect
+function optionalAuth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1]
+
+      req.user = jwt.verify(
+        token,
+        process.env.JWT_SECRET
+      )
+    } else {
+      req.user = null
+    }
+  } catch {
+    req.user = null
+  }
+
+  next()
+}
+
+module.exports = {
+  protect,
+  optionalAuth
+}

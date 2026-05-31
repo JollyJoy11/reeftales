@@ -105,6 +105,18 @@ async function handleSave() {
     actionLoading.value = false
   }
 }
+
+function handleCoverError(event) {
+  const img = event.target
+
+  if (!img.dataset.fallbackTried && props.journal.island_cover_image) {
+    img.dataset.fallbackTried = 'true'
+    img.src = props.journal.island_cover_image
+    return
+  }
+
+  img.src = '/images/island-placeholder.jpg'
+}
 </script>
 
 <template>
@@ -137,7 +149,7 @@ async function handleSave() {
           :image="coverImage"
           :alt="coverAlt"
           :contain="false"
-          @error="$event.target.src = '/images/island-placeholder.jpg'"
+          @error="handleCoverError"
         />
       </div>
 
