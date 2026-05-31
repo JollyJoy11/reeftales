@@ -84,8 +84,18 @@ const diaryPrefillRoute = computed(() => {
 })
 
 const heroPolaroidImages = computed(() => {
-  const unique = []
+  const images = []
   const seen = new Set()
+
+  // ALWAYS first image = island cover
+  images.push({
+    src:
+      island.value?.cover_image ||
+      '/images/island-placeholder.jpg',
+    alt: `${island.value?.name || 'Island'} cover`
+  })
+
+  seen.add(island.value?.cover_image)
 
   communityMedia.value.forEach((media) => {
     if (!media?.media_url) return
@@ -93,20 +103,17 @@ const heroPolaroidImages = computed(() => {
 
     seen.add(media.media_url)
 
-    unique.push({
+    images.push({
       src: media.media_url,
-      alt: media.caption || media.species_name || media.activity_name || `Community memory from ${island.value?.name || 'this island'}`
+      alt:
+        media.caption ||
+        media.species_name ||
+        media.activity_name ||
+        `Community memory from ${island.value?.name || 'this island'}`
     })
   })
 
-  if (island.value?.cover_image && !seen.has(island.value.cover_image)) {
-    unique.push({
-      src: island.value.cover_image,
-      alt: `${island.value.name} island cover`
-    })
-  }
-
-  return unique.slice(0, 3)
+  return images.slice(0, 3)
 })
 
 function formatDateForQuery(date) {
@@ -165,8 +172,9 @@ async function loadIslandActivities() {
 }
 
 let map
-let markerLayer
-let pathLayer
+let islandMarkerLayer
+let sightingLayer
+let speciesPreviewLayer
 
 async function loadIsland() {
   try {
@@ -203,6 +211,58 @@ async function loadWeather() {
       : null
 }
 
+function createDivIcon(className, iconClass, label = '') {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div class="${className}">
+        <i class="${iconClass}"></i>
+        ${label ? `<span>${label}</span>` : ''}
+      </div>
+    `,
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -34]
+  })
+}
+
+function estimatedSightingPoint(index) {
+  const lat = Number(island.value.latitude)
+  const lng = Number(island.value.longitude)
+
+  const offsets = [
+    [0.015, 0.012],
+    [-0.012, 0.015],
+    [0.01, -0.014],
+    [-0.016, -0.009],
+    [0.006, 0.022]
+  ]
+
+  const [latOffset, lngOffset] = offsets[index % offsets.length]
+
+  return [lat + latOffset, lng + lngOffset]
+}
+
+function renderRecentSightingMarkers() {
+  if (!sightingLayer || !recentSightings.value.length) return
+
+  sightingLayer.clearLayers()
+
+  recentSightings.value.slice(0, 5).forEach((sighting, index) => {
+    const point = estimatedSightingPoint(index)
+
+    L.marker(point, {
+      icon: createDivIcon('reef-map-marker sighting-marker', 'bi bi-binoculars')
+    })
+      .bindPopup(`
+        <strong>${sighting.name || 'Community sighting'}</strong><br>
+        ${sighting.quantity ? `${sighting.quantity} reported<br>` : ''}
+        Estimated near ${island.value.name}
+      `)
+      .addTo(sightingLayer)
+  })
+}
+
 function initMap() {
   if (!island.value) return
 
@@ -210,25 +270,41 @@ function initMap() {
   const lng = Number(island.value.longitude) || 118.6
 
   map = L.map('islandMap', {
-    minZoom: 2,
-    maxZoom: 8,
+    minZoom: 5,
+    maxZoom: 14,
+    scrollWheelZoom: true,
     worldCopyJump: false,
     maxBounds: [
       [-85, -180],
       [85, 180]
     ],
     maxBoundsViscosity: 1.0
-  }).setView([lat, lng], 9)
+  }).setView([lat, lng], 10)
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  }).addTo(map)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
-  markerLayer = L.layerGroup().addTo(map)
-  pathLayer = L.layerGroup().addTo(map)
+  islandMarkerLayer = L.layerGroup().addTo(map)
+  sightingLayer = L.layerGroup().addTo(map)
+  speciesPreviewLayer = L.layerGroup().addTo(map)
 
-  L.marker([lat, lng])
-    .bindPopup(`<strong>${island.value.name}</strong><br>${island.value.country || ''}`)
-    .addTo(markerLayer)
+  L.marker([lat, lng], {
+    icon: createDivIcon('reef-map-marker island-marker', 'bi bi-geo-alt-fill')
+  })
+    .bindPopup(`
+      <strong>${island.value.name}</strong><br>
+      ${island.value.location || ''}, ${island.value.country || ''}
+    `)
+    .addTo(islandMarkerLayer)
+
+  L.circle([lat, lng], {
+    radius: 2500,
+    color: '#1897a0',
+    fillColor: '#1897a0',
+    fillOpacity: 0.06,
+    weight: 1
+  }).addTo(islandMarkerLayer)
+
+  renderRecentSightingMarkers()
 }
 
 function getEstimatedObservationPoints(species) {
@@ -256,37 +332,34 @@ function getEstimatedObservationPoints(species) {
 
 function showSpeciesPreview(species) {
   selectedSpecies.value = species
-  pathLayer.clearLayers()
+  speciesPreviewLayer.clearLayers()
 
   const points = getEstimatedObservationPoints(species)
 
   points.forEach((point, index) => {
     L.circle(point, {
-      radius: 1400 + index * 350,
+      radius: 900 + index * 220,
       color: '#1897a0',
       fillColor: '#1897a0',
-      fillOpacity: 0.14,
-      weight: 2
+      fillOpacity: 0.16,
+      weight: 2,
+      dashArray: '6 6'
     })
       .bindPopup(`
         <strong>${species.name}</strong><br>
-        Estimated nearby observation area<br>
-        Based on ${species.sighting_count || 0} community sightings
+        Community sighting area<br>
+        Estimated from traveler sightings near ${island.value.name}
       `)
-      .addTo(pathLayer)
+      .addTo(speciesPreviewLayer)
 
-    L.circleMarker(point, {
-      radius: 5,
-      color: '#ffffff',
-      fillColor: '#1897a0',
-      fillOpacity: 1,
-      weight: 2
-    }).addTo(pathLayer)
+    L.marker(point, {
+      icon: createDivIcon('reef-map-marker species-marker', 'bi bi-water')
+    }).addTo(speciesPreviewLayer)
   })
 
   if (points.length) {
     const bounds = L.latLngBounds(points)
-    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 13 })
+    map.fitBounds(bounds, { padding: [48, 48], maxZoom: 12 })
   }
 }
 
@@ -492,10 +565,27 @@ onMounted(async () => {
 
           <main class="col-12 col-lg-8">
             <div class="map-card-panel mb-4">
+              <div class="map-panel-header">
+                <div>
+                  <span>Island Map</span>
+                  <h5>Nearby reef activity</h5>
+                </div>
+
+                <small>
+                  Estimated from community data
+                </small>
+              </div>
+
               <div id="islandMap"></div>
 
+              <div class="island-map-legend">
+                <span><i class="legend-dot island-dot"></i> Island</span>
+                <span><i class="legend-dot sighting-dot"></i> Sightings</span>
+                <span><i class="legend-dot species-dot"></i> Selected species</span>
+              </div>
+
               <div v-if="selectedSpecies" class="selected-species-note">
-                Estimated nearby observation areas for
+                Showing community sighting areas for
                 <strong>{{ selectedSpecies.name }}</strong>
               </div>
             </div>
@@ -770,18 +860,6 @@ onMounted(async () => {
   width: 100%;
 }
 
-.selected-species-note {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  background: rgba(255,255,255,0.92);
-  padding: 10px 14px;
-  border-radius: 14px;
-  color: #2f4858;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  z-index: 500;
-}
-
 .section-heading h3 {
   color: #2f4858;
 }
@@ -919,6 +997,140 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+}
+
+.map-panel-header {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  max-width: calc(100% - 28px);
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255,253,248,0.94);
+  border: 1px solid rgba(234,223,202,0.9);
+  box-shadow: 0 8px 18px rgba(47,72,88,0.12);
+}
+
+.map-panel-header span {
+  color: #1897a0;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.map-panel-header h5 {
+  margin: 0;
+  color: #2f4858;
+  font-weight: 900;
+}
+
+.map-panel-header small {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.island-map-legend {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 500;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: rgba(255,253,248,0.94);
+  border: 1px solid rgba(234,223,202,0.9);
+  box-shadow: 0 8px 18px rgba(47,72,88,0.12);
+}
+
+.island-map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.island-dot {
+  background: #1897a0;
+}
+
+.sighting-dot {
+  background: #d98b3a;
+}
+
+.species-dot {
+  background: #2f4858;
+}
+
+:global(.reef-map-marker) {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  box-shadow: 0 8px 18px rgba(47,72,88,0.22);
+  border: 3px solid rgba(255,255,255,0.95);
+}
+
+:global(.reef-map-marker i) {
+  font-size: 1rem;
+}
+
+:global(.island-marker) {
+  background: #1897a0;
+}
+
+:global(.sighting-marker) {
+  background: #d98b3a;
+}
+
+:global(.species-marker) {
+  background: #2f4858;
+}
+
+.map-card-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid #eadfca;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+#islandMap {
+  min-height: 460px;
+  width: 100%;
+}
+
+.selected-species-note {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 500;
+  font-size: 0.82rem;
+  max-width: 250px;
+  background: rgba(255,253,248,0.95);
+  padding: 10px 14px;
+  border-radius: 14px;
+  color: #2f4858;
+  border: 1px solid rgba(234,223,202,0.9);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 @media (max-width: 991px) {
