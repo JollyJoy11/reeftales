@@ -4,6 +4,7 @@ import { useRoute, RouterLink } from 'vue-router'
 
 import MainLayout from '@/layouts/MainLayout.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import JournalEncountersDisplay from '@/components/journals/JournalEncountersDisplay.vue'
 import JournalEngagementPanel from '@/components/journals/JournalEngagementPanel.vue'
@@ -429,6 +430,20 @@ onMounted(loadJournal)
           />
         </div>
       </div>
+
+      <EmptyState
+        v-else
+        icon="bi bi-journal-x"
+        title="Journal not available"
+        :message="errorMessage || 'This diary may have been deleted, moved, or set to private.'"
+      >
+        <template #actions>
+          <RouterLink to="/community">
+            <i class="bi bi-arrow-left"></i>
+            Browse community diaries
+          </RouterLink>
+        </template>
+      </EmptyState>
     </section>
   </MainLayout>
 </template>

@@ -17,13 +17,13 @@ function sightingQuantity(sighting) {
 </script>
 
 <template>
-  <div class="detail-section encounters-section" v-if="sightings.length">
+  <div class="detail-section encounters-section">
     <div class="section-title-row">
       <h2>Encounters</h2>
       <span>{{ sightings.length }} logged</span>
     </div>
 
-    <div class="encounter-grid">
+    <div v-if="sightings.length" class="encounter-grid">
       <article
         v-for="(sighting, index) in sightings"
         :key="sighting.id"
@@ -42,6 +42,14 @@ function sightingQuantity(sighting) {
           <p v-else class="muted-note">No notes added for this encounter.</p>
         </div>
       </article>
+    </div>
+
+    <div v-else class="section-empty-card">
+      <i class="bi bi-water"></i>
+      <div>
+        <strong>No marine encounters logged</strong>
+        <span>This diary does not include species sightings yet.</span>
+      </div>
     </div>
   </div>
 </template>
@@ -164,6 +172,43 @@ function sightingQuantity(sighting) {
 .encounter-card .muted-note {
   color: #91a0b3;
   font-style: italic;
+}
+
+.section-empty-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px dashed #d8cdbb;
+  border-radius: 18px;
+  background: rgba(251, 249, 241, 0.72);
+}
+
+.section-empty-card i {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+  font-size: 1.2rem;
+}
+
+.section-empty-card strong,
+.section-empty-card span {
+  display: block;
+}
+
+.section-empty-card strong {
+  color: #2f4858;
+  font-weight: 900;
+}
+
+.section-empty-card span {
+  color: #64748b;
+  font-size: 0.86rem;
 }
 
 @media (max-width: 576px) {

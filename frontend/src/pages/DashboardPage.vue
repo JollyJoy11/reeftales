@@ -1475,7 +1475,13 @@ onMounted(loadDashboard)
 
 .empty-note {
   margin: 0;
+  padding: 18px;
+  border: 1px dashed #d8cdbb;
+  border-radius: 16px;
+  background: rgba(251, 249, 241, 0.78);
   color: #64748b;
+  font-weight: 700;
+  text-align: center;
 }
 
 .journey-list {

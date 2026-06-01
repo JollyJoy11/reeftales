@@ -433,8 +433,15 @@ onMounted(() => {
 .trend-row small,
 .explorer-row small,
 .sidebar-empty {
+  margin: 0;
+  padding: 14px;
+  border: 1px dashed #d8cdbb;
+  border-radius: 14px;
+  background: rgba(251, 249, 241, 0.72);
   color: #64748b;
   font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
 }
 
 .explorer-row {

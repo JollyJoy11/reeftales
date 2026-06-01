@@ -4,6 +4,7 @@ import { useRoute, RouterLink } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import WeatherWidget from '@/components/common/WeatherWidget.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
 import IslandRecentSightings from '@/components/discovery/IslandRecentSightings.vue'
 import IslandResidentSpecies from '@/components/discovery/IslandResidentSpecies.vue'
@@ -400,11 +401,21 @@ onMounted(async () => {
         message="Loading island details..."
       />
 
-      <p v-if="errorMessage" class="text-danger">
-        {{ errorMessage }}
-      </p>
+      <EmptyState
+        v-else-if="errorMessage"
+        icon="bi bi-map"
+        title="Island details are unavailable"
+        :message="errorMessage"
+      >
+        <template #actions>
+          <RouterLink to="/discovery">
+            <i class="bi bi-arrow-left"></i>
+            Back to Discovery
+          </RouterLink>
+        </template>
+      </EmptyState>
 
-      <template v-if="island">
+      <template v-else-if="island">
         <section class="island-hero-split mb-4">
           <div class="hero-copy">
             <RouterLink to="/discovery" class="back-link">
@@ -809,10 +820,10 @@ onMounted(async () => {
 
 .activity-empty {
   margin-top: 10px;
-  padding: 12px;
+  padding: 14px;
   border-radius: 14px;
   border: 1px dashed #d8cdbb;
-  background: #fffdf8;
+  background: rgba(251, 249, 241, 0.76);
   color: #64748b;
   font-size: 0.82rem;
   font-weight: 700;

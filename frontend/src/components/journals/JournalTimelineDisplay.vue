@@ -32,9 +32,9 @@ function formatActivityTime(time) {
 </script>
 
 <template>
-  <div class="detail-section timeline-section" v-if="days.length">
+  <div class="detail-section timeline-section">
     <h2>Timeline</h2>
-    <div class="timeline-day-tabs">
+    <div v-if="days.length" class="timeline-day-tabs">
       <button
         v-for="day in days"
         :key="day.dayNumber"
@@ -45,7 +45,7 @@ function formatActivityTime(time) {
         Day {{ day.dayNumber }}
       </button>
     </div>
-    <Transition name="timeline-slide" mode="out-in">
+    <Transition v-if="days.length" name="timeline-slide" mode="out-in">
       <div
         v-if="activeDay"
         :key="activeDay.dayNumber"
@@ -75,6 +75,14 @@ function formatActivityTime(time) {
         </article>
       </div>
     </Transition>
+
+    <div v-else class="section-empty-card">
+      <i class="bi bi-calendar2-heart"></i>
+      <div>
+        <strong>No timeline added</strong>
+        <span>This diary focuses on the story instead of day-by-day plans.</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -247,6 +255,43 @@ function formatActivityTime(time) {
 .timeline-card time {
   font-weight: 800;
   white-space: nowrap;
+}
+
+.section-empty-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border: 1px dashed #d8cdbb;
+  border-radius: 18px;
+  background: rgba(251, 249, 241, 0.72);
+}
+
+.section-empty-card i {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+  font-size: 1.2rem;
+}
+
+.section-empty-card strong,
+.section-empty-card span {
+  display: block;
+}
+
+.section-empty-card strong {
+  color: #2f4858;
+  font-weight: 900;
+}
+
+.section-empty-card span {
+  color: #64748b;
+  font-size: 0.86rem;
 }
 
 @media (max-width: 576px) {
