@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
 import { getMyJournalSummary } from '@/services/journalService'
@@ -11,9 +11,6 @@ import { calculateExplorerProgress } from '@/utils/explorerProgress'
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const route = useRoute()
-const router = useRouter()
-
-const searchQuery = ref('')
 
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
 const currentLanguage = ref(localStorage.getItem('language') || 'English')
@@ -98,20 +95,6 @@ async function loadProfileStats() {
       public_count: 0
     }
   }
-}
-
-function submitSearch() {
-  const query = searchQuery.value.trim()
-
-  if (!query) return
-
-  router.push({
-    path: '/discovery',
-    query: {
-      mode: 'islands',
-      search: query
-    }
-  })
 }
 
 function toggleTheme() {
@@ -268,7 +251,6 @@ watch(
   </nav>
 
   <MobileSidebar
-    v-model:search-query="searchQuery"
     :main-nav-links="mainNavLinks"
     :current-theme="currentTheme"
     :current-language="currentLanguage"
@@ -276,7 +258,6 @@ watch(
     :profile-initial="profileInitial"
     :user-level="userLevel"
     :is-section-active="isSectionActive"
-    @submit-search="submitSearch"
     @toggle-theme="toggleTheme"
     @change-language="changeLanguage"
     @logout="handleLogout"

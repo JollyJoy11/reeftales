@@ -6,6 +6,15 @@ import { getIslands } from '@/services/islandService'
 import { getPublicJournals } from '@/services/journalService'
 import { getSpecies } from '@/services/speciesService'
 
+defineProps({
+  variant: {
+    type: String,
+    default: 'desktop'
+  }
+})
+
+const emit = defineEmits(['selected'])
+
 const router = useRouter()
 
 const searchQuery = ref('')
@@ -120,6 +129,7 @@ function deferCloseSearch() {
 function goToSearchTarget(target) {
   resetSearch()
   router.push(target)
+  emit('selected')
 }
 
 function submitSearch() {
@@ -146,7 +156,7 @@ watch(searchQuery, () => {
 </script>
 
 <template>
-  <div class="navbar-search">
+  <div class="navbar-search" :class="`navbar-search--${variant}`">
     <div class="input-group navbar-search__box">
       <span class="input-group-text border-end-0">
         <i class="bi bi-search"></i>
@@ -317,5 +327,31 @@ watch(searchQuery, () => {
   font-size: 0.82rem;
   font-weight: 700;
   text-align: center;
+}
+
+.navbar-search--mobile {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.navbar-search--mobile .navbar-search__box {
+  width: 100%;
+}
+
+.navbar-search--mobile .navbar-search__box .input-group-text {
+  border-radius: 999px 0 0 999px;
+  padding-left: 16px;
+}
+
+.navbar-search--mobile .navbar-search__box .form-control {
+  border-radius: 0 999px 999px 0;
+  min-height: 46px;
+}
+
+.navbar-search--mobile .navbar-search__suggestions {
+  position: static;
+  width: 100%;
+  margin-top: 10px;
+  box-shadow: none !important;
 }
 </style>

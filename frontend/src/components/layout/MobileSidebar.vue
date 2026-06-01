@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import NavbarSearch from '@/components/layout/NavbarSearch.vue'
 
 defineProps({
-  searchQuery: String,
   mainNavLinks: Array,
   currentTheme: String,
   currentLanguage: String,
@@ -13,8 +13,6 @@ defineProps({
 })
 
 const emit = defineEmits([
-  'update:searchQuery',
-  'submit-search',
   'toggle-theme',
   'change-language',
   'logout'
@@ -86,16 +84,7 @@ function handleMobileLogout() {
         </section>
       </template>
 
-      <div class="mobile-search-card">
-        <i class="bi bi-search"></i>
-        <input
-          :value="searchQuery"
-          @input="emit('update:searchQuery', $event.target.value)"
-          @keydown.enter.prevent="emit('submit-search'); closeMobileMenu()"
-          type="search"
-          placeholder="Search islands, marine life, diaries..."
-        />
-      </div>
+      <NavbarSearch variant="mobile" @selected="closeMobileMenu" />
 
       <div class="mobile-section-label">
         <span>Navigate</span>
@@ -319,31 +308,6 @@ function handleMobileLogout() {
 .account-row:hover {
   background: #f8efe4;
   color: #147d84;
-}
-
-/* Search */
-.mobile-search-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fffdf8;
-  border: 1px solid #ddd5ca;
-  border-radius: 999px;
-  padding: 8px 18px;
-  margin-bottom: 22px;
-}
-
-.mobile-search-card i {
-  color: #6b7280;
-  font-size: 20px;
-}
-
-.mobile-search-card input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 14px;
 }
 
 /* Section label */
