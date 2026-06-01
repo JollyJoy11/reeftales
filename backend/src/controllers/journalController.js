@@ -1,4 +1,9 @@
 const {
+  createNotification,
+  getJournalNotificationContext
+} = require('../models/notificationModel')
+
+const {
   getPublicJournals,
   getUserJournals,
   getUserJournalSummary,
@@ -167,6 +172,17 @@ async function addJournalComment(req, res) {
     }
 
     const commentId = await addComment(req.params.id, req.user.id, content)
+    const journal = await getJournalNotificationContext(req.params.id)
+
+    if (journal?.notify_comments) {
+      await createNotification({
+        userId: journal.owner_id,
+        actorId: req.user.id,
+        journalId: req.params.id,
+        type: 'journal_comment',
+        message: `${req.user.username || 'Someone'} commented on "${journal.title}".`
+      })
+    }
 
     res.status(201).json({
       message: 'Comment added successfully',
@@ -190,6 +206,18 @@ async function toggleJournalLike(req, res) {
     }
 
     await likeJournal(userId, journalId)
+    const journal = await getJournalNotificationContext(journalId)
+
+    if (journal?.notify_likes) {
+      await createNotification({
+        userId: journal.owner_id,
+        actorId: userId,
+        journalId,
+        type: 'journal_like',
+        message: `${req.user.username || 'Someone'} liked "${journal.title}".`
+      })
+    }
+
     res.json({ liked: true })
   } catch (error) {
     console.error(error)

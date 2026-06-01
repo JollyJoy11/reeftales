@@ -15,6 +15,7 @@ import JournalPreview from '@/components/journals/JournalPreview.vue'
 import AppDateRangePicker from '@/components/common/AppDateRangePicker.vue'
 import JournalScrapbookEditor from '@/components/journals/JournalScrapbookEditor.vue'
 import { useToastStore } from '@/stores/toastStore'
+import { useAuthStore } from '@/stores/authStore'
 
 import { createJournal, uploadJournalMedia } from '@/services/journalService'
 import { getIslands } from '@/services/islandService'
@@ -24,6 +25,7 @@ import { getActivities } from '@/services/activityService'
 const router = useRouter()
 const route = useRoute()
 const toastStore = useToastStore()
+const authStore = useAuthStore()
 
 const step = ref(1)
 const maxStep = ref(1)
@@ -124,6 +126,7 @@ function uploadedMediaType(file) {
 
 async function loadData() {
   try {
+    form.value.is_public = authStore.user?.default_journal_visibility !== 'private'
     islands.value = await getIslands()
     speciesList.value = await getSpecies()
     activities.value = await getActivities()

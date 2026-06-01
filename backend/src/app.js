@@ -13,6 +13,7 @@ const savedJournalRoutes = require('./routes/savedJournalRoutes')
 const activityRoutes = require('./routes/activityRoutes')
 const uploadRoutes = require('./routes/uploadRoutes')
 const itineraryRoutes = require('./routes/itineraryRoutes')
+const notificationRoutes = require('./routes/notificationRoutes')
 
 const app = express()
 
@@ -38,5 +39,6 @@ app.use('/api/saved-journals', savedJournalRoutes)
 app.use('/api/activities', activityRoutes)
 app.use('/api/uploads', uploadRoutes)
 app.use('/api/itineraries', itineraryRoutes)
+app.use('/api/notifications', notificationRoutes)
 
 module.exports = app

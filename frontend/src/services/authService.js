@@ -18,3 +18,18 @@ export async function registerUser(username, email, password) {
 
   return res.data
 }
+
+export async function getCurrentUser() {
+  const res = await api.get('/auth/me')
+  return res.data
+}
+
+export async function updateProfile(data) {
+  const res = await api.put('/auth/me/profile', data)
+  return res.data
+}
+
+export async function updateSettings(data) {
+  const res = await api.put('/auth/me/settings', data)
+  return res.data
+}
