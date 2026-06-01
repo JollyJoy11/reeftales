@@ -80,8 +80,21 @@ async function getPublicJournals(filters = {}, userId = null) {
 
   sql += `
     GROUP BY journals.id
-    ORDER BY journals.created_at DESC
   `
+
+  if (filters.sort === 'likes') {
+    sql += `
+      ORDER BY like_count DESC, journals.created_at DESC
+    `
+  } else if (filters.sort === 'comments') {
+    sql += `
+      ORDER BY comment_count DESC, journals.created_at DESC
+    `
+  } else {
+    sql += `
+      ORDER BY journals.created_at DESC
+    `
+  }
 
   const [rows] = await db.query(sql, values)
   return rows

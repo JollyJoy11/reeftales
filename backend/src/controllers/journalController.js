@@ -16,7 +16,8 @@ async function fetchPublicJournals(req, res) {
   try {
     const journals = await getPublicJournals(
       {
-        search: req.query.search
+        search: req.query.search,
+        sort: req.query.sort
       },
       req.user?.id || 0
     )

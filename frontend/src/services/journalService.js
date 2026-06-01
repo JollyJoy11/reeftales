@@ -3,7 +3,8 @@ import api from './api'
 export async function getPublicJournals(params = {}) {
   const response = await api.get('/journals', {
     params: {
-      search: params.search || ''
+      search: params.search || '',
+      sort: params.sort || ''
     }
   })
 

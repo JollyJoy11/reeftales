@@ -13,6 +13,13 @@ const loading = ref(false)
 const errorMessage = ref('')
 const trendingIslands = ref([])
 const topExplorers = ref([])
+const sortBy = ref('newest')
+
+const sortOptions = [
+  { label: 'Newest', value: 'newest' },
+  { label: 'Most Liked', value: 'likes' },
+  { label: 'Most Commented', value: 'comments' }
+]
 
 async function loadJournals() {
   try {
@@ -20,7 +27,8 @@ async function loadJournals() {
     errorMessage.value = ''
 
     journals.value = await getPublicJournals({
-      search: search.value
+      search: search.value,
+      sort: sortBy.value
     })
   } catch (error) {
     errorMessage.value = 'Failed to load community diaries.'
@@ -42,7 +50,7 @@ function getInitial(name) {
   return name?.charAt(0)?.toUpperCase() || 'U'
 }
 
-watch(search, () => {
+watch([search, sortBy], () => {
   loadJournals()
 })
 
@@ -102,7 +110,23 @@ onMounted(() => {
       />
 
       <div v-else class="row g-4">
-        <main class="col-12 col-lg-8">
+        <main class="col-12 col-lg-8 order-2 order-lg-1">
+          <div class="journal-toolbar">
+            <span>{{ journals.length }} diaries found</span>
+
+            <div class="journal-sort">
+              <button
+                v-for="option in sortOptions"
+                :key="option.value"
+                type="button"
+                :class="{ active: sortBy === option.value }"
+                @click="sortBy = option.value"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+          </div>
+
           <div v-if="journals.length" class="row g-4">
             <div
               v-for="journal in journals"
@@ -121,7 +145,7 @@ onMounted(() => {
           />
         </main>
 
-        <aside class="col-12 col-lg-4">
+        <aside class="col-12 col-lg-4 order-1 order-lg-2">
           <div class="community-sidebar">
             <section class="sidebar-card">
               <h6><i class="bi bi-compass"></i> Trending Islands</h6>
@@ -436,6 +460,42 @@ onMounted(() => {
   font-weight: 800;
 }
 
+.journal-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.journal-toolbar > span {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.journal-sort {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.journal-sort button {
+  border: 1px solid #d8cdbb;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #fffdf8;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.journal-sort button.active {
+  border-color: #1897a0;
+  background: #deefec;
+  color: #1897a0;
+}
+
 @media (max-width: 991px) {
   .community-sidebar {
     position: static;
@@ -450,52 +510,10 @@ onMounted(() => {
   .hero-actions {
     min-width: 0;
   }
-}
 
-:global(body.dark-mode) .community-hero {
-  background:
-    linear-gradient(90deg, rgba(37,50,68,0.98), rgba(37,50,68,0.92)),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,0.07) 0,
-      rgba(255,255,255,0.07) 1px,
-      transparent 1px,
-      transparent 32px
-    );
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .community-hero h1,
-:global(body.dark-mode) .sidebar-card h6,
-:global(body.dark-mode) .trend-row strong,
-:global(body.dark-mode) .explorer-row strong {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .community-hero p,
-:global(body.dark-mode) .trend-row small,
-:global(body.dark-mode) .explorer-row small,
-:global(body.dark-mode) .sidebar-empty {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .community-search,
-:global(body.dark-mode) .hero-stats span {
-  background: #2d3748;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .community-search input,
-:global(body.dark-mode) .hero-stats strong {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .sidebar-card {
-  background: #253244;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .trend-row {
-  border-color: rgba(255,255,255,0.1);
+  .journal-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 </style>
