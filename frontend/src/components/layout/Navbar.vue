@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
 import { getMyJournalSummary } from '@/services/journalService'
+import MobileSidebar from '@/components/layout/MobileSidebar.vue'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
@@ -273,79 +274,30 @@ watch(
       </ul>
 
       <!-- Mobile Offcanvas Button -->
-      <button class="btn d-lg-none ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+      <button
+        class="btn d-lg-none ms-auto mobile-menu-btn"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileMenu"
+      >
         <i class="bi bi-list fs-2"></i>
       </button>
     </div>
   </nav>
 
-  <!-- Mobile Offcanvas Menu -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title fw-bold navbar-brand">Reef Tales</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-
-    <div class="offcanvas-body">
-      <!-- Mobile Search -->
-      <div class="input-group mb-4">
-        <span class="input-group-text bg-light">
-          <i class="bi bi-search"></i>
-        </span>
-
-        <input
-          v-model="searchQuery"
-          class="form-control"
-          type="search"
-          placeholder="Search..."
-        />
-      </div>
-
-      <ul class="navbar-nav gap-2">
-        <li v-for="link in mainNavLinks" :key="link.label">
-          <RouterLink
-            :to="link.to"
-            class="nav-link mobile-nav-link"
-            :class="{ 'section-active': isSectionActive(link.section) }"
-          >
-            {{ link.label }}
-          </RouterLink>
-        </li>
-
-        <li>
-          <button class="btn btn-light w-100 mb-2" @click="toggleTheme">
-            <i :class="currentTheme === 'light' ? 'bi bi-moon-stars' : 'bi bi-brightness-high'"></i>
-            Toggle Theme
-          </button>
-        </li>
-
-        <li class="dropdown">
-          <button class="btn btn-light w-100 dropdown-toggle" data-bs-toggle="dropdown">
-            <i class="bi bi-globe2"></i>
-            {{ currentLanguage }}
-          </button>
-
-          <ul class="dropdown-menu w-100">
-            <li><button class="dropdown-item" @click="changeLanguage('English')">English</button></li>
-            <li><button class="dropdown-item" @click="changeLanguage('Bahasa Melayu')">Bahasa Melayu</button></li>
-            <li><button class="dropdown-item" @click="changeLanguage('中文')">中文</button></li>
-          </ul>
-        </li>
-
-        <hr />
-
-        <template v-if="!authStore.isLoggedIn">
-          <li><RouterLink to="/login" class="btn btn-outline-primary w-100 mb-2">Login</RouterLink></li>
-          <li><RouterLink to="/register" class="btn btn-primary w-100">Register</RouterLink></li>
-        </template>
-
-        <template v-else>
-          <li><RouterLink to="/dashboard" class="nav-link">My Logbook</RouterLink></li>
-          <li><RouterLink to="/settings" class="nav-link">Settings</RouterLink></li>
-          <li><button class="btn btn-outline-danger w-100 mt-3" @click="handleLogout">Logout</button></li></template>
-      </ul>
-    </div>
-  </div>
+  <MobileSidebar
+    v-model:search-query="searchQuery"
+    :main-nav-links="mainNavLinks"
+    :current-theme="currentTheme"
+    :current-language="currentLanguage"
+    :auth-store="authStore"
+    :profile-initial="profileInitial"
+    :user-level="userLevel"
+    :is-section-active="isSectionActive"
+    @toggle-theme="toggleTheme"
+    @change-language="changeLanguage"
+    @logout="handleLogout"
+  />
 </template>
 
 <style scoped>
@@ -451,17 +403,6 @@ nav{
   align-items: center;
 }
 
-.offcanvas .navbar-nav,
-.offcanvas .navbar-nav li {
-  width: 100%;
-}
-
-.offcanvas .btn,
-.offcanvas .nav-link {
-  width: 100%;
-  display: block;
-}
-
 .nav-action-btn {
   width: 38px;
   height: 38px;
@@ -557,8 +498,7 @@ nav{
   color: #147d84;
 }
 
-.main-nav-item .nav-link.section-active,
-.offcanvas .mobile-nav-link.section-active  {
+.main-nav-item .nav-link.section-active {
   color: #1ba7b1 !important;
   position: relative;
   font-weight: 600;
