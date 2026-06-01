@@ -3,9 +3,11 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
+import DashboardSideNav from '@/components/dashboard/DashboardSideNav.vue'
+import DashboardTravelTimeline from '@/components/dashboard/DashboardTravelTimeline.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
-import { getItineraries } from '@/services/itineraryService'
+import { deleteItinerary, getItineraries } from '@/services/itineraryService'
 import {
   deleteJournal,
   getMyJournals,
@@ -32,9 +34,10 @@ const savedIslands = ref([])
 const savedJournals = ref([])
 const aiIdentifications = ref([])
 const journalActionIds = ref(new Set())
+const itineraryActionIds = ref(new Set())
 
 const panels = [
-  { id: 'overview', label: 'My Passport', icon: 'bi-passport' },
+  { id: 'overview', label: 'Overview', icon: 'bi-grid' },
   { id: 'journeys', label: 'Travel Timeline', icon: 'bi-journal-richtext' },
   { id: 'marine', label: 'My Marine Life', icon: 'bi-water' },
   { id: 'saved-islands', label: 'Saved Islands', icon: 'bi-bookmark-heart' },
@@ -123,8 +126,8 @@ function tripDaysFromDates(startDate, endDate) {
   return Number.isFinite(days) && days > 0 ? days : 0
 }
 
-function coverFor(journal) {
-  return journal.cover_image || journal.island_cover_image || '/images/island-placeholder.jpg'
+function coverFor(item) {
+  return item.cover_image || item.island_cover_image || '/images/island-placeholder.jpg'
 }
 
 function datesOverlap(first, second) {
@@ -163,27 +166,22 @@ function startJournalQuery(entry) {
 
 const displayName = computed(() => authStore.user?.username || 'Explorer')
 
-const explorerId = computed(() => {
-  const rawId = authStore.user?.id || authStore.user?.user_id || '0000'
-  return `CC-${String(rawId).padStart(6, '0')}`
-})
-
-const homeBase = computed(() => {
-  return authStore.user?.location || authStore.user?.home_base || 'Malaysia'
-})
-
-const joinedSince = computed(() => {
-  const joinDate =
-    authStore.user?.created_at ||
-    journals.value[journals.value.length - 1]?.created_at
-
-  return joinDate ? formatMonth(joinDate) : 'Recently'
-})
-
 const recentJournals = computed(() => journals.value.slice(0, 3))
 
 const unmatchedPlannedTrips = computed(() =>
   itineraries.value.filter(itinerary => !matchesJournal(itinerary))
+)
+
+const upcomingTrips = computed(() =>
+  unmatchedPlannedTrips.value
+    .filter(trip => !isPastTrip(trip))
+    .slice(0, 3)
+)
+
+const readyToJournalTrips = computed(() =>
+  unmatchedPlannedTrips.value
+    .filter(trip => isPastTrip(trip))
+    .slice(0, 3)
 )
 
 const totalMedia = computed(() =>
@@ -232,10 +230,14 @@ const explorerProgress = computed(() =>
     journals: journals.value,
     savedIslands: savedIslands.value,
     savedJournals: savedJournals.value,
+    itineraries: itineraries.value,
     speciesChecklist: speciesChecklist.value,
     aiSpeciesList: aiSpeciesList.value,
     totalMedia: totalMedia.value,
-    visitedCountries: visitedCountries.value
+    visitedCountries: visitedCountries.value,
+    journalCount: journals.value.length,
+    speciesCount: speciesChecklist.value.length,
+    publicCount: journals.value.filter(journal => journal.visibility === 'public').length
   })
 )
 
@@ -243,32 +245,68 @@ const badges = computed(() => explorerProgress.value.badges)
 const unlockedBadges = computed(() => explorerProgress.value.unlockedCount)
 const explorerLevel = computed(() => explorerProgress.value.tier)
 
-const visitedIslandNames = computed(() => {
-  return [...new Set(journals.value.map(journal => journal.island_name).filter(Boolean))]
+const nextSteps = computed(() => {
+  const steps = []
+
+  if (readyToJournalTrips.value.length) {
+    steps.push(`${readyToJournalTrips.value.length} completed plan${readyToJournalTrips.value.length > 1 ? 's are' : ' is'} ready to become journal`)
+  }
+
+  if (speciesChecklist.value.length < 3) {
+    steps.push(`${3 - speciesChecklist.value.length} more species to unlock Marine Spotter`)
+  }
+
+  if (!journals.value.some(journal => journal.visibility === 'public')) {
+    steps.push('Publish 1 public journal to unlock Community Voice')
+  }
+
+  return steps.slice(0, 3)
 })
 
-const passportStamps = computed(() => {
-  const completed = visitedIslandNames.value.map(name => ({
-    label: name,
-    type: 'completed'
-  }))
-
-  const planned = unmatchedPlannedTrips.value
-    .slice(0, 4)
-    .map(trip => ({
-      label: trip.island_name || trip.title,
-      type: 'planned'
-    }))
-
-  return [...completed, ...planned].slice(0, 12)
-})
+const stats = computed(() => [
+  {
+    label: 'Journeys',
+    value: journals.value.length,
+    note: `${unmatchedPlannedTrips.value.length} planned`,
+    icon: 'bi-compass',
+    panel: 'journeys'
+  },
+  {
+    label: 'Marine Life',
+    value: speciesChecklist.value.length + aiSpeciesList.value.length,
+    note: `${aiSpeciesList.value.length} AI IDs`,
+    icon: 'bi-water',
+    panel: 'marine'
+  },
+  {
+    label: 'Saved Islands',
+    value: savedIslands.value.length,
+    note: 'places kept',
+    icon: 'bi-bookmark-heart',
+    panel: 'saved-islands'
+  },
+  {
+    label: 'Saved Journals',
+    value: savedJournals.value.length,
+    note: 'stories saved',
+    icon: 'bi-bookmark-star',
+    panel: 'saved-journals'
+  },
+  {
+    label: 'Badges',
+    value: unlockedBadges.value,
+    note: `${badges.value.length} total`,
+    icon: 'bi-award',
+    panel: 'badges'
+  }
+])
 
 const travelTimeline = computed(() => {
   const completedTrips = journals.value.map(journal => ({
     ...journal,
     key: `journal-${journal.id}`,
     type: 'completed',
-    statusLabel: 'Completed',
+    statusLabel: 'Journal',
     monthLabel: formatMonth(journal.start_date || journal.created_at),
     days: tripDays(journal),
     sortDate: dateValue(journal.start_date || journal.created_at)
@@ -280,10 +318,8 @@ const travelTimeline = computed(() => {
     return {
       ...itinerary,
       key: `itinerary-${itinerary.id}`,
-      type: 'planned',
+      type: overdue ? 'ready' : 'planned',
       statusLabel: overdue ? 'Ready to journal' : 'Planned',
-      mood: overdue ? 'waiting for story' : 'upcoming',
-      sighting_count: 0,
       content:
         itinerary.notes ||
         `${itinerary.item_count || 0} planned activit${Number(itinerary.item_count) === 1 ? 'y' : 'ies'} for this trip.`,
@@ -298,19 +334,35 @@ const travelTimeline = computed(() => {
 })
 
 function isJournalActionLoading(journalId) {
-  return journalActionIds.value.has(journalId)
+  return journalActionIds.value.has(`journal-${journalId}`)
 }
 
 function setJournalActionLoading(journalId, isLoading) {
   const nextIds = new Set(journalActionIds.value)
+  const actionId = `journal-${journalId}`
 
-  if (isLoading) {
-    nextIds.add(journalId)
-  } else {
-    nextIds.delete(journalId)
-  }
+  if (isLoading) nextIds.add(actionId)
+  else nextIds.delete(actionId)
 
   journalActionIds.value = nextIds
+}
+
+const timelineActionIds = computed(() =>
+  new Set([...journalActionIds.value, ...itineraryActionIds.value])
+)
+
+function isItineraryActionLoading(itineraryId) {
+  return itineraryActionIds.value.has(`itinerary-${itineraryId}`)
+}
+
+function setItineraryActionLoading(itineraryId, isLoading) {
+  const nextIds = new Set(itineraryActionIds.value)
+  const actionId = `itinerary-${itineraryId}`
+
+  if (isLoading) nextIds.add(actionId)
+  else nextIds.delete(actionId)
+
+  itineraryActionIds.value = nextIds
 }
 
 async function toggleJournalVisibility(journal) {
@@ -344,7 +396,6 @@ async function removeJournal(journal) {
   if (isJournalActionLoading(journal.id)) return
 
   const confirmed = window.confirm(`Delete "${journal.title}"? This cannot be undone.`)
-
   if (!confirmed) return
 
   try {
@@ -359,6 +410,26 @@ async function removeJournal(journal) {
     toastStore.danger('Unable to delete journal.')
   } finally {
     setJournalActionLoading(journal.id, false)
+  }
+}
+
+async function removeItinerary(itinerary) {
+  if (isItineraryActionLoading(itinerary.id)) return
+
+  const confirmed = window.confirm(`Delete "${itinerary.title}"? This cannot be undone.`)
+  if (!confirmed) return
+
+  try {
+    setItineraryActionLoading(itinerary.id, true)
+    await deleteItinerary(itinerary.id)
+
+    itineraries.value = itineraries.value.filter(item => item.id !== itinerary.id)
+
+    toastStore.success('Itinerary deleted.')
+  } catch {
+    toastStore.danger('Unable to delete itinerary.')
+  } finally {
+    setItineraryActionLoading(itinerary.id, false)
   }
 }
 
@@ -399,363 +470,190 @@ onMounted(loadDashboard)
 <template>
   <MainLayout>
     <main class="dashboard-page">
-      <LoadingState v-if="loading" message="Loading your explorer passport..." />
+      <LoadingState v-if="loading" message="Loading your logbook..." />
 
       <div v-else class="dashboard-shell">
         <div v-if="error" class="error-note">
           {{ error }}
         </div>
 
-        <section v-if="false" class="passport-book overview-passport">
-          <div class="passport-cover">
-            <div>
-              <span>Coral Chronicle</span>
-              <h1>Explorer Passport</h1>
-              <p>{{ explorerLevel.name }} — {{ homeBase }}</p>
-            </div>
-
-            <div class="passport-anchor">
-              <i class="bi bi-anchor"></i>
-            </div>
-          </div>
-
-          <div class="passport-body">
-            <aside class="passport-profile">
-              <div class="passport-photo">
-                <i class="bi bi-person"></i>
-              </div>
-
-              <strong>{{ displayName }}</strong>
-              <span>Signature</span>
-
-              <div class="badge-dots" aria-label="Badges earned">
-                <i
-                  v-for="badge in badges"
-                  :key="badge.id"
-                  :class="{ earned: badge.unlocked }"
-                ></i>
-              </div>
-
-              <small>{{ unlockedBadges }} / {{ badges.length }} badges earned</small>
-            </aside>
-
-            <section class="passport-info">
-              <div class="passport-details">
-                <div>
-                  <span>Full Name</span>
-                  <strong>{{ displayName }}</strong>
-                </div>
-
-                <div>
-                  <span>Explorer ID</span>
-                  <strong>{{ explorerId }}</strong>
-                </div>
-
-                <div>
-                  <span>Joined Since</span>
-                  <strong>{{ joinedSince }}</strong>
-                </div>
-
-                <div>
-                  <span>Home Base</span>
-                  <strong>{{ homeBase }}</strong>
-                </div>
-
-                <div>
-                  <span>Total Journeys</span>
-                  <strong>{{ journals.length }} journeys</strong>
-                </div>
-
-                <div>
-                  <span>Journal Entries</span>
-                  <strong>{{ journals.length }} entries</strong>
-                </div>
-              </div>
-
-              <div class="tier-card">
-                <span class="tier-icon">
-                  <i class="bi bi-award"></i>
-                </span>
-
-                <div>
-                  <h2>{{ explorerLevel.name }}</h2>
-                  <p>{{ explorerLevel.progress }}% progress to {{ explorerLevel.next }}</p>
-
-                  <div class="tier-track">
-                    <i :style="{ width: `${explorerLevel.progress}%` }"></i>
-                  </div>
-                </div>
-              </div>
-
-              <div class="island-stamps">
-                <div class="section-label">
-                  <span>Islands visited / planned</span>
-                </div>
-
-                <div class="stamp-list">
-                  <span
-                    v-for="stamp in passportStamps"
-                    :key="`${stamp.type}-${stamp.label}`"
-                    :class="{ planned: stamp.type === 'planned' }"
-                  >
-                    {{ stamp.label }}
-                  </span>
-
-                  <span v-if="!passportStamps.length" class="empty-stamp">
-                    No island stamps yet
-                  </span>
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <div class="passport-footer">
-            <span>CC&lt;MYS&lt;{{ displayName.replaceAll(' ', '&lt;').toUpperCase() }}</span>
-            <RouterLink to="/journal/create" class="create-btn">
-              <i class="bi bi-plus-circle"></i>
-              Create journal
-            </RouterLink>
-          </div>
-        </section>
-
         <section class="dashboard-layout">
-          <aside class="logbook-nav">
-            <button
-              v-for="panel in panels"
-              :key="panel.id"
-              type="button"
-              class="logbook-tab"
-              :class="{ active: activePanel === panel.id }"
-              @click="setPanel(panel.id)"
-            >
-              <i :class="`bi ${panel.icon}`"></i>
-              {{ panel.label }}
-            </button>
-          </aside>
+          <DashboardSideNav
+            :panels="panels"
+            :active-panel="activePanel"
+            :display-name="displayName"
+            :explorer-level="explorerLevel"
+            @select="setPanel"
+          />
 
           <div class="logbook-content">
-            <section v-if="activePanel === 'overview'" class="content-panel passport-panel">
-              <section class="passport-book">
-                <div class="passport-cover">
+            <section v-if="activePanel === 'overview'" class="overview-stack">
+              <section class="welcome-card">
+                <div>
+                  <span class="eyebrow">My Logbook</span>
+                  <h1>Welcome back, {{ displayName }}</h1>
+                  <p>
+                    Continue your reef journeys, turn completed plans into journals,
+                    and keep track of your saved islands and stories.
+                  </p>
+
+                  <div class="tier-summary">
+                    <strong>{{ explorerLevel.name }}</strong>
+                    <small>{{ explorerLevel.progress }}% progress to {{ explorerLevel.next }}</small>
+
+                    <div class="tier-track">
+                      <i :style="{ width: `${explorerLevel.progress}%` }"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <RouterLink to="/journal/create" class="create-btn">
+                  <i class="bi bi-plus-circle"></i>
+                  Create journal
+                </RouterLink>
+              </section>
+
+              <section class="stats-grid">
+                <button
+                  v-for="stat in stats"
+                  :key="stat.label"
+                  type="button"
+                  class="stat-card"
+                  @click="setPanel(stat.panel)"
+                >
+                  <span class="stat-icon">
+                    <i :class="`bi ${stat.icon}`"></i>
+                  </span>
+
+                  <strong>{{ stat.value }}</strong>
+                  <span>{{ stat.label }}</span>
+                  <small>{{ stat.note }}</small>
+                </button>
+              </section>
+
+              <section v-if="nextSteps.length" class="next-steps-card">
+                <div class="panel-heading compact">
                   <div>
-                    <span>Coral Chronicle</span>
-                    <h1>Explorer Passport</h1>
-                    <p>{{ explorerLevel.name }} - {{ homeBase }}</p>
-                  </div>
-
-                  <div class="passport-anchor">
-                    <i class="bi bi-anchor"></i>
+                    <span>Next steps</span>
+                    <h2>Suggested actions</h2>
                   </div>
                 </div>
 
-                <div class="passport-body">
-                  <aside class="passport-profile">
-                    <div class="passport-photo">
-                      <i class="bi bi-person"></i>
-                    </div>
-
-                    <strong>{{ displayName }}</strong>
-                    <span>Signature</span>
-
-                    <div class="badge-dots" aria-label="Badges earned">
-                      <i
-                        v-for="badge in badges"
-                        :key="badge.id"
-                        :class="{ earned: badge.unlocked }"
-                      ></i>
-                    </div>
-
-                    <small>{{ unlockedBadges }} / {{ badges.length }} badges earned</small>
-                  </aside>
-
-                  <section class="passport-info">
-                    <div class="passport-details">
-                      <div>
-                        <span>Full Name</span>
-                        <strong>{{ displayName }}</strong>
-                      </div>
-
-                      <div>
-                        <span>Explorer ID</span>
-                        <strong>{{ explorerId }}</strong>
-                      </div>
-
-                      <div>
-                        <span>Joined Since</span>
-                        <strong>{{ joinedSince }}</strong>
-                      </div>
-
-                      <div>
-                        <span>Home Base</span>
-                        <strong>{{ homeBase }}</strong>
-                      </div>
-
-                      <div>
-                        <span>Total Journeys</span>
-                        <strong>{{ journals.length }} journeys</strong>
-                      </div>
-
-                      <div>
-                        <span>Journal Entries</span>
-                        <strong>{{ journals.length }} entries</strong>
-                      </div>
-                    </div>
-
-                    <div class="tier-card">
-                      <span class="tier-icon">
-                        <i class="bi bi-award"></i>
-                      </span>
-
-                      <div>
-                        <h2>{{ explorerLevel.name }}</h2>
-                        <p>{{ explorerLevel.progress }}% progress to {{ explorerLevel.next }}</p>
-
-                        <div class="tier-track">
-                          <i :style="{ width: `${explorerLevel.progress}%` }"></i>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="island-stamps">
-                      <div class="section-label">
-                        <span>Islands visited / planned</span>
-                      </div>
-
-                      <div class="stamp-list">
-                        <span
-                          v-for="stamp in passportStamps"
-                          :key="`${stamp.type}-${stamp.label}`"
-                          :class="{ planned: stamp.type === 'planned' }"
-                        >
-                          {{ stamp.label }}
-                        </span>
-
-                        <span v-if="!passportStamps.length" class="empty-stamp">
-                          No island stamps yet
-                        </span>
-                      </div>
-                    </div>
-                  </section>
-                </div>
-
-                <div class="passport-footer">
-                  <span>CC&lt;MYS&lt;{{ displayName.replaceAll(' ', '&lt;').toUpperCase() }}</span>
-                  <RouterLink to="/journal/create" class="create-btn">
-                    <i class="bi bi-plus-circle"></i>
-                    Create journal
-                  </RouterLink>
+                <div class="next-step-list">
+                  <div
+                    v-for="step in nextSteps"
+                    :key="step"
+                    class="next-step"
+                  >
+                    <i class="bi bi-stars"></i>
+                    <span>{{ step }}</span>
+                  </div>
                 </div>
               </section>
 
-              <template v-if="false">
-              <div class="panel-block wide">
-                <div class="panel-heading">
-                  <div>
-                    <span>Recent journals</span>
-                    <h2>Latest journeys</h2>
-                  </div>
-
-                  <RouterLink to="/journal/create" class="mini-link">
-                    New entry
-                  </RouterLink>
-                </div>
-
-                <div v-if="recentJournals.length" class="journey-list compact">
-                  <article
-                    v-for="journal in recentJournals"
-                    :key="journal.id"
-                    class="journey-row"
-                  >
-                    <AppStampFrame
-                      class="journey-thumb"
-                      :image="coverFor(journal)"
-                      :alt="`Cover image for ${journal.title || 'journal'}`"
-                      @error="$event.target.src = '/images/island-placeholder.jpg'"
-                    />
-
+              <section class="overview-grid">
+                <div class="panel-block large">
+                  <div class="panel-heading">
                     <div>
-                      <small>{{ journal.island_name }} - {{ formatDate(journal.start_date) }}</small>
-                      <h3>{{ journal.title }}</h3>
-                      <p>{{ journal.content || 'No story written yet.' }}</p>
+                      <span>Recent journals</span>
+                      <h2>Latest stories</h2>
                     </div>
 
-                    <RouterLink :to="`/journal/${journal.id}`" class="icon-link">
-                      <i class="bi bi-arrow-right"></i>
-                    </RouterLink>
-                  </article>
-                </div>
+                    <button type="button" class="plain-link" @click="setPanel('journeys')">
+                      View timeline
+                    </button>
+                  </div>
 
-                <div v-else class="empty-note">
-                  No journeys yet. Start with your first reef story.
-                </div>
-              </div>
+                  <div v-if="recentJournals.length" class="journal-list">
+                    <article
+                      v-for="journal in recentJournals"
+                      :key="journal.id"
+                      class="journal-card"
+                    >
+                      <AppStampFrame
+                        class="journal-thumb"
+                        :image="coverFor(journal)"
+                        :alt="journal.title || 'Journal cover'"
+                        @error="$event.target.src = '/images/island-placeholder.jpg'"
+                      />
 
-              <div class="panel-block">
-                <div class="panel-heading">
-                  <div>
-                    <span>Species discovered</span>
-                    <h2>Marine checklist</h2>
+                      <div>
+                        <small>{{ journal.island_name }} • {{ formatDate(journal.start_date || journal.created_at) }}</small>
+                        <h3>{{ journal.title }}</h3>
+                        <p>{{ journal.content || 'No story written yet.' }}</p>
+                      </div>
+
+                      <RouterLink :to="`/journal/${journal.id}`" class="circle-link">
+                        <i class="bi bi-arrow-right"></i>
+                      </RouterLink>
+                    </article>
+                  </div>
+
+                  <div v-else class="empty-note">
+                    No journals yet. Create your first reef story.
                   </div>
                 </div>
 
-                <div v-if="speciesChecklist.length" class="checklist">
-                  <button
-                    v-for="species in speciesChecklist.slice(0, 5)"
-                    :key="species.name"
-                    type="button"
-                    class="check-row"
-                    @click="setPanel('marine')"
-                  >
-                    <i class="bi bi-check-circle-fill"></i>
-                    <span>{{ species.name }}</span>
-                    <small>{{ species.count }}x</small>
-                  </button>
-                </div>
+                <div class="side-stack">
+                  <div class="panel-block">
+                    <div class="panel-heading compact">
+                      <div>
+                        <span>Ready to write</span>
+                        <h2>Completed plans</h2>
+                      </div>
+                    </div>
 
-                <div v-else class="empty-note">
-                  Add marine sightings in a journal to build this list.
-                </div>
-              </div>
+                    <div v-if="readyToJournalTrips.length" class="mini-list">
+                      <RouterLink
+                        v-for="trip in readyToJournalTrips"
+                        :key="trip.id"
+                        :to="startJournalQuery(trip)"
+                        class="mini-row"
+                      >
+                        <i class="bi bi-pencil-square"></i>
+                        <div>
+                          <strong>{{ trip.island_name || trip.title }}</strong>
+                          <small>{{ formatDate(trip.start_date) }}</small>
+                        </div>
+                      </RouterLink>
+                    </div>
 
-              <div class="panel-block">
-                <div class="panel-heading">
-                  <div>
-                    <span>Saved for later</span>
-                    <h2>Saved journals</h2>
+                    <div v-else class="empty-note">
+                      No completed plans waiting.
+                    </div>
                   </div>
 
-                  <button class="plain-link" type="button" @click="setPanel('saved-journals')">
-                    View all
-                  </button>
-                </div>
+                  <div class="panel-block">
+                    <div class="panel-heading compact">
+                      <div>
+                        <span>Saved</span>
+                        <h2>For later</h2>
+                      </div>
+                    </div>
 
-                <div v-if="savedJournals.length" class="saved-mini-list">
-                  <RouterLink
-                    v-for="journal in savedJournals.slice(0, 4)"
-                    :key="journal.id"
-                    :to="`/journal/${journal.id}`"
-                    class="saved-mini"
-                  >
-                    <img
-                      :src="coverFor(journal)"
-                      :alt="journal.title || 'Saved journal'"
-                    />
-                    <span>{{ journal.title }}</span>
-                  </RouterLink>
-                </div>
+                    <div class="saved-split">
+                      <button type="button" @click="setPanel('saved-islands')">
+                        <i class="bi bi-bookmark-heart"></i>
+                        <strong>{{ savedIslands.length }}</strong>
+                        <span>Islands</span>
+                      </button>
 
-                <div v-else class="empty-note">
-                  Saved journals will appear here.
+                      <button type="button" @click="setPanel('saved-journals')">
+                        <i class="bi bi-bookmark-star"></i>
+                        <strong>{{ savedJournals.length }}</strong>
+                        <span>Journals</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              </template>
+              </section>
             </section>
 
             <section v-else-if="activePanel === 'journeys'" class="content-panel">
               <div class="panel-heading">
                 <div>
                   <span>Travel Timeline</span>
-                  <h2>Travel timeline</h2>
+                  <h2>Planned trips & completed journals</h2>
                 </div>
 
                 <RouterLink to="/journal/create" class="mini-link">
@@ -763,98 +661,14 @@ onMounted(loadDashboard)
                 </RouterLink>
               </div>
 
-              <div v-if="travelTimeline.length" class="travel-timeline">
-                <article
-                  v-for="entry in travelTimeline"
-                  :key="entry.key"
-                  class="timeline-entry"
-                  :class="`is-${entry.type}`"
-                >
-                  <div class="timeline-date">
-                    <span>{{ entry.monthLabel.split(' ')[0] }}</span>
-                    <small>{{ entry.monthLabel.split(' ')[1] }}</small>
-                  </div>
-
-                  <span class="timeline-dot"></span>
-
-                  <div class="timeline-card">
-                    <div>
-                      <div class="timeline-title-row">
-                        <h3>{{ entry.island_name }}, {{ entry.country }}</h3>
-                        <span class="timeline-status">{{ entry.statusLabel }}</span>
-                      </div>
-
-                      <p>{{ entry.content || entry.title }}</p>
-
-                      <div class="meta-pills">
-                        <span>{{ entry.mood || 'logged' }}</span>
-                        <span v-if="entry.type === 'completed'">
-                          {{ entry.sighting_count || 0 }} species
-                        </span>
-                        <span v-else>
-                          {{ entry.item_count || 0 }} planned stops
-                        </span>
-                        <span>{{ entry.days || 1 }} day{{ entry.days === 1 ? '' : 's' }}</span>
-                      </div>
-                    </div>
-
-                    <AppStampFrame
-                      class="timeline-stamp"
-                      :image="coverFor(entry)"
-                      :alt="entry.title || entry.island_name || 'Timeline image'"
-                      @error="$event.target.src = '/images/island-placeholder.jpg'"
-                    />
-
-                    <div
-                      v-if="entry.type === 'completed'"
-                      class="timeline-controls"
-                    >
-                      <RouterLink
-                        :to="`/journal/${entry.id}`"
-                        class="open-btn"
-                      >
-                        View
-                      </RouterLink>
-
-                      <div class="journal-actions">
-                        <button
-                          type="button"
-                          class="visibility-toggle"
-                          :class="{ private: entry.visibility === 'private' }"
-                          :disabled="isJournalActionLoading(entry.id)"
-                          @click.stop="toggleJournalVisibility(entry)"
-                        >
-                          <i :class="entry.visibility === 'public' ? 'bi bi-eye' : 'bi bi-lock'"></i>
-                          {{ entry.visibility === 'public' ? 'Public' : 'Private' }}
-                        </button>
-
-                        <button
-                          type="button"
-                          class="delete-journal-btn"
-                          :disabled="isJournalActionLoading(entry.id)"
-                          aria-label="Delete journal"
-                          @click.stop="removeJournal(entry)"
-                        >
-                          <i class="bi bi-trash3"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    <RouterLink
-                      v-else-if="entry.overdue"
-                      :to="startJournalQuery(entry)"
-                      class="open-btn"
-                    >
-                      Start journal
-                    </RouterLink>
-
-                    <RouterLink v-else to="/planner" class="open-btn">
-                      View plan
-                    </RouterLink>
-                  </div>
-                </article>
-              </div>
-
+              <DashboardTravelTimeline
+                v-if="travelTimeline.length"
+                :entries="travelTimeline"
+                :action-ids="timelineActionIds"
+                @toggle-visibility="toggleJournalVisibility"
+                @remove-journal="removeJournal"
+                @remove-itinerary="removeItinerary"
+              />
               <div v-else class="empty-note">
                 Planned trips and completed journals will appear here.
               </div>
@@ -930,7 +744,7 @@ onMounted(loadDashboard)
                         </div>
 
                         <p>{{ item.scientificName || 'Scientific name unavailable' }}</p>
-                        <small>{{ item.confidence || 'Confidence not stated' }} - {{ formatDate(item.created_at) }}</small>
+                        <small>{{ item.confidence || 'Confidence not stated' }} • {{ formatDate(item.created_at) }}</small>
                       </div>
                     </article>
                   </div>
@@ -964,7 +778,7 @@ onMounted(loadDashboard)
                   <AppStampFrame
                     class="saved-island-stamp"
                     :image="island.cover_image || '/images/island-placeholder.jpg'"
-                    :alt="`${island.name || 'Saved island'} in ${island.country || 'your saved islands'}`"
+                    :alt="island.name || 'Saved island'"
                     :contain="false"
                     @error="$event.target.src = '/images/island-placeholder.jpg'"
                   />
@@ -987,26 +801,26 @@ onMounted(loadDashboard)
                 </div>
               </div>
 
-              <div v-if="savedJournals.length" class="journey-list">
+              <div v-if="savedJournals.length" class="journal-list">
                 <article
                   v-for="journal in savedJournals"
                   :key="journal.id"
-                  class="journey-row"
+                  class="journal-card"
                 >
                   <AppStampFrame
-                    class="journey-thumb"
+                    class="journal-thumb"
                     :image="coverFor(journal)"
                     :alt="journal.title || 'Saved journal'"
                     @error="$event.target.src = '/images/island-placeholder.jpg'"
                   />
 
                   <div>
-                    <small>{{ journal.island_name }} - {{ formatDate(journal.start_date || journal.created_at) }}</small>
+                    <small>{{ journal.island_name }} • {{ formatDate(journal.start_date || journal.created_at) }}</small>
                     <h3>{{ journal.title }}</h3>
                     <p>{{ journal.content || 'No preview available.' }}</p>
                   </div>
 
-                  <RouterLink :to="`/journal/${journal.id}`" class="icon-link">
+                  <RouterLink :to="`/journal/${journal.id}`" class="circle-link">
                     <i class="bi bi-arrow-right"></i>
                   </RouterLink>
                 </article>
@@ -1056,9 +870,9 @@ onMounted(loadDashboard)
 <style scoped>
 .dashboard-page {
   min-height: calc(100vh - 80px);
-  padding: 34px 0 28px;
+  padding: 34px 0 46px;
   background:
-    radial-gradient(circle at top left, rgba(169, 216, 214, 0.34), transparent 34%),
+    radial-gradient(circle at top left, rgba(169, 216, 214, 0.32), transparent 34%),
     linear-gradient(180deg, #fffdf8 0%, #f7efe2 100%);
 }
 
@@ -1067,239 +881,95 @@ onMounted(loadDashboard)
   margin: 0 auto;
 }
 
-.passport-book,
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+}
+
 .content-panel,
-.logbook-nav,
+.welcome-card,
+.next-steps-card,
 .panel-block {
-  background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(251, 247, 239, 0.96)),
-    repeating-linear-gradient(0deg, transparent 0 31px, rgba(216, 205, 187, 0.42) 32px);
-  border: 1px dashed #d8cdbb;
-  box-shadow: 0 16px 34px rgba(47, 72, 88, 0.09);
-}
-
-.passport-book {
-  overflow: hidden;
+  border: 1px solid #eadfca;
   border-radius: 22px;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: 0 16px 34px rgba(47, 72, 88, 0.08);
 }
 
-.overview-passport {
-  margin-bottom: 18px;
+.logbook-content {
+  min-width: 0;
 }
 
-.passport-cover {
-  display: flex;
-  justify-content: space-between;
+.overview-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.welcome-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
   align-items: center;
-  gap: 24px;
-  padding: 30px 34px;
+  padding: 28px;
+  overflow: hidden;
   background:
-    radial-gradient(circle at top right, rgba(245, 169, 142, 0.34), transparent 40%),
-    linear-gradient(135deg, #1f6f78 0%, #1897a0 56%, #2f4858 100%);
-  color: #fffdf8;
+    radial-gradient(circle at top right, rgba(245, 169, 142, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(255, 253, 248, 0.96), rgba(222, 239, 236, 0.72));
 }
 
-.passport-cover span {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.passport-cover h1 {
-  margin: 0;
-  font-family: Georgia, serif;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-style: italic;
-}
-
-.passport-cover p {
-  margin: 4px 0 0;
-  color: rgba(255, 253, 248, 0.82);
-  font-weight: 700;
-}
-
-.passport-anchor {
-  width: 66px;
-  height: 66px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  border: 1px solid rgba(255, 253, 248, 0.68);
-  border-radius: 50%;
-  font-size: 1.9rem;
-  background: rgba(255, 253, 248, 0.12);
-  color: #fffdf8;
-  box-shadow: inset 0 0 0 6px rgba(255, 253, 248, 0.08);
-}
-
-.passport-body {
-  display: grid;
-  grid-template-columns: 270px minmax(0, 1fr);
-  min-height: 360px;
-}
-
-.passport-profile {
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  gap: 12px;
-  padding: 30px 28px;
-  border-right: 1px dashed #d8cdbb;
-  text-align: center;
-}
-
-.passport-photo {
-  width: 128px;
-  aspect-ratio: 0.78;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #8fcfca;
-  background: #deefec;
-  color: #147d84;
-  font-size: 3rem;
-}
-
-.passport-profile strong {
-  display: block;
-  margin-top: 8px;
-  color: #2f4858;
-  font-family: Georgia, serif;
-  font-style: italic;
-}
-
-.passport-profile > span {
-  width: 100%;
-  padding-top: 8px;
-  border-top: 1px solid #8fcfca;
-  color: #64748b;
-  font-size: 0.78rem;
-  font-family: Georgia, serif;
-  font-style: italic;
-}
-
-.badge-dots {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  max-width: 120px;
-  margin-top: 10px;
-}
-
-.badge-dots i {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #d7d1c4;
-}
-
-.badge-dots i.earned:nth-child(1) {
-  background: #1897a0;
-}
-
-.badge-dots i.earned:nth-child(2) {
-  background: #d6a642;
-}
-
-.badge-dots i.earned:nth-child(3) {
-  background: #86bdb1;
-}
-
-.badge-dots i.earned:nth-child(4) {
-  background: #f5a98e;
-}
-
-.badge-dots i.earned:nth-child(5) {
-  background: #8f8ad6;
-}
-
-.badge-dots i.earned:nth-child(6) {
-  background: #b9915c;
-}
-
-.passport-profile small {
-  color: #64748b;
-  font-weight: 700;
-}
-
-.passport-info {
-  padding: 30px 34px;
-}
-
-.passport-details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 34px;
-}
-
-.passport-details span,
-.section-label span {
-  display: block;
-  color: #bd704e;
-  font-size: 0.72rem;
+.eyebrow,
+.panel-heading span {
+  color: #1897a0;
+  font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.passport-details strong {
-  display: block;
-  margin-top: 4px;
+.welcome-card h1,
+.panel-heading h2 {
+  margin: 6px 0;
   color: #2f4858;
-  font-family: Georgia, serif;
-  font-size: 1.08rem;
-  font-weight: 500;
+  font-weight: 900;
 }
 
-.tier-card {
-  display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
-  gap: 14px;
-  align-items: center;
-  margin: 26px 0;
-  padding: 18px;
-  border: 1px dashed rgba(24, 151, 160, 0.34);
-  border-radius: 10px;
-  background: #deefec;
-}
-
-.tier-icon {
-  width: 54px;
-  height: 54px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #1897a0;
-  color: #fffdf8;
-  font-size: 1.4rem;
-}
-
-.tier-card h2 {
+.welcome-card p,
+.empty-note {
   margin: 0;
-  color: #2f4858;
-  font-family: Georgia, serif;
-  font-size: 1.15rem;
-  font-style: italic;
+  color: #64748b;
 }
 
-.tier-card p {
-  margin: 4px 0 8px;
-  color: #7c6f63;
-  font-size: 0.85rem;
+.tier-summary {
+  max-width: 420px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px dashed rgba(24, 151, 160, 0.32);
+  border-radius: 16px;
+  background: rgba(255, 253, 248, 0.72);
+}
+
+.tier-summary strong,
+.tier-summary small {
+  display: block;
+}
+
+.tier-summary strong {
+  color: #2f4858;
+}
+
+.tier-summary small {
+  color: #64748b;
   font-weight: 700;
 }
 
 .tier-track {
-  height: 7px;
+  height: 8px;
+  margin-top: 9px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(24, 151, 160, 0.18);
+  background: rgba(24, 151, 160, 0.16);
 }
 
 .tier-track i {
@@ -1307,48 +977,6 @@ onMounted(loadDashboard)
   height: 100%;
   border-radius: inherit;
   background: #f5a98e;
-}
-
-.stamp-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 12px;
-}
-
-.stamp-list span {
-  padding: 7px 12px;
-  border: 1px solid #62aaa0;
-  border-radius: 4px;
-  background: #e4f4ee;
-  color: #247162;
-  font-size: 0.76rem;
-  font-weight: 900;
-}
-
-.stamp-list span.planned {
-  border-color: #c7b18d;
-  background: #f7ead4;
-  color: #8c7250;
-}
-
-.stamp-list span.empty-stamp {
-  border-color: #d8cdbb;
-  background: #f8f1e6;
-  color: #9a7b55;
-}
-
-.passport-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 28px;
-  border-top: 1px dashed #d8cdbb;
-  background: #deefec;
-  color: #2f4858;
-  font-family: monospace;
-  font-size: 0.8rem;
 }
 
 .create-btn,
@@ -1368,7 +996,7 @@ onMounted(loadDashboard)
 }
 
 .create-btn {
-  padding: 10px 16px;
+  padding: 12px 18px;
 }
 
 .mini-link,
@@ -1384,134 +1012,134 @@ onMounted(loadDashboard)
   color: #fff;
 }
 
-.dashboard-layout {
-  display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  align-items: start;
-  gap: 18px;
+.plain-link {
+  border: none;
+  background: transparent;
+  color: #1897a0;
+  font-weight: 900;
 }
 
-.logbook-nav {
-  position: sticky;
-  top: 96px;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  display: grid;
+  gap: 3px;
+  text-align: left;
+  border: 1px solid #eadfca;
+  border-radius: 18px;
+  padding: 16px;
+  background: #fffdf8;
+  box-shadow: 0 10px 24px rgba(47, 72, 88, 0.06);
+}
+
+.stat-card:hover {
+  border-color: #1897a0;
+}
+
+.stat-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 7px;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+}
+
+.stat-card strong {
+  color: #2f4858;
+  font-size: 1.65rem;
+  line-height: 1;
+}
+
+.stat-card span {
+  color: #2f4858;
+  font-weight: 900;
+}
+
+.stat-card small {
+  color: #64748b;
+}
+
+.next-steps-card,
+.content-panel,
+.panel-block {
+  padding: 22px;
+}
+
+.next-step-list {
   display: grid;
   gap: 10px;
-  padding: 18px;
-  border-radius: 18px;
 }
 
-.logbook-tab {
+.next-step {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  padding: 11px 12px;
-  background: transparent;
-  color: #486174;
+  color: #2f4858;
   font-weight: 800;
-  text-align: left;
 }
 
-.logbook-tab:hover,
-.logbook-tab.active {
-  background: #deefec;
-  border-color: rgba(24, 151, 160, 0.24);
-  color: #147d84;
-}
-
-.content-panel {
-  padding: 24px;
-  border-radius: 18px;
-}
-
-.passport-panel {
-  padding: 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+.next-step i {
+  color: #f5a98e;
 }
 
 .overview-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  grid-template-columns: minmax(0, 1.4fr) 320px;
   gap: 18px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 0;
 }
 
-.panel-block {
-  padding: 22px;
-  border-radius: 18px;
-}
-
-.panel-block.wide {
-  grid-row: span 2;
+.side-stack {
+  display: grid;
+  gap: 18px;
 }
 
 .panel-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.panel-heading span {
-  color: #1897a0;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.panel-heading h2 {
-  margin: 6px 0;
-  color: #2f4858;
-}
-
-.empty-note {
-  margin: 0;
-  padding: 18px;
-  border: 1px dashed #d8cdbb;
-  border-radius: 16px;
-  background: rgba(251, 249, 241, 0.78);
-  color: #64748b;
-  font-weight: 700;
-  text-align: center;
-}
-
-.journey-list {
-  display: grid;
   gap: 14px;
+  margin-bottom: 16px;
 }
 
-.journey-row {
+.panel-heading.compact {
+  margin-bottom: 12px;
+}
+
+.panel-heading.compact h2 {
+  font-size: 1rem;
+}
+
+.journal-list {
   display: grid;
-  grid-template-columns: 116px minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: center;
-  padding: 14px;
-  border: 1px solid rgba(216, 205, 187, 0.82);
-  border-radius: 16px;
-  background: #fffdf8;
+  gap: 12px;
 }
 
-.journey-list.compact .journey-row {
+.journal-card {
+  display: grid;
   grid-template-columns: 92px minmax(0, 1fr) 36px;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #eadfca;
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.92);
 }
 
-.journey-thumb {
+.journal-thumb {
   aspect-ratio: 1.1;
   --stamp-radius: 5px;
-  --stamp-size: 15px;
+  --stamp-size: 14px;
 }
 
-.journey-row small,
-.journey-row p,
+.journal-card small,
+.journal-card p,
 .marine-card p,
 .ai-id-card p,
 .ai-id-card small,
@@ -1521,7 +1149,7 @@ onMounted(loadDashboard)
   color: #64748b;
 }
 
-.journey-row h3,
+.journal-card h3,
 .marine-card h3,
 .ai-id-card h3,
 .saved-island-card strong,
@@ -1529,275 +1157,104 @@ onMounted(loadDashboard)
   margin: 4px 0;
   color: #2f4858;
   font-family: 'Poppins', sans-serif;
-  font-size: 1.02rem;
-  font-weight: 900;
-}
-
-.journey-row p {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.icon-link {
-  width: 36px;
-  height: 36px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
-}
-
-.checklist {
-  display: grid;
-  gap: 9px;
-}
-
-.check-row {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  border-bottom: 1px dashed #d8cdbb;
-  padding: 8px 0;
-  background: transparent;
-  color: #2f4858;
-  font-weight: 800;
-}
-
-.check-row i,
-.marine-icon {
-  color: #1897a0;
-}
-
-.plain-link {
-  border: none;
-  background: transparent;
-  color: #1897a0;
-  font-weight: 900;
-}
-
-.saved-mini-list {
-  display: grid;
-  gap: 10px;
-}
-
-.saved-mini {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #2f4858;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.saved-mini img {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.travel-timeline {
-  position: relative;
-  display: grid;
-  gap: 18px;
-  padding-left: 4px;
-}
-
-.timeline-entry {
-  display: grid;
-  grid-template-columns: 58px 20px minmax(0, 1fr);
-  gap: 10px;
-  align-items: start;
-  position: relative;
-}
-
-.timeline-entry:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 67px;
-  top: 22px;
-  bottom: -24px;
-  border-left: 1px dashed #cdbd9f;
-}
-
-.timeline-date {
-  display: grid;
-  justify-items: end;
-  color: #9a7b55;
-  font-size: 0.76rem;
-  font-weight: 900;
-  line-height: 1.1;
-}
-
-.timeline-date small {
-  color: #b59a75;
-  font-weight: 800;
-}
-
-.timeline-dot {
-  position: relative;
-  z-index: 1;
-  width: 14px;
-  height: 14px;
-  margin-top: 4px;
-  border-radius: 50%;
-  background: #2f745f;
-  box-shadow: 0 0 0 5px #deefec;
-}
-
-.timeline-entry.is-planned .timeline-dot {
-  border: 3px solid #8f9aa8;
-  background: #fffdf8;
-  box-shadow: 0 0 0 5px #f0ebe1;
-}
-
-.timeline-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 86px auto;
-  gap: 14px;
-  align-items: center;
-  padding: 14px;
-  border: 1px solid rgba(216, 205, 187, 0.82);
-  border-radius: 16px;
-  background: #fffdf8;
-}
-
-.timeline-controls,
-.journal-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.timeline-controls {
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.journal-actions {
-  padding-left: 8px;
-  border-left: 1px dashed #d8cdbb;
-}
-
-.visibility-toggle,
-.delete-journal-btn {
-  min-height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: #deefec;
-  color: #147d84;
-  font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 900;
-}
-
-.visibility-toggle {
-  gap: 6px;
-  padding: 7px 11px;
-}
-
-.visibility-toggle.private {
-  background: #f4eadc;
-  color: #8c7250;
-}
-
-.delete-journal-btn {
-  width: 34px;
-  color: #a94444;
-}
-
-.visibility-toggle:hover,
-.delete-journal-btn:hover {
-  border-color: currentColor;
-}
-
-.visibility-toggle:disabled,
-.delete-journal-btn:disabled {
-  cursor: wait;
-  opacity: 0.58;
-}
-
-.timeline-entry.is-planned .timeline-card {
-  border-style: dashed;
-  background: #fffdf8;
-}
-
-.timeline-title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.timeline-card h3 {
-  margin: 0 0 4px;
-  color: #2f4858;
-  font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 900;
 }
 
-.timeline-status {
-  flex: 0 0 auto;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #deefec;
-  color: #1897a0;
-  font-size: 0.68rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.timeline-entry.is-planned .timeline-status {
-  background: #f4eadc;
-  color: #8c7250;
-}
-
-.timeline-card p {
+.journal-card p {
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #64748b;
   line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
-.timeline-stamp {
-  width: 86px;
-  aspect-ratio: 0.78;
-  transform: rotate(3deg);
-  --stamp-radius: 4px;
-  --stamp-size: 13px;
+.circle-link {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+  text-decoration: none;
 }
 
-.meta-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+.mini-list {
+  display: grid;
+  gap: 10px;
 }
 
-.meta-pills span {
-  padding: 5px 9px;
-  border-radius: 999px;
-  background: #f4eadc;
-  color: #7c6f63;
-  font-size: 0.72rem;
+.mini-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #eadfca;
+  border-radius: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mini-row i {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #deefec;
+  color: #1897a0;
+}
+
+.mini-row strong,
+.mini-row small {
+  display: block;
+}
+
+.mini-row strong {
+  color: #2f4858;
+  font-size: 0.9rem;
+}
+
+.mini-row small {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.saved-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.saved-split button {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  border: 1px solid #eadfca;
+  border-radius: 16px;
+  padding: 14px;
+  background: #fffdf8;
+}
+
+.saved-split i {
+  color: #1897a0;
+  font-size: 1.2rem;
+}
+
+.saved-split strong {
+  color: #2f4858;
+  font-size: 1.45rem;
+}
+
+.saved-split span {
+  color: #64748b;
   font-weight: 800;
 }
 
+/* Marine, saved, badges */
 .marine-sections {
   display: grid;
   gap: 26px;
@@ -1840,8 +1297,8 @@ onMounted(loadDashboard)
 .ai-id-card,
 .badge-card,
 .saved-island-card {
-  border: 1px solid rgba(216, 205, 187, 0.82);
-  border-radius: 16px;
+  border: 1px solid #eadfca;
+  border-radius: 18px;
   background: #fffdf8;
   text-decoration: none;
 }
@@ -1857,12 +1314,12 @@ onMounted(loadDashboard)
 .badge-card span {
   width: 42px;
   height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   flex: 0 0 auto;
   border-radius: 50%;
   background: #deefec;
+  color: #1897a0;
 }
 
 .ai-id-card {
@@ -1883,24 +1340,19 @@ onMounted(loadDashboard)
 }
 
 .ai-id-placeholder {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   color: #1897a0;
   font-size: 1.5rem;
 }
 
 .ai-id-title {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
 }
 
 .ai-id-title span {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
   flex: 0 0 auto;
   color: #8c7250;
   font-size: 0.72rem;
@@ -1962,33 +1414,27 @@ onMounted(loadDashboard)
   font-weight: 700;
 }
 
+@media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+}
+
 @media (max-width: 991px) {
-  .passport-body,
   .dashboard-layout {
     grid-template-columns: 1fr;
   }
 
-  .passport-profile {
-    border-right: none;
-    border-bottom: 1px dashed #d8cdbb;
+  .overview-grid {
+    grid-template-columns: 1fr;
   }
 
-  .overview-grid,
   .marine-grid,
   .ai-id-grid,
   .badge-grid,
   .island-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .logbook-nav {
-    position: static;
-    display: flex;
-    overflow-x: auto;
-  }
-
-  .logbook-tab {
-    min-width: max-content;
   }
 }
 
@@ -1997,21 +1443,12 @@ onMounted(loadDashboard)
     width: min(100% - 20px, 1180px);
   }
 
-  .passport-cover,
-  .passport-footer {
-    flex-direction: column;
-    align-items: flex-start;
+  .welcome-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
   }
 
-  .passport-info,
-  .passport-cover,
-  .content-panel,
-  .panel-block {
-    padding: 18px;
-  }
-
-  .passport-details,
-  .overview-grid,
+  .stats-grid,
   .marine-grid,
   .ai-id-grid,
   .badge-grid,
@@ -2019,30 +1456,19 @@ onMounted(loadDashboard)
     grid-template-columns: 1fr;
   }
 
-  .journey-row,
-  .journey-list.compact .journey-row {
-    grid-template-columns: 82px minmax(0, 1fr);
+  .journal-card {
+    grid-template-columns: 78px minmax(0, 1fr);
   }
 
-  .journey-row .icon-link {
+  .journal-card .circle-link {
     grid-column: 1 / -1;
     justify-self: end;
   }
 
-  .timeline-entry {
-    grid-template-columns: 44px 18px minmax(0, 1fr);
-  }
-
-  .timeline-entry:not(:last-child)::after {
-    left: 55px;
-  }
-
-  .timeline-card {
+  .saved-split {
     grid-template-columns: 1fr;
-  }
-
-  .timeline-stamp {
-    width: 74px;
   }
 }
 </style>
+
+

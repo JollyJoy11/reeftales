@@ -2,6 +2,7 @@ export function calculateExplorerProgress({
   journals = [],
   savedIslands = [],
   savedJournals = [],
+  itineraries = [],
   speciesChecklist = [],
   aiSpeciesList = [],
   totalMedia = 0,
@@ -59,6 +60,27 @@ export function calculateExplorerProgress({
       detail: 'Publish at least 1 public journal',
       icon: 'bi-megaphone',
       unlocked: finalPublicCount >= 1
+    },
+    {
+      id: 'trip_planner',
+      title: 'Trip Planner',
+      detail: 'Create your first planned trip',
+      icon: 'bi-calendar-heart',
+      unlocked: itineraries.length >= 1
+    },
+    {
+      id: 'reef_archivist',
+      title: 'Reef Archivist',
+      detail: 'Create 5 journals',
+      icon: 'bi-archive',
+      unlocked: finalJournalCount >= 5
+    },
+    {
+      id: 'species_researcher',
+      title: 'Species Researcher',
+      detail: 'Save 3 AI species identifications',
+      icon: 'bi-search-heart',
+      unlocked: aiSpeciesList.length >= 3
     },
     {
       id: 'island_hopper',
