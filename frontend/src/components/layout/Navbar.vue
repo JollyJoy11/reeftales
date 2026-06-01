@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
 import { getMyJournalSummary } from '@/services/journalService'
 import MobileSidebar from '@/components/layout/MobileSidebar.vue'
+import { calculateExplorerProgress } from '@/utils/explorerProgress'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
@@ -68,15 +69,13 @@ function handleLogout() {
 }
 
 const userLevel = computed(() => {
-  const journalCount = Number(journalSummary.value.journal_count || 0)
-  const speciesCount = Number(journalSummary.value.species_count || 0)
-  const publicCount = Number(journalSummary.value.public_count || 0)
-  const score = journalCount + Math.floor(speciesCount / 3) + publicCount
+  const progress = calculateExplorerProgress({
+    journalCount: Number(journalSummary.value.journal_count || 0),
+    speciesCount: Number(journalSummary.value.species_count || 0),
+    publicCount: Number(journalSummary.value.public_count || 0)
+  })
 
-  if (score >= 12) return 'Ocean Explorer III'
-  if (score >= 7) return 'Reef Explorer II'
-  if (score >= 3) return 'Island Voyager I'
-  return 'New Tide Explorer'
+  return progress.tier.name
 })
 
 async function loadProfileStats() {

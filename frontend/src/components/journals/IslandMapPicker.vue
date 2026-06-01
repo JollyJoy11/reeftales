@@ -103,7 +103,7 @@ function initMap() {
   if (map || !mapEl.value) return
 
   map = L.map(mapEl.value, {
-    minZoom: 2,
+    minZoom: 1,
     maxZoom: 8,
     worldCopyJump: false,
     maxBounds: [
