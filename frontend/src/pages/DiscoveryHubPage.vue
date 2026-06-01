@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import IslandCard from '@/components/discovery/IslandCard.vue'
 import SpeciesCard from '@/components/discovery/SpeciesCard.vue'
 import AIIdentifyCard from '@/components/discovery/AIIdentifyCard.vue'
@@ -16,6 +17,7 @@ import { useSavedIslandStore } from '@/stores/savedIslandStore'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
+const route = useRoute()
 const islands = ref([])
 const speciesList = ref([])
 const loading = ref(false)
@@ -27,6 +29,14 @@ const selectedActivities = ref([])
 const selectedSpeciesTypes = ref([])
 const minDepth = ref(0)
 const maxDepth = ref(100)
+
+function applyRouteSearch() {
+  const routeMode = route.query.mode === 'marine' ? 'marine' : 'islands'
+  const routeSearch = typeof route.query.search === 'string' ? route.query.search : ''
+
+  discoveryMode.value = routeMode
+  search.value = routeSearch
+}
 
 async function loadIslands() {
   try {
@@ -110,12 +120,20 @@ watch(
 )
 
 onMounted(async () => {
-  await loadIslands()
+  applyRouteSearch()
+  await handleFilterChange()
 
   if (authStore.isLoggedIn) {
     await savedIslandStore.loadSavedIslands()
   }
 })
+
+watch(
+  () => [route.query.mode, route.query.search],
+  () => {
+    applyRouteSearch()
+  }
+)
 </script>
 
 <template>

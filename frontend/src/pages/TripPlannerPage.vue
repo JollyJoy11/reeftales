@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import draggable from 'vuedraggable'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
@@ -28,6 +28,7 @@ import { getSavedJournals } from '@/services/savedJournalService'
 import { getJournalById } from '@/services/journalService'
 
 const toastStore = useToastStore()
+const route = useRoute()
 
 const loading = ref(true)
 const saving = ref(false)
@@ -544,7 +545,13 @@ watch(
   () => loadWeather()
 )
 
-onMounted(loadInitialData)
+onMounted(async () => {
+  await loadInitialData()
+
+  if (route.query.trip) {
+    await loadItinerary(route.query.trip)
+  }
+})
 </script>
 
 <template>
