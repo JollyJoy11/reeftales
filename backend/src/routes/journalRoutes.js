@@ -9,6 +9,8 @@ const {
   fetchTrendingIslands,
   fetchTopExplorers,
   addJournal,
+  changeJournalVisibility,
+  removeJournal,
   addJournalComment,
   toggleJournalLike
 } = require('../controllers/journalController')
@@ -19,6 +21,8 @@ router.get('/', optionalAuth, fetchPublicJournals)
 router.post('/', protect, addJournal)
 router.get('/me/summary', protect, fetchMyJournalSummary)
 router.get('/me/list', protect, fetchMyJournals)
+router.patch('/:id/visibility', protect, changeJournalVisibility)
+router.delete('/:id', protect, removeJournal)
 router.post('/:id/comments', protect, addJournalComment)
 router.post('/:id/like', protect, toggleJournalLike)
 router.get('/trending/islands', fetchTrendingIslands)

@@ -6,6 +6,8 @@ const {
   getTrendingIslands,
   getTopExplorers,
   createJournal,
+  updateJournalVisibility,
+  deleteJournal,
   addComment,
   isJournalLiked,
   likeJournal,
@@ -117,6 +119,45 @@ async function addJournal(req, res) {
   }
 }
 
+async function changeJournalVisibility(req, res) {
+  try {
+    const visibility = req.body.visibility
+
+    if (!['public', 'private'].includes(visibility)) {
+      return res.status(400).json({ message: 'Visibility must be public or private' })
+    }
+
+    const updated = await updateJournalVisibility(req.params.id, req.user.id, visibility)
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Journal not found' })
+    }
+
+    res.json({
+      message: 'Journal visibility updated',
+      visibility
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to update journal visibility' })
+  }
+}
+
+async function removeJournal(req, res) {
+  try {
+    const deleted = await deleteJournal(req.params.id, req.user.id)
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Journal not found' })
+    }
+
+    res.json({ message: 'Journal deleted' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Failed to delete journal' })
+  }
+}
+
 async function addJournalComment(req, res) {
   try {
     const content = req.body.content?.trim()
@@ -164,6 +205,8 @@ module.exports = {
   fetchTrendingIslands,
   fetchTopExplorers,
   addJournal,
+  changeJournalVisibility,
+  removeJournal,
   addJournalComment,
   toggleJournalLike
 }

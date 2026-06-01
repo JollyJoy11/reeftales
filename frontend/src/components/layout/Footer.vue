@@ -5,7 +5,7 @@ const authStore = useAuthStore()
 </script>
 
 <template>
-  <footer class="border-top mt-5 py-5">
+  <footer class="border-top py-5">
     <div class="container">
       <div class="row">
 

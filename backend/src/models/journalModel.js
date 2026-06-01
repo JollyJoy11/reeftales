@@ -494,6 +494,25 @@ async function createJournal(data) {
   }
 }
 
+async function updateJournalVisibility(journalId, userId, visibility) {
+  const [result] = await db.query(`
+    UPDATE journals
+    SET visibility = ?
+    WHERE id = ? AND user_id = ?
+  `, [visibility, journalId, userId])
+
+  return result.affectedRows > 0
+}
+
+async function deleteJournal(journalId, userId) {
+  const [result] = await db.query(`
+    DELETE FROM journals
+    WHERE id = ? AND user_id = ?
+  `, [journalId, userId])
+
+  return result.affectedRows > 0
+}
+
 module.exports = {
   getPublicJournals,
   getUserJournals,
@@ -502,6 +521,8 @@ module.exports = {
   getTrendingIslands,
   getTopExplorers,
   createJournal,
+  updateJournalVisibility,
+  deleteJournal,
   addComment,
   isJournalLiked,
   likeJournal,

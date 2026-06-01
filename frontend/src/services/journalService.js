@@ -26,6 +26,16 @@ export async function getJournalById(id) {
   return response.data
 }
 
+export async function updateJournalVisibility(journalId, visibility) {
+  const response = await api.patch(`/journals/${journalId}/visibility`, { visibility })
+  return response.data
+}
+
+export async function deleteJournal(journalId) {
+  const response = await api.delete(`/journals/${journalId}`)
+  return response.data
+}
+
 export async function getTrendingIslands() {
   const response = await api.get('/journals/trending/islands')
   return response.data
