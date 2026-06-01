@@ -1,18 +1,19 @@
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
 import { getMyJournalSummary } from '@/services/journalService'
 import MobileSidebar from '@/components/layout/MobileSidebar.vue'
+import NavbarSearch from '@/components/layout/NavbarSearch.vue'
 import { calculateExplorerProgress } from '@/utils/explorerProgress'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const route = useRoute()
+const router = useRouter()
 
 const searchQuery = ref('')
-const showSuggestions = ref(false)
 
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
 const currentLanguage = ref(localStorage.getItem('language') || 'English')
@@ -99,11 +100,19 @@ async function loadProfileStats() {
   }
 }
 
-const suggestions = [
-  { label: 'Maldives', type: 'Island', path: '/discovery/island/1' },
-  { label: 'Sea Turtle', type: 'Marine Life', path: '/discovery?mode=marine' },
-  { label: 'Sipadan Journal', type: 'Journal', path: '/community' }
-]
+function submitSearch() {
+  const query = searchQuery.value.trim()
+
+  if (!query) return
+
+  router.push({
+    path: '/discovery',
+    query: {
+      mode: 'islands',
+      search: query
+    }
+  })
+}
 
 function toggleTheme() {
   currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
@@ -137,33 +146,7 @@ watch(
       </RouterLink>
       
       <!-- Search -->
-      <div class="search-wrapper d-none d-lg-block position-relative">
-        <div class="input-group search-box">
-          <span class="input-group-text border-end-0">
-            <i class="bi bi-search"></i>
-          </span>
-
-          <input
-            v-model="searchQuery"
-            @focus="showSuggestions = true"
-            class="form-control border-start-0"
-            type="search"
-            placeholder="Search islands, marine life..."
-          />
-        </div>
-
-        <div v-if="showSuggestions && searchQuery" class="search-suggestions shadow-sm">
-          <RouterLink
-            v-for="item in suggestions"
-            :key="item.label"
-            :to="item.path"
-            class="suggestion-item"
-          >
-            <span>{{ item.label }}</span>
-            <small>{{ item.type }}</small>
-          </RouterLink>
-        </div>
-      </div>
+      <NavbarSearch class="d-none d-lg-block" />
 
       <!-- Desktop Navigation -->
       <ul class="navbar-nav ms-auto d-none d-lg-flex flex-row align-items-center gap-4">
@@ -293,6 +276,7 @@ watch(
     :profile-initial="profileInitial"
     :user-level="userLevel"
     :is-section-active="isSectionActive"
+    @submit-search="submitSearch"
     @toggle-theme="toggleTheme"
     @change-language="changeLanguage"
     @logout="handleLogout"
@@ -323,45 +307,6 @@ nav{
   width: 40px;
   height: 40px;
   object-fit: contain;
-}
-
-.search-box {
-  width: 300px;
-}
-
-.search-box .form-control,
-.search-box .input-group-text {
-  box-shadow: none;
-  border-color: #d8cdbb !important;
-  background: #fffdf8;
-  font-size: 14px;
-}
-
-.search-suggestions {
-  position: absolute;
-  top: 38px;
-  left: 0;
-  width: 300px;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  z-index: 1000;
-}
-
-.suggestion-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 14px;
-  text-decoration: none;
-  color: #1e293b;
-}
-
-.suggestion-item:hover {
-  background: #f8f9fa;
-}
-
-.suggestion-item small {
-  color: #6c757d;
 }
 
 .theme-switch {

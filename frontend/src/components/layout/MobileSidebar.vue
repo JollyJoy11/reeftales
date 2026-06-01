@@ -14,6 +14,7 @@ defineProps({
 
 const emit = defineEmits([
   'update:searchQuery',
+  'submit-search',
   'toggle-theme',
   'change-language',
   'logout'
@@ -90,8 +91,9 @@ function handleMobileLogout() {
         <input
           :value="searchQuery"
           @input="emit('update:searchQuery', $event.target.value)"
+          @keydown.enter.prevent="emit('submit-search'); closeMobileMenu()"
           type="search"
-          placeholder="Search islands, marine life..."
+          placeholder="Search islands, marine life, diaries..."
         />
       </div>
 

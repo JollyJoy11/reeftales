@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import JournalCard from '@/components/journals/JournalCard.vue'
 import LoadingState from '@/components/common/LoadingState.vue'
@@ -8,6 +9,7 @@ import AppAlert from '@/components/common/AppAlert.vue'
 import { getPublicJournals, getTrendingIslands, getTopExplorers } from '@/services/journalService'
 
 const journals = ref([])
+const route = useRoute()
 const search = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
@@ -55,9 +57,17 @@ watch([search, sortBy], () => {
 })
 
 onMounted(() => {
+  search.value = typeof route.query.search === 'string' ? route.query.search : ''
   loadJournals()
   loadSidebarData()
 })
+
+watch(
+  () => route.query.search,
+  value => {
+    search.value = typeof value === 'string' ? value : ''
+  }
+)
 </script>
 
 <template>
@@ -433,15 +443,8 @@ onMounted(() => {
 .trend-row small,
 .explorer-row small,
 .sidebar-empty {
-  margin: 0;
-  padding: 14px;
-  border: 1px dashed #d8cdbb;
-  border-radius: 14px;
-  background: rgba(251, 249, 241, 0.72);
   color: #64748b;
   font-size: 0.82rem;
-  font-weight: 700;
-  text-align: center;
 }
 
 .explorer-row {
