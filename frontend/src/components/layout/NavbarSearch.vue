@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import { getIslands } from '@/services/islandService'
 import { getPublicJournals } from '@/services/journalService'
@@ -16,6 +17,7 @@ defineProps({
 const emit = defineEmits(['selected'])
 
 const router = useRouter()
+const { t } = useI18n()
 
 const searchQuery = ref('')
 const showSuggestions = ref(false)
@@ -31,20 +33,20 @@ const quickSearchLinks = computed(() => {
 
   return [
     {
-      label: `Search islands for "${query}"`,
-      type: 'Islands',
+      label: t('search.islandsFor', { query }),
+      type: t('search.islands'),
       icon: 'bi bi-geo-alt',
       to: { path: '/discovery', query: { mode: 'islands', search: query } }
     },
     {
-      label: `Search marine life for "${query}"`,
-      type: 'Marine',
+      label: t('search.marineFor', { query }),
+      type: t('search.marine'),
       icon: 'bi bi-water',
       to: { path: '/discovery', query: { mode: 'marine', search: query } }
     },
     {
-      label: `Search diaries for "${query}"`,
-      type: 'Journals',
+      label: t('search.diariesFor', { query }),
+      type: t('search.journals'),
       icon: 'bi bi-journal-text',
       to: { path: '/community', query: { search: query } }
     }
@@ -74,7 +76,7 @@ async function loadSearchSuggestions() {
           id: `island-${island.id}`,
           label: island.name,
           meta: island.country || 'Island',
-          type: 'Island',
+          type: t('search.island'),
           icon: 'bi bi-geo-alt',
           to: `/discovery/island/${island.id}`
         }))
@@ -84,8 +86,8 @@ async function loadSearchSuggestions() {
       ? speciesResult.value.slice(0, 3).map(item => ({
           id: `species-${item.id}`,
           label: item.common_name || item.name,
-          meta: item.scientific_name || item.category || 'Marine life',
-          type: 'Marine',
+          meta: item.scientific_name || item.category || t('search.marineLife'),
+          type: t('search.marine'),
           icon: 'bi bi-water',
           to: `/discovery/species/${item.id}`
         }))
@@ -95,8 +97,8 @@ async function loadSearchSuggestions() {
       ? journalResult.value.slice(0, 3).map(journal => ({
           id: `journal-${journal.id}`,
           label: journal.title,
-          meta: journal.island_name || journal.username || 'Community diary',
-          type: 'Journal',
+          meta: journal.island_name || journal.username || t('search.journal'),
+          type: t('search.journal'),
           icon: 'bi bi-journal-text',
           to: `/journal/${journal.id}`
         }))
@@ -167,7 +169,7 @@ watch(searchQuery, () => {
         v-model="searchQuery"
         class="form-control border-start-0"
         type="search"
-        placeholder="Search islands, marine life, diaries..."
+        :placeholder="t('search.placeholder')"
         @focus="showSuggestions = true"
         @blur="deferCloseSearch"
         @keydown.enter.prevent="submitSearch"
@@ -191,12 +193,12 @@ watch(searchQuery, () => {
       </RouterLink>
 
       <div v-if="searchLoading" class="navbar-search__note">
-        Searching Reef Tales...
+        {{ t('search.searching') }}
       </div>
 
       <template v-else>
         <div v-if="!searchSuggestions.length" class="navbar-search__note">
-          No quick matches yet. Search inside a section below.
+          {{ t('search.noMatches') }}
         </div>
 
         <RouterLink

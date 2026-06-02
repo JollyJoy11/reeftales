@@ -1,5 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   weather: {
@@ -18,12 +21,12 @@ const activities = computed(() => {
   const wind = Number(props.weather?.current?.wind_speed_10m ?? 0)
 
   return [
-    { name: 'Snorkelling', icon: 'bi bi-mask', score: scoreSnorkelling(avgRain, wave, wind) },
-    { name: 'Kayaking', icon: 'bi bi-water', score: scoreKayaking(avgRain, wave, wind) },
-    { name: 'Scuba Diving', icon: 'bi bi-tsunami', score: scoreDiving(avgRain, wave, wind) },
-    { name: 'Island Hopping', icon: 'bi bi-compass', score: scoreIslandHopping(avgRain, wave, wind) },
-    { name: 'Reef Photography', icon: 'bi bi-camera', score: scorePhotography(avgRain, wave, wind) },
-    { name: 'Sunset Watching', icon: 'bi bi-sunset', score: scoreSunset(avgRain, wave, wind) }
+    { name: t('planner.snorkelling'), icon: 'bi bi-mask', score: scoreSnorkelling(avgRain, wave, wind) },
+    { name: t('planner.kayaking'), icon: 'bi bi-water', score: scoreKayaking(avgRain, wave, wind) },
+    { name: t('planner.scubaDiving'), icon: 'bi bi-tsunami', score: scoreDiving(avgRain, wave, wind) },
+    { name: t('planner.islandHopping'), icon: 'bi bi-compass', score: scoreIslandHopping(avgRain, wave, wind) },
+    { name: t('planner.reefPhotography'), icon: 'bi bi-camera', score: scorePhotography(avgRain, wave, wind) },
+    { name: t('planner.sunsetWatching'), icon: 'bi bi-sunset', score: scoreSunset(avgRain, wave, wind) }
   ]
 })
 
@@ -93,11 +96,11 @@ function scoreSunset(rain, wave, wind) {
 }
 
 function scoreLabel(score) {
-  if (score >= 5) return 'Excellent'
-  if (score >= 4) return 'Good'
-  if (score >= 3) return 'Caution'
-  if (score >= 2) return 'Poor'
-  return 'Not ideal'
+  if (score >= 5) return t('planner.excellent')
+  if (score >= 4) return t('planner.good')
+  if (score >= 3) return t('planner.caution')
+  if (score >= 2) return t('planner.poor')
+  return t('planner.notIdeal')
 }
 
 function scoreStars(score) {
@@ -108,9 +111,9 @@ function scoreStars(score) {
 <template>
   <section v-if="weather || marine" class="activity-suitability-card">
     <div class="activity-heading">
-      <span>Marine Activity Suitability</span>
-      <strong>Best activities for your selected dates</strong>
-      <p>Based on rain, wind, wave height, and sea movement.</p>
+      <span>{{ t('planner.activitySuitability') }}</span>
+      <strong>{{ t('planner.bestActivities') }}</strong>
+      <p>{{ t('planner.activitySuitabilityHint') }}</p>
     </div>
 
     <div class="activity-grid">

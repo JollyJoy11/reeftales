@@ -157,21 +157,6 @@ function sightingImageAlt(sighting) {
   color: #1897a0;
 }
 
-:global(body.dark-mode) .sighting-card,
-:global(body.dark-mode) .sighting-empty {
-  background: #253244;
-  border-color: rgba(255,255,255,0.13);
-}
-
-:global(body.dark-mode) .sighting-card strong {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .sighting-card span,
-:global(body.dark-mode) .sighting-empty {
-  color: #cbd5e1;
-}
-
 @media (max-width: 768px) {
   .sighting-list {
     grid-template-columns: 1fr;

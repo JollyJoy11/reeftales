@@ -1186,27 +1186,4 @@ onMounted(async () => {
     width: 72px;
   }
 }
-
-:global(body.dark-mode) .island-journal-card,
-:global(body.dark-mode) .journal-placeholder,
-:global(body.dark-mode) .resident-empty-state {
-  background: #253244;
-  border-color: rgba(255,255,255,0.13);
-}
-
-:global(body.dark-mode) .community-diary-heading h6,
-:global(body.dark-mode) .island-journal-card strong,
-:global(body.dark-mode) .journal-placeholder strong,
-:global(body.dark-mode) .resident-empty-state strong {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .island-journal-card p,
-:global(body.dark-mode) .journal-mini-footer,
-:global(body.dark-mode) .journal-placeholder,
-:global(body.dark-mode) .journal-placeholder span,
-:global(body.dark-mode) .resident-empty-state,
-:global(body.dark-mode) .resident-empty-state span {
-  color: #cbd5e1;
-}
 </style>

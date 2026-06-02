@@ -1,5 +1,6 @@
-<script setup>
+﻿<script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import NavbarSearch from '@/components/layout/NavbarSearch.vue'
 
 defineProps({
@@ -19,6 +20,7 @@ const emit = defineEmits([
 ])
 
 const closeBtn = ref(null)
+const { t } = useI18n()
 
 function closeMobileMenu() {
   closeBtn.value?.click()
@@ -37,7 +39,7 @@ function handleMobileLogout() {
         <img src="/images/reeftale_logo_c.png" alt="Reef Tales logo" />
         <div>
           <strong>Reef Tales</strong>
-          <small>Explore islands, reefs & stories</small>
+          <small>{{ t('mobile.tagline') }}</small>
         </div>
       </RouterLink>
 
@@ -65,20 +67,20 @@ function handleMobileLogout() {
             </div>
 
             <div>
-              <small>Hi, {{ authStore.user?.username || 'Explorer' }}</small>
+              <small>{{ t('nav.greeting', { name: authStore.user?.username || 'Explorer' }) }}</small>
               <strong>{{ userLevel }}</strong>
             </div>
           </div>
 
           <RouterLink to="/dashboard" class="account-row" @click="closeMobileMenu">
             <i class="bi bi-journal-richtext"></i>
-            <span>My Logbook</span>
+            <span>{{ t('nav.myLogbook') }}</span>
             <i class="bi bi-chevron-right ms-auto"></i>
           </RouterLink>
 
           <RouterLink to="/settings" class="account-row" @click="closeMobileMenu">
             <i class="bi bi-gear-fill"></i>
-            <span>Settings</span>
+            <span>{{ t('nav.settings') }}</span>
             <i class="bi bi-chevron-right ms-auto"></i>
           </RouterLink>
         </section>
@@ -87,7 +89,7 @@ function handleMobileLogout() {
       <NavbarSearch variant="mobile" @selected="closeMobileMenu" />
 
       <div class="mobile-section-label">
-        <span>Navigate</span>
+        <span>{{ t('mobile.navigate') }}</span>
       </div>
 
       <ul class="mobile-menu-list nav-card">
@@ -115,7 +117,7 @@ function handleMobileLogout() {
       </ul>
 
       <div class="mobile-section-label">
-        <span>Preferences</span>
+        <span>{{ t('mobile.preferences') }}</span>
       </div>
 
       <div class="preference-card">
@@ -124,10 +126,10 @@ function handleMobileLogout() {
             <i :class="currentTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-brightness-high-fill'"></i>
           </span>
 
-          <span>{{ currentTheme === 'light' ? 'Dark Mode' : 'Light Mode' }}</span>
+          <span>{{ currentTheme === 'light' ? t('mobile.darkMode') : t('mobile.lightMode') }}</span>
 
           <small class="ms-auto">
-            {{ currentTheme === 'light' ? 'Light' : 'Dark' }}
+            {{ currentTheme === 'light' ? t('common.light') : t('common.dark') }}
           </small>
         </button>
 
@@ -137,14 +139,13 @@ function handleMobileLogout() {
               <i class="bi bi-globe2"></i>
             </span>
 
-            <span>Language</span>
+            <span>{{ t('nav.language') }}</span>
             <small class="ms-auto">{{ currentLanguage }}</small>
           </button>
 
           <ul class="dropdown-menu w-100 reef-language-menu">
-            <li><button class="dropdown-item" @click="emit('change-language', 'English')">English</button></li>
-            <li><button class="dropdown-item" @click="emit('change-language', 'Bahasa Melayu')">Bahasa Melayu</button></li>
-            <li><button class="dropdown-item" @click="emit('change-language', '中文')">中文</button></li>
+            <li><button class="dropdown-item" @click="emit('change-language', 'English')">{{ t('common.english') }}</button></li>
+            <li><button class="dropdown-item" @click="emit('change-language', '中文')">{{ t('common.chinese') }}</button></li>
           </ul>
         </div>
       </div>
@@ -152,18 +153,18 @@ function handleMobileLogout() {
       <div class="mobile-bottom-section">
         <template v-if="!authStore.isLoggedIn">
           <RouterLink to="/login" class="mobile-login-btn" @click="closeMobileMenu">
-            Login
+            {{ t('nav.login') }}
           </RouterLink>
 
           <RouterLink to="/register" class="mobile-register-btn" @click="closeMobileMenu">
-            Start Exploring
+            {{ t('mobile.startExploring') }}
           </RouterLink>
         </template>
 
         <template v-else>
           <button class="mobile-logout-btn" @click="handleMobileLogout">
             <i class="bi bi-box-arrow-right"></i>
-            Logout
+            {{ t('nav.logout') }}
           </button>
         </template>
       </div>
@@ -468,3 +469,5 @@ function handleMobileLogout() {
   color: #9f2435;
 }
 </style>
+
+

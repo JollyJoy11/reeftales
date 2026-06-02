@@ -1,5 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
+
+const { t } = useI18n()
 
 defineProps({
   trips: { type: Array, default: () => [] },
@@ -17,7 +20,7 @@ const emit = defineEmits([
 ])
 
 function formatDate(date) {
-  if (!date) return 'Date not set'
+  if (!date) return t('planner.dateNotSet')
   return new Date(date).toLocaleDateString('en-US', {
     day: 'numeric',
     month: 'short'
@@ -25,7 +28,7 @@ function formatDate(date) {
 }
 
 function tripDateLabel(trip) {
-  if (!trip.start_date) return 'Date not set'
+  if (!trip.start_date) return t('planner.dateNotSet')
 
   const start = formatDate(trip.start_date)
   const end = formatDate(trip.end_date)
@@ -42,13 +45,13 @@ function tripDateLabel(trip) {
   <aside class="planned-trip-sidebar">
     <div class="sidebar-header">
       <div>
-        <h3>Trip Library</h3>
+        <h3>{{ t('planner.tripLibrary') }}</h3>
       </div>
 
       <button
         type="button"
         class="new-trip-icon-btn"
-        aria-label="Create new trip"
+        :aria-label="t('planner.createNewTrip')"
         @click="emit('new')"
       >
         <i class="bi bi-plus-circle"></i>
@@ -57,7 +60,7 @@ function tripDateLabel(trip) {
 
     <div class="sidebar-content">
       <section class="sidebar-section">
-        <h4>Saved Islands</h4>
+        <h4>{{ t('dashboard.savedIslands') }}</h4>
 
         <div v-if="savedIslands.length" class="saved-island-list">
           <button
@@ -75,11 +78,11 @@ function tripDateLabel(trip) {
           </button>
         </div>
 
-        <p v-else class="sidebar-empty">No saved islands yet.</p>
+        <p v-else class="sidebar-empty">{{ t('dashboard.noSavedIslands') }}</p>
       </section>
 
       <section class="sidebar-section">
-        <h4>Saved Journal Templates</h4>
+        <h4>{{ t('planner.savedJournalTemplates') }}</h4>
 
         <div v-if="savedJournals.length" class="saved-journal-list">
           <button
@@ -90,20 +93,20 @@ function tripDateLabel(trip) {
             @click="emit('use-journal', journal)"
           >
             <div>
-              <small>Use as template</small>
+              <small>{{ t('planner.useAsTemplate') }}</small>
               <strong>{{ journal.title }}</strong>
-              <span>{{ journal.island_name || 'Island journal' }}</span>
+              <span>{{ journal.island_name || t('planner.islandJournal') }}</span>
             </div>
 
             <i class="bi bi-arrow-right-circle"></i>
           </button>
         </div>
 
-        <p v-else class="sidebar-empty">No saved journals yet.</p>
+        <p v-else class="sidebar-empty">{{ t('dashboard.noSavedJournals') }}</p>
       </section>
 
       <section class="sidebar-section">
-        <h4>Your Trips</h4>
+        <h4>{{ t('planner.yourTrips') }}</h4>
 
         <div v-if="trips.length" class="trip-list">
           <article
@@ -116,16 +119,16 @@ function tripDateLabel(trip) {
               <AppStampFrame
                 class="ticket-stamp"
                 :image="trip.island_cover_image || '/images/island-placeholder.jpg'"
-                :alt="`${trip.island_name || trip.title || 'Trip'} cover`"
+                :alt="`${trip.island_name || trip.title || t('planner.trip')} cover`"
                 :contain="false"
               />
 
               <div class="ticket-copy">
                 <small>{{ tripDateLabel(trip) }}</small>
                 <strong>{{ trip.title }}</strong>
-                <span>{{ trip.island_name || 'Island not set' }}</span>
+                <span>{{ trip.island_name || t('planner.islandNotSet') }}</span>
                 <em>
-                  {{ trip.item_count || 0 }} activities · RM {{ Number(trip.budget_total || 0).toLocaleString() }}
+                  {{ t('planner.activitiesBudget', { count: trip.item_count || 0, total: Number(trip.budget_total || 0).toLocaleString() }) }}
                 </em>
               </div>
             </button>
@@ -138,8 +141,8 @@ function tripDateLabel(trip) {
 
         <div v-else class="empty-trips">
           <i class="bi bi-map"></i>
-          <strong>No planned trips yet</strong>
-          <span>Create your first island journey.</span>
+          <strong>{{ t('planner.noPlannedTrips') }}</strong>
+          <span>{{ t('planner.createFirstTrip') }}</span>
         </div>
       </section>
     </div>

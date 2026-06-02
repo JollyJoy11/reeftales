@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import IslandCard from '@/components/discovery/IslandCard.vue'
 import SpeciesCard from '@/components/discovery/SpeciesCard.vue'
 import AIIdentifyCard from '@/components/discovery/AIIdentifyCard.vue'
@@ -18,6 +19,7 @@ import { useSavedIslandStore } from '@/stores/savedIslandStore'
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const route = useRoute()
+const { t } = useI18n()
 const islands = ref([])
 const speciesList = ref([])
 const loading = ref(false)
@@ -49,7 +51,7 @@ async function loadIslands() {
       activities: selectedActivities.value
     })
   } catch (error) {
-    errorMessage.value = 'Failed to load islands.'
+    errorMessage.value = t('discovery.loadIslandsError')
   } finally {
     loading.value = false
   }
@@ -67,7 +69,7 @@ async function loadSpecies() {
       maxDepth: maxDepth.value
     })
   } catch (error) {
-    errorMessage.value = 'Failed to load marine species.'
+    errorMessage.value = t('discovery.loadSpeciesError')
   } finally {
     loading.value = false
   }
@@ -145,9 +147,9 @@ watch(
     <section class="container py-3">
       <div class="explore-header mb-4">
         <div>
-          <h1 class="fw-bold">Discovery Hub</h1>
+          <h1 class="fw-bold">{{ t('discovery.title') }}</h1>
           <p class="text-muted mb-0">
-            Explore island destinations, marine species, and community sightings.
+            {{ t('discovery.intro') }}
           </p>
         </div>
       </div>
@@ -176,7 +178,7 @@ watch(
         <main class="col-12 col-lg-9">
           <LoadingState
             v-if="loading"
-            :message="`Loading ${discoveryMode === 'islands' ? 'islands' : 'marine species'}...`"
+            :message="discoveryMode === 'islands' ? t('discovery.loadingIslands') : t('discovery.loadingSpecies')"
           />
 
           <div class="row g-4">
@@ -192,8 +194,8 @@ watch(
               <div v-if="!loading && islands.length === 0" class="col-12 d-flex">
                 <EmptyState
                   icon="bi bi-compass"
-                  title="No islands found"
-                  message="Try changing your search keyword or filters."
+                  :title="t('discovery.noIslandsTitle')"
+                  :message="t('discovery.noIslandsMessage')"
                 />
               </div>
             </template>
@@ -214,8 +216,8 @@ watch(
               <div v-if="!loading && speciesList.length === 0" class="col-12 col-md-6 col-xl-8 d-flex">
                 <EmptyState
                   icon="bi bi-water"
-                  title="No marine species found"
-                  message="Try adjusting the species type, depth range, or search keyword."
+                  :title="t('discovery.noSpeciesTitle')"
+                  :message="t('discovery.noSpeciesMessage')"
                 />
               </div>
             </template>

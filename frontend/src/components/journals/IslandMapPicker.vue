@@ -418,28 +418,4 @@ onBeforeUnmount(() => {
     0 0 0 7px rgba(24,151,160,0.18),
     0 10px 22px rgba(0,0,0,0.26);
 }
-
-:global(body.dark-mode) .island-search-results {
-  background: #253244;
-  border-color: rgba(255,255,255,0.13);
-}
-
-:global(body.dark-mode) .island-search-option span {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .island-search-option small,
-:global(body.dark-mode) .island-search-empty {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .island-search-option:hover,
-:global(body.dark-mode) .island-search-option.selected {
-  background: rgba(24,151,160,0.16);
-}
-
-:global(body.dark-mode) .island-search-empty {
-  background: #253244;
-  border-color: rgba(255,255,255,0.13);
-}
 </style>

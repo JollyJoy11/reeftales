@@ -1,16 +1,24 @@
-<script setup>
+﻿<script setup>
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
 import { getMyJournalSummary } from '@/services/journalService'
+import {
+  getNotifications,
+  markAllNotificationsRead,
+  markNotificationRead
+} from '@/services/notificationService'
 import MobileSidebar from '@/components/layout/MobileSidebar.vue'
 import NavbarSearch from '@/components/layout/NavbarSearch.vue'
 import { calculateExplorerProgress } from '@/utils/explorerProgress'
+import { setI18nLanguage } from '@/i18n'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
 const currentLanguage = ref(localStorage.getItem('language') || 'English')
@@ -19,28 +27,29 @@ const journalSummary = ref({
   species_count: 0,
   public_count: 0
 })
+const notifications = ref([])
 
 const profileInitial = computed(() => {
   return authStore.user?.username?.charAt(0)?.toUpperCase() || 'U'
 })
 
-const mainNavLinks = [
+const mainNavLinks = computed(() => [
   {
-    label: 'Discovery',
+    label: t('nav.discovery'),
     to: '/discovery',
     section: 'discovery'
   },
   {
-    label: 'Community Diaries',
+    label: t('nav.community'),
     to: '/community',
     section: 'community'
   },
   {
-    label: 'Trip Planner',
+    label: t('nav.planner'),
     to: '/planner',
     section: 'planner'
   }
-]
+])
 
 function isSectionActive(section) {
   if (section === 'discovery') {
@@ -76,6 +85,10 @@ const userLevel = computed(() => {
   return progress.tier.name
 })
 
+const unreadNotificationCount = computed(() =>
+  notifications.value.filter(item => !item.is_read).length
+)
+
 async function loadProfileStats() {
   if (!authStore.isLoggedIn) {
     journalSummary.value = {
@@ -97,6 +110,55 @@ async function loadProfileStats() {
   }
 }
 
+async function loadNotifications() {
+  if (!authStore.isLoggedIn) {
+    notifications.value = []
+    return
+  }
+
+  try {
+    notifications.value = await getNotifications()
+  } catch {
+    notifications.value = []
+  }
+}
+
+function notificationRoute(notification) {
+  return notification.journal_id
+    ? `/journal/${notification.journal_id}`
+    : '/dashboard'
+}
+
+function notificationText(notification) {
+  const actor = notification.actor_name || 'Someone'
+  const title = notification.journal_title || 'your diary'
+
+  if (notification.type === 'journal_like') {
+    return t('nav.liked', { actor, title })
+  }
+
+  if (notification.type === 'journal_comment') {
+    return t('nav.commented', { actor, title })
+  }
+
+  return notification.message
+}
+
+async function handleNotificationOpen(notification) {
+  if (!notification.is_read) {
+    await markNotificationRead(notification.id)
+    notification.is_read = 1
+  }
+}
+
+async function handleReadAllNotifications() {
+  await markAllNotificationsRead()
+  notifications.value = notifications.value.map(item => ({
+    ...item,
+    is_read: 1
+  }))
+}
+
 function toggleTheme() {
   currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
   localStorage.setItem('theme', currentTheme.value)
@@ -106,16 +168,21 @@ function toggleTheme() {
 function changeLanguage(language) {
   currentLanguage.value = language
   localStorage.setItem('language', language)
+  setI18nLanguage(language)
 }
 
 onMounted(() => {
   document.body.classList.toggle('dark-mode', currentTheme.value === 'dark')
   loadProfileStats()
+  loadNotifications()
 })
 
 watch(
   () => authStore.isLoggedIn,
-  () => loadProfileStats()
+  () => {
+    loadProfileStats()
+    loadNotifications()
+  }
 )
 </script>
 
@@ -161,9 +228,59 @@ watch(
           </button>
 
           <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown">
-            <li><button class="dropdown-item" @click="changeLanguage('English')">English</button></li>
-            <li><button class="dropdown-item" @click="changeLanguage('Bahasa Melayu')">Bahasa Melayu</button></li>
-            <li><button class="dropdown-item" @click="changeLanguage('中文')">中文</button></li>
+            <li><button class="dropdown-item" @click="changeLanguage('English')">{{ t('common.english') }}</button></li>
+            <li><button class="dropdown-item" @click="changeLanguage('中文')">{{ t('common.chinese') }}</button></li>
+          </ul>
+        </li>
+
+        <li v-if="authStore.isLoggedIn" class="nav-item dropdown">
+          <button
+            class="nav-action-btn notification-trigger"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            @click="loadNotifications"
+          >
+            <i class="bi bi-bell"></i>
+            <span v-if="unreadNotificationCount">{{ unreadNotificationCount }}</span>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown notification-dropdown">
+            <li class="notification-heading">
+              <strong>{{ t('nav.notifications') }}</strong>
+              <button
+                v-if="notifications.length"
+                type="button"
+                @click="handleReadAllNotifications"
+              >
+                {{ t('nav.markAllRead') }}
+              </button>
+            </li>
+
+            <li v-if="!notifications.length" class="notification-empty">
+              {{ t('nav.noNotifications') }}
+            </li>
+
+            <li
+              v-for="notification in notifications"
+              :key="notification.id"
+            >
+              <RouterLink
+                :to="notificationRoute(notification)"
+                class="notification-item"
+                :class="{ unread: !notification.is_read }"
+                @click="handleNotificationOpen(notification)"
+              >
+                <span class="notification-icon">
+                  <i :class="notification.type === 'journal_like' ? 'bi bi-heart' : 'bi bi-chat-dots'"></i>
+                </span>
+
+                <span>
+                  {{ notificationText(notification) }}
+                  <small>{{ new Date(notification.created_at).toLocaleDateString() }}</small>
+                </span>
+              </RouterLink>
+            </li>
           </ul>
         </li>
 
@@ -179,13 +296,13 @@ watch(
         <!-- Guest buttons -->
         <li v-if="!authStore.isLoggedIn" class="nav-item">
           <RouterLink to="/login" class="btn btn-outline-primary ms-lg-2">
-            Login
+            {{ t('nav.login') }}
           </RouterLink>
         </li>
 
         <li v-if="!authStore.isLoggedIn" class="nav-item">
           <RouterLink to="/register" class="btn btn-primary">
-            Register
+            {{ t('nav.register') }}
           </RouterLink>
         </li>
 
@@ -210,7 +327,7 @@ watch(
               <span v-else>{{ profileInitial }}</span>
 
               <div>
-                <small>Hi, {{ authStore.user?.username || 'Explorer' }}</small>
+                <small>{{ t('nav.greeting', { name: authStore.user?.username || 'Explorer' }) }}</small>
                 <strong>{{ userLevel }}</strong>
               </div>
             </li>
@@ -218,20 +335,20 @@ watch(
             <li>
               <RouterLink to="/dashboard" class="dropdown-item profile-menu-item">
                 <i class="bi bi-journal-richtext"></i>
-                My Logbook
+                {{ t('nav.myLogbook') }}
               </RouterLink>
             </li>
             <li>
               <RouterLink to="/settings" class="dropdown-item profile-menu-item">
                 <i class="bi bi-gear"></i>
-                Settings
+                {{ t('nav.settings') }}
               </RouterLink>
             </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
               <button class="dropdown-item profile-menu-item" @click="handleLogout">
                 <i class="bi bi-box-arrow-right"></i>
-                Logout
+                {{ t('nav.logout') }}
               </button>
             </li>
           </ul>
@@ -329,6 +446,7 @@ nav{
 }
 
 .nav-action-btn {
+  position: relative;
   width: 38px;
   height: 38px;
   border: none;
@@ -338,6 +456,93 @@ nav{
   align-items: center;
   justify-content: center;
   text-decoration: none;
+}
+
+.notification-trigger span {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  min-width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #d96c82;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.notification-dropdown {
+  width: 330px;
+  padding: 10px;
+  border: 1px dashed #d8cdbb !important;
+  border-radius: 18px;
+  background: #fffdf8;
+}
+
+.notification-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 10px;
+  border-bottom: 1px dashed #d8cdbb;
+}
+
+.notification-heading strong {
+  color: #2f4858;
+}
+
+.notification-heading button {
+  border: none;
+  background: transparent;
+  color: #1897a0;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.notification-empty {
+  padding: 18px 8px 10px;
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.notification-item {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  color: #2f4858;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.notification-item:hover,
+.notification-item.unread {
+  background: #deefec;
+}
+
+.notification-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fffdf8;
+  color: #1897a0;
+}
+
+.notification-item small {
+  display: block;
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 0.74rem;
 }
 
 .profile-trigger {
@@ -479,28 +684,5 @@ nav{
     align-items: center;
   }
 }
-
-:global(body.dark-mode) .profile-trigger,
-:global(body.dark-mode) .profile-dropdown {
-  background: #253244;
-  border-color: rgba(255,255,255,0.14) !important;
-}
-
-:global(body.dark-mode) .profile-dropdown-header {
-  border-color: rgba(255,255,255,0.12);
-}
-
-:global(body.dark-mode) .profile-dropdown-header strong,
-:global(body.dark-mode) .profile-menu-item {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .profile-dropdown-header small {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .profile-menu-item:hover {
-  background: rgba(38,210,222,0.14);
-  color: #62c3c9;
-}
 </style>
+

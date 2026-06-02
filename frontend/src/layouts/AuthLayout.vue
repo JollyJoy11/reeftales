@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -51,7 +51,6 @@ onMounted(() => {
 
         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
           <li><button class="dropdown-item" @click="changeLanguage('English')">English</button></li>
-          <li><button class="dropdown-item" @click="changeLanguage('Bahasa Melayu')">Bahasa Melayu</button></li>
           <li><button class="dropdown-item" @click="changeLanguage('中文')">中文</button></li>
         </ul>
       </div>
@@ -140,3 +139,4 @@ onMounted(() => {
   color: #1897a0;
 }
 </style>
+

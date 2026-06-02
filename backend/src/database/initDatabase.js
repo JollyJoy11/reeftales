@@ -58,6 +58,16 @@ async function initializeDatabase() {
       )
 		`);
 
+    await addColumnIfMissing('users', 'appearance_theme', "ENUM('light', 'dark') DEFAULT 'light'");
+    await addColumnIfMissing('users', 'font_size', "ENUM('small', 'normal', 'large') DEFAULT 'normal'");
+    await addColumnIfMissing('users', 'larger_text', 'BOOLEAN DEFAULT FALSE');
+    await addColumnIfMissing('users', 'reduced_motion', 'BOOLEAN DEFAULT FALSE');
+    await addColumnIfMissing('users', 'high_contrast', 'BOOLEAN DEFAULT FALSE');
+    await addColumnIfMissing('users', 'notify_likes', 'BOOLEAN DEFAULT TRUE');
+    await addColumnIfMissing('users', 'notify_comments', 'BOOLEAN DEFAULT TRUE');
+    await addColumnIfMissing('users', 'default_journal_visibility', "ENUM('public', 'private') DEFAULT 'public'");
+    await addColumnIfMissing('users', 'language', "VARCHAR(40) DEFAULT 'English'");
+
 		// ISLANDS
 		await run(`
     	CREATE TABLE IF NOT EXISTS islands (
@@ -309,6 +319,32 @@ async function initializeDatabase() {
         UNIQUE(user_id, journal_id)
     )
 		`);
+
+    // NOTIFICATIONS
+    await run(`
+      CREATE TABLE IF NOT EXISTS notifications (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        actor_id INT NULL,
+        journal_id INT NULL,
+        type ENUM('journal_like', 'journal_comment') NOT NULL,
+        message VARCHAR(255) NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY (user_id)
+          REFERENCES users(id)
+          ON DELETE CASCADE,
+
+        FOREIGN KEY (actor_id)
+          REFERENCES users(id)
+          ON DELETE SET NULL,
+
+        FOREIGN KEY (journal_id)
+          REFERENCES journals(id)
+          ON DELETE CASCADE
+      )
+    `);
 
     // SAVED_JOURNALS
     await run(`

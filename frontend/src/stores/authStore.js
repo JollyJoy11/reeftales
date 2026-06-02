@@ -6,12 +6,14 @@ import {
   updateProfile,
   updateSettings
 } from '@/services/authService'
+import { setI18nLanguage } from '@/i18n'
 
 function applyUserPreferences(user) {
   const theme = user?.appearance_theme || localStorage.getItem('theme') || 'light'
 
   localStorage.setItem('theme', theme)
   localStorage.setItem('language', user?.language || localStorage.getItem('language') || 'English')
+  setI18nLanguage(user?.language || localStorage.getItem('language') || 'English')
 
   document.body.classList.toggle('dark-mode', theme === 'dark')
   document.body.classList.toggle('large-text-mode', Boolean(user?.larger_text) || user?.font_size === 'large')

@@ -1,5 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   panels: {
@@ -25,7 +28,7 @@ const emit = defineEmits(['select'])
 const menuOpen = ref(false)
 
 const activePanelLabel = computed(() =>
-  props.panels.find(panel => panel.id === props.activePanel)?.label || 'Overview'
+  props.panels.find(panel => panel.id === props.activePanel)?.label || t('dashboard.myPassport')
 )
 
 const profileInitial = computed(() =>
@@ -45,7 +48,7 @@ function selectPanel(panelId) {
 </script>
 
 <template>
-  <nav class="dashboard-side-nav" aria-label="Dashboard sections">
+  <nav class="dashboard-side-nav" :aria-label="t('dashboard.dashboardSections')">
     <button
       type="button"
       class="mobile-menu-toggle"
@@ -159,21 +162,6 @@ function selectPanel(panelId) {
   background: #deefec;
   border-color: rgba(24, 151, 160, 0.24);
   color: #147d84;
-}
-
-:global(body.dark-mode) .dashboard-side-nav {
-  background: #253244;
-  border-color: rgba(255,255,255,0.12);
-}
-
-:global(body.dark-mode) .profile-mini strong,
-:global(body.dark-mode) .mobile-menu-toggle {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .profile-mini small,
-:global(body.dark-mode) .logbook-tab {
-  color: #cbd5e1;
 }
 
 @media (max-width: 991px) {

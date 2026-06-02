@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
@@ -29,6 +30,7 @@ import { getJournalById } from '@/services/journalService'
 
 const toastStore = useToastStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const loading = ref(true)
 const saving = ref(false)
@@ -50,7 +52,7 @@ const form = ref(emptyTrip())
 
 function emptyTrip() {
   return {
-    title: 'Untitled island trip',
+    title: t('planner.untitledTrip'),
     island_id: '',
     start_date: '',
     end_date: '',
@@ -59,24 +61,24 @@ function emptyTrip() {
       {
         local_id: crypto.randomUUID(),
         activity_id: '',
-        title: 'Arrival and check-in',
+        title: t('planner.defaultActivityTitle'),
         day_number: 1,
         start_time: '14:00',
         duration_minutes: 90,
-        notes: 'Rest, settle in, and prepare for the island trip.',
+        notes: t('planner.defaultActivityNotes'),
         display_order: 0
       }
     ],
     checklist: [
-      { local_id: crypto.randomUUID(), label: 'Reef-safe sunscreen', is_checked: false },
-      { local_id: crypto.randomUUID(), label: 'Swimwear', is_checked: false },
-      { local_id: crypto.randomUUID(), label: 'Waterproof bag', is_checked: false },
-      { local_id: crypto.randomUUID(), label: 'Travel journal', is_checked: false }
+      { local_id: crypto.randomUUID(), label: t('planner.sunscreen'), is_checked: false },
+      { local_id: crypto.randomUUID(), label: t('planner.swimwear'), is_checked: false },
+      { local_id: crypto.randomUUID(), label: t('planner.waterproofBag'), is_checked: false },
+      { local_id: crypto.randomUUID(), label: t('planner.travelJournal'), is_checked: false }
     ],
     budget: [
-      { local_id: crypto.randomUUID(), label: 'Boat transfer', amount: 0 },
-      { local_id: crypto.randomUUID(), label: 'Island stay', amount: 0 },
-      { local_id: crypto.randomUUID(), label: 'Meals', amount: 0 }
+      { local_id: crypto.randomUUID(), label: t('planner.boatTransfer'), amount: 0 },
+      { local_id: crypto.randomUUID(), label: t('planner.islandStay'), amount: 0 },
+      { local_id: crypto.randomUUID(), label: t('planner.meals'), amount: 0 }
     ]
   }
 }
@@ -161,11 +163,11 @@ const canPrefillCurrentJournal = computed(() => {
 const suitability = computed(() => {
   if (weatherUnavailable.value) {
     return {
-      label: 'Seasonal guidance',
+      label: t('planner.seasonalGuidance'),
       tone: 'neutral',
       detail: selectedIsland.value?.best_visit_time
-        ? `Forecast is unavailable. Best visit time: ${selectedIsland.value.best_visit_time}.`
-        : 'Forecast is unavailable for those dates.'
+        ? t('planner.bestVisitTime', { time: selectedIsland.value.best_visit_time })
+        : t('planner.forecastUnavailableDates')
     }
   }
 
@@ -179,32 +181,32 @@ const suitability = computed(() => {
 
   if (!weather.value) {
     return {
-      label: 'Select island and dates',
+      label: t('planner.selectIslandDates'),
       tone: 'neutral',
-      detail: 'Weather suitability appears after you choose a destination and trip dates.'
+      detail: t('planner.weatherSuitabilityHint')
     }
   }
 
   if (avgRain <= 35 && wind <= 22 && wave <= 1.2) {
     return {
-      label: 'Good time to go',
+      label: t('planner.goodTime'),
       tone: 'good',
-      detail: `Low travel risk. Avg rain ${Math.round(avgRain)}%, wind ${wind || '-'} km/h, waves ${wave || '-'} m.`
+      detail: t('planner.lowTravelRisk', { rain: Math.round(avgRain), wind: wind || '-', wave: wave || '-' })
     }
   }
 
   if (avgRain <= 60 && wind <= 34 && wave <= 2) {
     return {
-      label: 'Plan with care',
+      label: t('planner.planWithCare'),
       tone: 'okay',
-      detail: 'Some weather risk. Keep flexible indoor or light island activities ready.'
+      detail: t('planner.someWeatherRisk')
     }
   }
 
   return {
-    label: 'Risky for marine plans',
+    label: t('planner.riskyMarinePlans'),
     tone: 'risky',
-    detail: 'Diving and snorkelling may be affected. Check operator advice before confirming.'
+    detail: t('planner.divingAffected')
   }
 })
 
@@ -249,7 +251,7 @@ function addSuggestedActivity(activity) {
 }
 
 function addBlankActivity() {
-  form.value.items.push(createLocalItem({ title: 'New activity' }))
+  form.value.items.push(createLocalItem({ title: t('planner.newActivity') }))
 }
 
 function removeActivity(localId) {
@@ -349,7 +351,7 @@ async function loadItinerary(id) {
       form.value.budget = emptyTrip().budget
     }
   } catch {
-    toastStore.danger('Unable to open itinerary.')
+    toastStore.danger(t('planner.openError'))
   }
 }
 
@@ -396,16 +398,16 @@ async function savePlanner() {
 
     if (activeItineraryId.value) {
       await updateItinerary(activeItineraryId.value, payload)
-      toastStore.success('Itinerary updated.')
+      toastStore.success(t('planner.itineraryUpdated'))
     } else {
       const response = await createItinerary(payload)
       activeItineraryId.value = response.itineraryId
-      toastStore.success('Itinerary saved.')
+      toastStore.success(t('planner.itinerarySaved'))
     }
 
     itineraries.value = await getItineraries()
   } catch (error) {
-    toastStore.danger(error.response?.data?.message || 'Unable to save itinerary.')
+    toastStore.danger(error.response?.data?.message || t('planner.saveError'))
   } finally {
     saving.value = false
   }
@@ -420,9 +422,9 @@ async function removeTrip(id) {
       resetPlanner()
     }
 
-    toastStore.success('Itinerary deleted.')
+    toastStore.success(t('planner.itineraryDeleted'))
   } catch {
-    toastStore.danger('Unable to delete itinerary.')
+    toastStore.danger(t('planner.deleteError'))
   }
 }
 
@@ -449,7 +451,7 @@ async function loadWeather() {
   } catch {
     weather.value = null
     marineWeather.value = null
-    weatherUnavailable.value = 'Forecast is not available for those selected dates.'
+    weatherUnavailable.value = t('planner.forecastUnavailableDates')
   } finally {
     weatherLoading.value = false
   }
@@ -473,7 +475,7 @@ async function loadInitialData() {
     savedIslands.value = savedIslandData
     savedJournals.value = savedJournalData
   } catch {
-    toastStore.danger('Unable to load trip planner.')
+    toastStore.danger(t('planner.loadError'))
   } finally {
     loading.value = false
   }
@@ -506,7 +508,7 @@ async function useSavedJournalTemplate(journal) {
     const end = new Date(start)
     end.setDate(start.getDate() + journalDays - 1)
 
-    form.value.title = `Trip inspired by ${fullJournal.title}`
+    form.value.title = t('planner.tripInspiredBy', { title: fullJournal.title })
     form.value.island_id = fullJournal.island_id
     form.value.start_date = start.toISOString().slice(0, 10)
     form.value.end_date = end.toISOString().slice(0, 10)
@@ -515,7 +517,7 @@ async function useSavedJournalTemplate(journal) {
     form.value.items = (fullJournal.activities || []).map((activity, index) => ({
       local_id: crypto.randomUUID(),
       activity_id: activity.activity_id || '',
-      title: activity.activity_name || activity.custom_activity_name || 'Planned activity',
+      title: activity.activity_name || activity.custom_activity_name || t('planner.plannedActivity'),
       day_number: Number(activity.day_number || 1),
       start_time: activity.activity_time?.slice(0, 5) || activity.start_time?.slice(0, 5) || '09:00',
       duration_minutes: activity.duration_minutes || 60,
@@ -529,9 +531,9 @@ async function useSavedJournalTemplate(journal) {
 
     activeDay.value = 1
 
-    toastStore.success('Journal template applied.')
+    toastStore.success(t('planner.templateApplied'))
   } catch {
-    toastStore.danger('Unable to use journal template.')
+    toastStore.danger(t('planner.templateError'))
   }
 }
 
@@ -557,16 +559,15 @@ onMounted(async () => {
 <template>
   <MainLayout>
     <main class="planner-page">
-      <LoadingState v-if="loading" message="Loading trip planner..." />
+      <LoadingState v-if="loading" :message="t('planner.loading')" />
 
       <div v-else class="planner-shell">
         <section class="planner-hero">
           <div>
-            <span>Trip Planner</span>
-            <h1>Design your island adventure before it becomes a memory</h1>
+            <span>{{ t('planner.eyebrow') }}</span>
+            <h1>{{ t('planner.title') }}</h1>
             <p>
-              Organise activities, check sea and weather conditions, plan your budget,
-              and turn every journey into a Reef Tales diary.
+              {{ t('planner.intro') }}
             </p>
           </div>
         </section>
@@ -588,8 +589,8 @@ onMounted(async () => {
             <section class="paper-panel trip-current-panel">
               <div class="panel-title">
                 <div>
-                  <span>Current Trip</span>
-                  <h2>{{ form.title || 'Untitled island trip' }}</h2>
+                  <span>{{ t('planner.currentTrip') }}</span>
+                  <h2>{{ form.title || t('planner.untitledTrip') }}</h2>
                 </div>
 
                 <div class="panel-actions">
@@ -599,28 +600,28 @@ onMounted(async () => {
                     class="ghost-btn"
                   >
                     <i class="bi bi-journal-plus"></i>
-                    Create journal
+                    {{ t('planner.createJournal') }}
                   </RouterLink>
 
                   <button type="button" :disabled="saving" class="primary-btn" @click="savePlanner">
                     <i class="bi bi-save"></i>
-                    {{ saving ? 'Saving...' : 'Save itinerary' }}
+                    {{ saving ? t('common.saving') : t('planner.saveItinerary') }}
                   </button>
                 </div>
               </div>
 
               <div class="planner-tabs">
                 <button type="button" :class="{ active: activeTab === 'details' }" @click="activeTab = 'details'">
-                  Details
+                  {{ t('planner.details') }}
                 </button>
                 <button type="button" :class="{ active: activeTab === 'timeline' }" @click="activeTab = 'timeline'">
-                  Timeline
+                  {{ t('planner.timeline') }}
                 </button>
                 <button type="button" :class="{ active: activeTab === 'packing' }" @click="activeTab = 'packing'">
-                  Packing
+                  {{ t('planner.packing') }}
                 </button>
                 <button type="button" :class="{ active: activeTab === 'budget' }" @click="activeTab = 'budget'">
-                  Budget
+                  {{ t('planner.budget') }}
                 </button>
               </div>
 
@@ -628,14 +629,14 @@ onMounted(async () => {
                 <div class="details-grid">
                   <div class="setup-fields">
                     <label>
-                      Trip title
-                      <input v-model="form.title" type="text" placeholder="e.g. Sipadan weekend dive" />
+                      {{ t('planner.tripTitle') }}
+                      <input v-model="form.title" type="text" :placeholder="t('planner.tripTitlePlaceholder')" />
                     </label>
 
                     <label>
-                      Island
+                      {{ t('planner.island') }}
                       <select v-model="form.island_id">
-                        <option value="">Choose island</option>
+                        <option value="">{{ t('planner.chooseIsland') }}</option>
                         <option v-for="island in islands" :key="island.id" :value="island.id">
                           {{ island.name }}, {{ island.country }}
                         </option>
@@ -644,15 +645,15 @@ onMounted(async () => {
 
                     <AppDateRangePicker
                       v-model="dateRange"
-                      label="Trip dates"
+                      :label="t('planner.tripDates')"
                     />
 
                     <label>
-                      Trip notes
+                      {{ t('planner.tripNotes') }}
                       <textarea
                         v-model="form.notes"
                         rows="4"
-                        placeholder="Permits, ferry reminders, meeting points, or island notes..."
+                        :placeholder="t('planner.tripNotesPlaceholder')"
                       ></textarea>
                     </label>
 
@@ -667,18 +668,18 @@ onMounted(async () => {
                       <AppStampFrame
                         class="trip-preview-stamp"
                         :image="selectedIsland?.cover_image || '/images/island-placeholder.jpg'"
-                        :alt="`${selectedIsland?.name || 'Selected island'} cover`"
+                        :alt="`${selectedIsland?.name || t('planner.selectedIsland')} cover`"
                         :contain="false"
                       />
 
                       <div>
-                        <span>Destination</span>
-                        <strong>{{ selectedIsland?.name || 'No island selected' }}</strong>
+                        <span>{{ t('planner.destination') }}</span>
+                        <strong>{{ selectedIsland?.name || t('planner.noIslandSelected') }}</strong>
                         <p v-if="selectedIsland">
                           {{ selectedIsland.location || selectedIsland.country }}
                         </p>
                         <p v-else>
-                          Choose an island to preview the trip destination.
+                          {{ t('planner.chooseIslandPreview') }}
                         </p>
                       </div>
                     </div>
@@ -697,13 +698,13 @@ onMounted(async () => {
               <div v-if="activeTab === 'timeline'" class="tab-content-area">
                 <div class="timeline-header">
                   <div>
-                    <h3>Day Timeline</h3>
-                    <p>Arrange activities by day. Drag activities to reorder within the selected day.</p>
+                    <h3>{{ t('planner.dayTimeline') }}</h3>
+                    <p>{{ t('planner.timelineHint') }}</p>
                   </div>
 
                   <button type="button" class="primary-btn" @click="addBlankActivity">
                     <i class="bi bi-plus-circle"></i>
-                    Add activity
+                    {{ t('planner.addActivity') }}
                   </button>
                 </div>
 
@@ -715,12 +716,12 @@ onMounted(async () => {
                     :class="{ active: activeDay === day }"
                     @click="activeDay = day"
                   >
-                    Day {{ day }}
+                    {{ t('planner.day', { day }) }}
                   </button>
                 </div>
 
                 <div v-if="suggestedActivities.length" class="suggestion-strip">
-                  <span>Popular here</span>
+                  <span>{{ t('planner.popularHere') }}</span>
 
                   <button
                     v-for="activity in suggestedActivities"
@@ -744,7 +745,7 @@ onMounted(async () => {
                 >
                   <template #item="{ element, index }">
                     <article class="timeline-item">
-                      <button type="button" class="drag-handle" aria-label="Drag activity">
+                      <button type="button" class="drag-handle" :aria-label="t('planner.dragActivity')">
                         <i class="bi bi-grip-vertical"></i>
                       </button>
 
@@ -757,7 +758,7 @@ onMounted(async () => {
                           <input
                             v-model="element.title"
                             type="text"
-                            placeholder="Activity title"
+                            :placeholder="t('planner.activityTitle')"
                           />
 
                           <input
@@ -765,14 +766,14 @@ onMounted(async () => {
                             type="number"
                             min="0"
                             step="15"
-                            placeholder="Minutes"
+                            :placeholder="t('planner.minutes')"
                           />
                         </div>
 
                         <textarea
                           v-model="element.notes"
                           rows="2"
-                          placeholder="Notes for this activity..."
+                          :placeholder="t('planner.activityNotes')"
                         ></textarea>
                       </div>
 
@@ -784,23 +785,23 @@ onMounted(async () => {
                 </draggable>
 
                 <div v-if="!selectedDayItems.length" class="empty-timeline">
-                  No activities planned for Day {{ activeDay }} yet.
+                  {{ t('planner.noActivitiesDay', { day: activeDay }) }}
                 </div>
               </div>
 
               <div v-if="activeTab === 'packing'" class="tab-content-area">
                 <div class="panel-subtitle">
-                  <h3>Packing Checklist</h3>
+                  <h3>{{ t('planner.packingChecklist') }}</h3>
                   <button type="button" class="ghost-btn" @click="addChecklistItem">
                     <i class="bi bi-plus"></i>
-                    Add item
+                    {{ t('planner.addItem') }}
                   </button>
                 </div>
 
                 <div class="checklist-grid">
                   <label v-for="item in form.checklist" :key="item.local_id" class="check-item">
                     <input v-model="item.is_checked" type="checkbox" />
-                    <input v-model="item.label" type="text" placeholder="Checklist item" />
+                    <input v-model="item.label" type="text" :placeholder="t('planner.checklistItem')" />
 
                     <button type="button" class="tiny-remove-btn" @click="removeChecklistItem(item.local_id)">
                       <i class="bi bi-x"></i>
@@ -811,16 +812,16 @@ onMounted(async () => {
 
               <div v-if="activeTab === 'budget'" class="tab-content-area">
                 <div class="panel-subtitle">
-                  <h3>Budget Notes</h3>
+                  <h3>{{ t('planner.budgetNotes') }}</h3>
                   <button type="button" class="ghost-btn" @click="addBudgetItem">
                     <i class="bi bi-plus"></i>
-                    Add budget
+                    {{ t('planner.addBudget') }}
                   </button>
                 </div>
 
                 <div class="budget-list">
                   <div v-for="item in form.budget" :key="item.local_id" class="budget-row">
-                    <input v-model="item.label" type="text" placeholder="Budget item" />
+                    <input v-model="item.label" type="text" :placeholder="t('planner.budgetItem')" />
                     <input v-model="item.amount" type="number" min="0" step="10" />
 
                     <button type="button" class="tiny-remove-btn" @click="removeBudgetItem(item.local_id)">
@@ -830,7 +831,7 @@ onMounted(async () => {
                 </div>
 
                 <strong class="budget-total">
-                  Estimated Total RM {{ budgetTotal.toLocaleString() }}
+                  {{ t('planner.estimatedTotal', { total: budgetTotal.toLocaleString() }) }}
                 </strong>
               </div>
             </section>
@@ -1333,49 +1334,5 @@ textarea:focus {
   .check-item {
     grid-template-columns: 1fr;
   }
-}
-
-:global(body.dark-mode) .planner-page {
-  background:
-    radial-gradient(circle at top left, rgba(38,210,222,0.14), transparent 32%),
-    linear-gradient(180deg, #1a202c 0%, #202938 100%);
-}
-
-:global(body.dark-mode) .planner-hero,
-:global(body.dark-mode) .paper-panel,
-:global(body.dark-mode) .trip-preview-card,
-:global(body.dark-mode) .timeline-item,
-:global(body.dark-mode) .check-item {
-  background: #253244;
-  border-color: rgba(255,255,255,0.13);
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) input,
-:global(body.dark-mode) select,
-:global(body.dark-mode) textarea,
-:global(body.dark-mode) .ghost-btn,
-:global(body.dark-mode) .planner-tabs button,
-:global(body.dark-mode) .day-tabs button {
-  background: #2d3748;
-  border-color: rgba(255,255,255,0.14);
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .planner-hero h1,
-:global(body.dark-mode) .panel-title h2,
-:global(body.dark-mode) .panel-subtitle h3,
-:global(body.dark-mode) .timeline-header h3,
-:global(body.dark-mode) label,
-:global(body.dark-mode) .trip-preview-card strong,
-:global(body.dark-mode) .budget-total {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .planner-hero p,
-:global(body.dark-mode) .timeline-header p,
-:global(body.dark-mode) .trip-preview-card p,
-:global(body.dark-mode) .empty-timeline {
-  color: #cbd5e1;
 }
 </style>

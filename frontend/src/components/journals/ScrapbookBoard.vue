@@ -92,11 +92,6 @@ defineExpose({ rootEl })
   color: #1897a0;
 }
 
-:global(body.dark-mode) .scrapbook-board {
-  background-color: #253244;
-  border-color: rgba(255,255,255,0.14);
-}
-
 @media (max-width: 768px) {
   .scrapbook-board {
     width: 100%;

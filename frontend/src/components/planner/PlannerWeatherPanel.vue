@@ -1,5 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   weather: {
@@ -54,31 +57,31 @@ const marineSummary = computed(() => {
   if (!props.marine) {
     return {
       tone: 'neutral',
-      label: 'Sea conditions unavailable',
-      detail: 'Wave and current data will appear after forecast loads.'
+      label: t('planner.seaUnavailable'),
+      detail: t('planner.waveCurrentHint')
     }
   }
 
   if (wave <= 1.2 && current <= 1.5) {
     return {
       tone: 'good',
-      label: 'Calm sea',
-      detail: `${wave || '—'} m wave height · ${current || '—'} m/s current`
+      label: t('planner.calmSea'),
+      detail: t('planner.seaDetail', { wave: wave || '-', current: current || '-' })
     }
   }
 
   if (wave <= 2 && current <= 2.5) {
     return {
       tone: 'okay',
-      label: 'Moderate sea',
-      detail: `${wave || '—'} m wave height · ${current || '—'} m/s current`
+      label: t('planner.moderateSea'),
+      detail: t('planner.seaDetail', { wave: wave || '-', current: current || '-' })
     }
   }
 
   return {
     tone: 'risky',
-    label: 'Rough sea',
-    detail: `${wave || '—'} m wave height · ${current || '—'} m/s current`
+    label: t('planner.roughSea'),
+    detail: t('planner.seaDetail', { wave: wave || '-', current: current || '-' })
   }
 })
 
@@ -109,9 +112,9 @@ function getDayTone(rain) {
 }
 
 function getDayLabel(rain) {
-  if (rain >= 70) return 'Risky'
-  if (rain >= 45) return 'Caution'
-  return 'Good'
+  if (rain >= 70) return t('planner.risky')
+  if (rain >= 45) return t('planner.caution')
+  return t('planner.good')
 }
 
 </script>
@@ -119,14 +122,14 @@ function getDayLabel(rain) {
 <template>
   <section class="planner-weather-card">
     <div class="weather-heading">
-      <span>Trip Weather</span>
+      <span>{{ t('planner.tripWeather') }}</span>
 
       <strong>
-        {{ loading ? 'Checking forecast...' : suitability?.label || 'Select island and dates' }}
+        {{ loading ? t('planner.checkingForecast') : suitability?.label || t('planner.selectIslandDates') }}
       </strong>
 
       <p>
-        {{ unavailable || suitability?.detail || 'Weather suitability appears after you choose a destination and trip dates.' }}
+        {{ unavailable || suitability?.detail || t('planner.weatherSuitabilityHint') }}
       </p>
     </div>
 
@@ -142,13 +145,13 @@ function getDayLabel(rain) {
         </div>
 
         <div>
-          <strong>Day {{ index + 1 }}</strong>
+          <strong>{{ t('planner.day', { day: index + 1 }) }}</strong>
           <span>{{ formatDate(day.date) }}</span>
         </div>
 
         <div class="day-weather-info">
           <strong>{{ Math.round(day.max) }}°</strong>
-          <small>{{ day.rain }}% rain</small>
+          <small>{{ t('planner.rainChance', { rain: day.rain }) }}</small>
         </div>
 
         <em>{{ day.label }}</em>
@@ -157,7 +160,7 @@ function getDayLabel(rain) {
 
     <div v-else-if="!loading" class="weather-empty">
       <i class="bi bi-cloud-sun"></i>
-      <span>Choose an island and trip dates to preview daily weather.</span>
+      <span>{{ t('planner.chooseIslandDatesWeather') }}</span>
     </div>
 
     <div v-if="marine" class="sea-summary" :class="marineSummary.tone">
@@ -166,7 +169,7 @@ function getDayLabel(rain) {
       </div>
 
       <div>
-        <span>Sea Conditions</span>
+        <span>{{ t('planner.seaConditions') }}</span>
         <strong>{{ marineSummary.label }}</strong>
         <p>{{ marineSummary.detail }}</p>
       </div>

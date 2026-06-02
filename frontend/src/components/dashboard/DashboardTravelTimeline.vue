@@ -553,23 +553,6 @@ function isActionLoading(entry) {
   opacity: 0.58;
 }
 
-:global(body.dark-mode) .timeline-summary div,
-:global(body.dark-mode) .timeline-card {
-  background: #253244;
-  border-color: rgba(255,255,255,0.13);
-}
-
-:global(body.dark-mode) .timeline-summary strong,
-:global(body.dark-mode) .timeline-title-row strong {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .timeline-summary span,
-:global(body.dark-mode) .timeline-title-row small,
-:global(body.dark-mode) .timeline-card p {
-  color: #cbd5e1;
-}
-
 @media (max-width: 1100px) {
   .timeline-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));

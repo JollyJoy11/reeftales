@@ -613,36 +613,4 @@ onMounted(loadData)
     flex-direction: column;
   }
 }
-
-:global(body.dark-mode) .journal-shell {
-  background: #253244;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .step-card {
-  background: #2d3748;
-  border-color: rgba(255,255,255,0.1);
-}
-
-:global(body.dark-mode) .section-heading p {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .section-title {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .journal-header h1 {
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .journal-header p {
-  color: #cbd5e1;
-}
-
-:global(body.dark-mode) .cancel-journal-btn {
-  background: rgba(127,29,29,0.28);
-  color: #fecdd3;
-  border-color: rgba(254,205,211,0.28);
-}
 </style>

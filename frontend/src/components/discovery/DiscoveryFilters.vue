@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const isFilterOpen = ref(false)
+const { t } = useI18n()
 
 function toggleFilterPanel() {
   isFilterOpen.value = !isFilterOpen.value
@@ -49,24 +51,31 @@ const emit = defineEmits([
   'reset'
 ])
 
-const continents = ['Asia', 'Europe', 'Oceania', 'North America', 'South America', 'Africa']
+const continents = computed(() => [
+  { value: 'Asia', label: t('discovery.continentAsia') },
+  { value: 'Europe', label: t('discovery.continentEurope') },
+  { value: 'Oceania', label: t('discovery.continentOceania') },
+  { value: 'North America', label: t('discovery.continentNorthAmerica') },
+  { value: 'South America', label: t('discovery.continentSouthAmerica') },
+  { value: 'Africa', label: t('discovery.continentAfrica') }
+])
 
-const activityOptions = [
-  'Snorkeling',
-  'Scuba Diving',
-  'Island Hopping',
-  'Sunset Watching',
-  'Kayaking'
-]
+const activityOptions = computed(() => [
+  { value: 'Snorkeling', label: t('discovery.activitySnorkeling') },
+  { value: 'Scuba Diving', label: t('discovery.activityScubaDiving') },
+  { value: 'Island Hopping', label: t('discovery.activityIslandHopping') },
+  { value: 'Sunset Watching', label: t('discovery.activitySunsetWatching') },
+  { value: 'Kayaking', label: t('discovery.activityKayaking') }
+])
 
-const speciesTypes = [
-  'Fish',
-  'Turtle',
-  'Shark',
-  'Ray',
-  'Coral',
-  'Jellyfish'
-]
+const speciesTypes = computed(() => [
+  { value: 'Fish', label: t('discovery.speciesFish') },
+  { value: 'Turtle', label: t('discovery.speciesTurtle') },
+  { value: 'Shark', label: t('discovery.speciesShark') },
+  { value: 'Ray', label: t('discovery.speciesRay') },
+  { value: 'Coral', label: t('discovery.speciesCoral') },
+  { value: 'Jellyfish', label: t('discovery.speciesJellyfish') }
+])
 
 function toggleArrayValue(array, value, eventName) {
   const updated = array.includes(value)
@@ -82,7 +91,7 @@ function toggleArrayValue(array, value, eventName) {
     <div class="filter-header d-flex justify-content-between align-items-center" @click="toggleFilterPanel">
       <h5 class="fw-bold mb-0 d-flex align-items-center">
         <i class="bi bi-sliders"></i>
-        Filters
+        {{ t('discovery.filters') }}
       </h5>
 
       <i class="bi filter-arrow"
@@ -92,7 +101,7 @@ function toggleArrayValue(array, value, eventName) {
 
     <div class="filter-content" :class="{ open: isFilterOpen }">
       <div class="filter-section">
-        <label class="form-label fw-semibold">Discovery Mode</label>
+        <label class="form-label fw-semibold">{{ t('discovery.discoveryMode') }}</label>
 
         <div class="mode-card-group">
           <button
@@ -101,7 +110,7 @@ function toggleArrayValue(array, value, eventName) {
             @click="emit('update:discoveryMode', 'islands')"
           >
             <i class="bi bi-geo-alt"></i>
-            <span>Islands Explorer</span>
+            <span>{{ t('discovery.islandsExplorer') }}</span>
           </button>
 
           <button
@@ -110,13 +119,13 @@ function toggleArrayValue(array, value, eventName) {
             @click="emit('update:discoveryMode', 'marine')"
           >
             <i class="bi bi-water"></i>
-            <span>Marine Encyclopedia</span>
+            <span>{{ t('discovery.marineEncyclopedia') }}</span>
           </button>
         </div>
       </div>
 
       <div class="filter-section">
-        <label class="form-label fw-semibold">Search</label>
+        <label class="form-label fw-semibold">{{ t('discovery.search') }}</label>
 
         <input
           :value="search"
@@ -124,14 +133,14 @@ function toggleArrayValue(array, value, eventName) {
           type="search"
           class="form-control"
           :placeholder="discoveryMode === 'islands'
-            ? 'Search islands...'
-            : 'Search marine life...'"
+            ? t('discovery.searchIslands')
+            : t('discovery.searchMarine')"
         />
       </div>
 
       <template v-if="discoveryMode === 'islands'">
         <div class="filter-section">
-          <label class="form-label fw-semibold">Continents</label>
+          <label class="form-label fw-semibold">{{ t('discovery.continents') }}</label>
 
           <div
             v-for="item in continents"
@@ -141,19 +150,19 @@ function toggleArrayValue(array, value, eventName) {
             <input
               class="form-check-input"
               type="checkbox"
-              :checked="selectedContinents.includes(item)"
-              @change="toggleArrayValue(selectedContinents, item, 'update:selectedContinents')"
-              :id="`continent-${item}`"
+              :checked="selectedContinents.includes(item.value)"
+              @change="toggleArrayValue(selectedContinents, item.value, 'update:selectedContinents')"
+              :id="`continent-${item.value}`"
             />
 
-            <label class="form-check-label" :for="`continent-${item}`">
-              {{ item }}
+            <label class="form-check-label" :for="`continent-${item.value}`">
+              {{ item.label }}
             </label>
           </div>
         </div>
 
         <div class="filter-section">
-          <label class="form-label fw-semibold">Activities</label>
+          <label class="form-label fw-semibold">{{ t('discovery.activities') }}</label>
 
           <div
             v-for="item in activityOptions"
@@ -163,13 +172,13 @@ function toggleArrayValue(array, value, eventName) {
             <input
               class="form-check-input"
               type="checkbox"
-              :checked="selectedActivities.includes(item)"
-              @change="toggleArrayValue(selectedActivities, item, 'update:selectedActivities')"
-              :id="`activity-${item}`"
+              :checked="selectedActivities.includes(item.value)"
+              @change="toggleArrayValue(selectedActivities, item.value, 'update:selectedActivities')"
+              :id="`activity-${item.value}`"
             />
 
-            <label class="form-check-label" :for="`activity-${item}`">
-              {{ item }}
+            <label class="form-check-label" :for="`activity-${item.value}`">
+              {{ item.label }}
             </label>
           </div>
         </div>
@@ -177,7 +186,7 @@ function toggleArrayValue(array, value, eventName) {
 
       <template v-else>
         <div class="filter-section">
-          <label class="form-label fw-semibold">Species Type</label>
+          <label class="form-label fw-semibold">{{ t('discovery.speciesType') }}</label>
 
           <div
             v-for="item in speciesTypes"
@@ -187,20 +196,20 @@ function toggleArrayValue(array, value, eventName) {
             <input
               class="form-check-input"
               type="checkbox"
-              :checked="selectedSpeciesTypes.includes(item)"
-              @change="toggleArrayValue(selectedSpeciesTypes, item, 'update:selectedSpeciesTypes')"
-              :id="`species-${item}`"
+              :checked="selectedSpeciesTypes.includes(item.value)"
+              @change="toggleArrayValue(selectedSpeciesTypes, item.value, 'update:selectedSpeciesTypes')"
+              :id="`species-${item.value}`"
             />
 
-            <label class="form-check-label" :for="`species-${item}`">
-              {{ item }}
+            <label class="form-check-label" :for="`species-${item.value}`">
+              {{ item.label }}
             </label>
           </div>
         </div>
 
         <div class="filter-section">
           <div class="depth-label-row">
-            <label class="form-label fw-semibold mb-0">Depth Range</label>
+            <label class="form-label fw-semibold mb-0">{{ t('discovery.depthRange') }}</label>
             <span>{{ minDepth }}-{{ maxDepth }} m</span>
           </div>
 
@@ -246,7 +255,7 @@ function toggleArrayValue(array, value, eventName) {
 
       <div class="reset-filter-btn">
         <button class="btn btn-outline-primary w-100" @click="emit('reset')">
-          Reset Filters
+          {{ t('discovery.resetFilters') }}
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import JournalCard from '@/components/journals/JournalCard.vue'
@@ -10,6 +11,7 @@ import { getPublicJournals, getTrendingIslands, getTopExplorers } from '@/servic
 
 const journals = ref([])
 const route = useRoute()
+const { t } = useI18n()
 const search = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
@@ -17,11 +19,11 @@ const trendingIslands = ref([])
 const topExplorers = ref([])
 const sortBy = ref('newest')
 
-const sortOptions = [
-  { label: 'Newest', value: 'newest' },
-  { label: 'Most Liked', value: 'likes' },
-  { label: 'Most Commented', value: 'comments' }
-]
+const sortOptions = computed(() => [
+  { label: t('community.sortNewest'), value: 'newest' },
+  { label: t('community.sortLiked'), value: 'likes' },
+  { label: t('community.sortCommented'), value: 'comments' }
+])
 
 async function loadJournals() {
   try {
@@ -33,7 +35,7 @@ async function loadJournals() {
       sort: sortBy.value
     })
   } catch (error) {
-    errorMessage.value = 'Failed to load community diaries.'
+    errorMessage.value = t('community.loadError')
   } finally {
     loading.value = false
   }
@@ -44,7 +46,7 @@ async function loadSidebarData() {
     trendingIslands.value = await getTrendingIslands()
     topExplorers.value = await getTopExplorers()
   } catch (error) {
-    errorMessage.value = 'Failed to load community highlights.'
+    errorMessage.value = t('community.highlightsError')
   }
 }
 
@@ -79,10 +81,10 @@ watch(
     <section class="container py-4">
       <div class="community-hero mb-4">
         <div class="hero-copy">
-          <span class="eyebrow">Community Diaries</span>
-          <h1>Shared reef journals</h1>
+          <span class="eyebrow">{{ t('community.eyebrow') }}</span>
+          <h1>{{ t('community.title') }}</h1>
           <p>
-            Read island notes, marine sightings, and travel memories from other Reef Tales explorers.
+            {{ t('community.intro') }}
           </p>
 
           <div class="community-search">
@@ -90,7 +92,7 @@ watch(
             <input
               v-model="search"
               type="search"
-              placeholder="Search journals, islands, or authors..."
+              :placeholder="t('community.searchPlaceholder')"
             />
           </div>
         </div>
@@ -99,30 +101,30 @@ watch(
           <div class="hero-stats">
             <span>
               <strong>{{ journals.length }}</strong>
-              diaries
+              {{ t('community.diaries') }}
             </span>
             <span>
               <strong>{{ trendingIslands.length }}</strong>
-              islands
+              {{ t('community.islands') }}
             </span>
           </div>
 
           <RouterLink to="/journal/create" class="create-journal-btn">
             <i class="bi bi-pencil-square"></i>
-            Create Journal
+            {{ t('community.createJournal') }}
           </RouterLink>
         </div>
       </div>
 
       <LoadingState
         v-if="loading"
-        message="Loading community diaries..."
+        :message="t('community.loading')"
       />
 
       <div v-else class="row g-4">
         <main class="col-12 col-lg-8 order-2 order-lg-1">
           <div class="journal-toolbar">
-            <span>{{ journals.length }} diaries found</span>
+            <span>{{ t('community.diariesFound', { count: journals.length }) }}</span>
 
             <div class="journal-sort">
               <button
@@ -150,15 +152,15 @@ watch(
           <EmptyState
             v-else
             icon="bi bi-journal-text"
-            title="No diaries found"
-            message="Try changing your search keyword or create the first community diary."
+            :title="t('community.emptyTitle')"
+            :message="t('community.emptyMessage')"
           />
         </main>
 
         <aside class="col-12 col-lg-4 order-1 order-lg-2">
           <div class="community-sidebar">
             <section class="sidebar-card">
-              <h6><i class="bi bi-compass"></i> Trending Islands</h6>
+              <h6><i class="bi bi-compass"></i> {{ t('community.trendingIslands') }}</h6>
 
               <div
                 v-for="(island, index) in trendingIslands"
@@ -171,17 +173,17 @@ watch(
 
                 <div>
                   <strong>{{ island.name }}</strong>
-                  <small>{{ island.diary_count }} diaries shared</small>
+                  <small>{{ t('community.diariesShared', { count: island.diary_count }) }}</small>
                 </div>
               </div>
 
               <p v-if="!trendingIslands.length" class="sidebar-empty">
-                No trending islands yet.
+                {{ t('community.noTrending') }}
               </p>
             </section>
 
             <section class="sidebar-card">
-              <h6><i class="bi bi-stars"></i> Top Explorers</h6>
+              <h6><i class="bi bi-stars"></i> {{ t('community.topExplorers') }}</h6>
 
               <div
                 v-for="explorer in topExplorers"
@@ -201,12 +203,12 @@ watch(
 
                 <div>
                   <strong>{{ explorer.username }}</strong>
-                  <small>{{ explorer.diary_count }} public diaries</small>
+                  <small>{{ t('community.publicDiaries', { count: explorer.diary_count }) }}</small>
                 </div>
               </div>
 
               <p v-if="!topExplorers.length" class="sidebar-empty">
-                No explorers yet.
+                {{ t('community.noExplorers') }}
               </p>
             </section>
           </div>

@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
 import DashboardSideNav from '@/components/dashboard/DashboardSideNav.vue'
@@ -24,6 +25,7 @@ const authStore = useAuthStore()
 const toastStore = useToastStore()
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const loading = ref(true)
 const error = ref('')
@@ -36,17 +38,17 @@ const aiIdentifications = ref([])
 const journalActionIds = ref(new Set())
 const itineraryActionIds = ref(new Set())
 
-const panels = [
-  { id: 'overview', label: 'Overview', icon: 'bi-grid' },
-  { id: 'journeys', label: 'Travel Timeline', icon: 'bi-journal-richtext' },
-  { id: 'marine', label: 'My Marine Life', icon: 'bi-water' },
-  { id: 'saved-islands', label: 'Saved Islands', icon: 'bi-bookmark-heart' },
-  { id: 'saved-journals', label: 'Saved Journals', icon: 'bi-bookmark-star' },
-  { id: 'badges', label: 'Badges', icon: 'bi-award' }
-]
+const panels = computed(() => [
+  { id: 'overview', label: t('dashboard.myPassport'), icon: 'bi-grid' },
+  { id: 'journeys', label: t('dashboard.travelTimeline'), icon: 'bi-journal-richtext' },
+  { id: 'marine', label: t('dashboard.myMarineLife'), icon: 'bi-water' },
+  { id: 'saved-islands', label: t('dashboard.savedIslands'), icon: 'bi-bookmark-heart' },
+  { id: 'saved-journals', label: t('dashboard.savedJournals'), icon: 'bi-bookmark-star' },
+  { id: 'badges', label: t('dashboard.badges'), icon: 'bi-award' }
+])
 
 const activePanel = ref(
-  panels.some(panel => panel.id === route.query.view)
+  panels.value.some(panel => panel.id === route.query.view)
     ? route.query.view
     : 'overview'
 )
@@ -54,7 +56,7 @@ const activePanel = ref(
 watch(
   () => route.query.view,
   view => {
-    activePanel.value = panels.some(panel => panel.id === view)
+    activePanel.value = panels.value.some(panel => panel.id === view)
       ? view
       : 'overview'
   }
@@ -73,7 +75,7 @@ function splitList(value) {
 }
 
 function formatDate(date) {
-  if (!date) return 'Not dated'
+  if (!date) return t('dashboard.notDated')
 
   return new Date(date).toLocaleDateString('en-US', {
     day: 'numeric',
@@ -83,7 +85,7 @@ function formatDate(date) {
 }
 
 function formatMonth(date) {
-  if (!date) return 'Undated'
+  if (!date) return t('dashboard.undated')
 
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
@@ -164,7 +166,7 @@ function startJournalQuery(entry) {
   }
 }
 
-const displayName = computed(() => authStore.user?.username || 'Explorer')
+const displayName = computed(() => authStore.user?.username || t('dashboard.explorer'))
 
 const recentJournals = computed(() => journals.value.slice(0, 3))
 
@@ -219,7 +221,7 @@ const aiSpeciesList = computed(() => {
       item.accepted_name ||
       item.scientific_name ||
       item.common_name ||
-      'Unidentified species',
+      t('dashboard.unidentifiedSpecies'),
     scientificName: item.scientific_name || item.accepted_name,
     isVerified: item.taxonomy_status?.toLowerCase() === 'accepted'
   }))
@@ -249,15 +251,15 @@ const nextSteps = computed(() => {
   const steps = []
 
   if (readyToJournalTrips.value.length) {
-    steps.push(`${readyToJournalTrips.value.length} completed plan${readyToJournalTrips.value.length > 1 ? 's are' : ' is'} ready to become journal`)
+    steps.push(t('dashboard.completedPlansReady', { count: readyToJournalTrips.value.length }))
   }
 
   if (speciesChecklist.value.length < 3) {
-    steps.push(`${3 - speciesChecklist.value.length} more species to unlock Marine Spotter`)
+    steps.push(t('dashboard.moreSpeciesToUnlock', { count: 3 - speciesChecklist.value.length }))
   }
 
   if (!journals.value.some(journal => journal.visibility === 'public')) {
-    steps.push('Publish 1 public journal to unlock Community Voice')
+    steps.push(t('dashboard.publishPublicJournal'))
   }
 
   return steps.slice(0, 3)
@@ -265,37 +267,37 @@ const nextSteps = computed(() => {
 
 const stats = computed(() => [
   {
-    label: 'Journeys',
+    label: t('dashboard.journeys'),
     value: journals.value.length,
-    note: `${unmatchedPlannedTrips.value.length} planned`,
+    note: t('dashboard.plannedCount', { count: unmatchedPlannedTrips.value.length }),
     icon: 'bi-compass',
     panel: 'journeys'
   },
   {
-    label: 'Marine Life',
+    label: t('dashboard.marineLife'),
     value: speciesChecklist.value.length + aiSpeciesList.value.length,
-    note: `${aiSpeciesList.value.length} AI IDs`,
+    note: t('dashboard.aiIdsCount', { count: aiSpeciesList.value.length }),
     icon: 'bi-water',
     panel: 'marine'
   },
   {
-    label: 'Saved Islands',
+    label: t('dashboard.savedIslands'),
     value: savedIslands.value.length,
-    note: 'places kept',
+    note: t('dashboard.placesKept'),
     icon: 'bi-bookmark-heart',
     panel: 'saved-islands'
   },
   {
-    label: 'Saved Journals',
+    label: t('dashboard.savedJournals'),
     value: savedJournals.value.length,
-    note: 'stories saved',
+    note: t('dashboard.storiesSaved'),
     icon: 'bi-bookmark-star',
     panel: 'saved-journals'
   },
   {
-    label: 'Badges',
+    label: t('dashboard.badges'),
     value: unlockedBadges.value,
-    note: `${badges.value.length} total`,
+    note: t('dashboard.totalCount', { count: badges.value.length }),
     icon: 'bi-award',
     panel: 'badges'
   }
@@ -306,7 +308,7 @@ const travelTimeline = computed(() => {
     ...journal,
     key: `journal-${journal.id}`,
     type: 'completed',
-    statusLabel: 'Journal',
+    statusLabel: t('dashboard.journal'),
     monthLabel: formatMonth(journal.start_date || journal.created_at),
     days: tripDays(journal),
     sortDate: dateValue(journal.start_date || journal.created_at)
@@ -319,10 +321,10 @@ const travelTimeline = computed(() => {
       ...itinerary,
       key: `itinerary-${itinerary.id}`,
       type: overdue ? 'ready' : 'planned',
-      statusLabel: overdue ? 'Ready to journal' : 'Planned',
+      statusLabel: overdue ? t('dashboard.readyToJournal') : t('dashboard.planned'),
       content:
         itinerary.notes ||
-        `${itinerary.item_count || 0} planned activit${Number(itinerary.item_count) === 1 ? 'y' : 'ies'} for this trip.`,
+        t('dashboard.plannedActivitiesForTrip', { count: itinerary.item_count || 0 }),
       monthLabel: formatMonth(itinerary.start_date || itinerary.created_at),
       days: tripDaysFromDates(itinerary.start_date, itinerary.end_date),
       overdue,
@@ -382,11 +384,11 @@ async function toggleJournalVisibility(journal) {
 
     toastStore.success(
       nextVisibility === 'public'
-        ? 'Journal is now public.'
-        : 'Journal is now private.'
+        ? t('dashboard.journalNowPublic')
+        : t('dashboard.journalNowPrivate')
     )
   } catch {
-    toastStore.danger('Unable to update journal visibility.')
+    toastStore.danger(t('dashboard.visibilityError'))
   } finally {
     setJournalActionLoading(journal.id, false)
   }
@@ -395,7 +397,7 @@ async function toggleJournalVisibility(journal) {
 async function removeJournal(journal) {
   if (isJournalActionLoading(journal.id)) return
 
-  const confirmed = window.confirm(`Delete "${journal.title}"? This cannot be undone.`)
+  const confirmed = window.confirm(t('dashboard.deleteJournalConfirm', { title: journal.title }))
   if (!confirmed) return
 
   try {
@@ -405,9 +407,9 @@ async function removeJournal(journal) {
     journals.value = journals.value.filter(item => item.id !== journal.id)
     savedJournals.value = savedJournals.value.filter(item => item.id !== journal.id)
 
-    toastStore.success('Journal deleted.')
+    toastStore.success(t('dashboard.journalDeleted'))
   } catch {
-    toastStore.danger('Unable to delete journal.')
+    toastStore.danger(t('dashboard.deleteJournalError'))
   } finally {
     setJournalActionLoading(journal.id, false)
   }
@@ -416,7 +418,7 @@ async function removeJournal(journal) {
 async function removeItinerary(itinerary) {
   if (isItineraryActionLoading(itinerary.id)) return
 
-  const confirmed = window.confirm(`Delete "${itinerary.title}"? This cannot be undone.`)
+  const confirmed = window.confirm(t('dashboard.deleteTripConfirm', { title: itinerary.title }))
   if (!confirmed) return
 
   try {
@@ -425,9 +427,9 @@ async function removeItinerary(itinerary) {
 
     itineraries.value = itineraries.value.filter(item => item.id !== itinerary.id)
 
-    toastStore.success('Itinerary deleted.')
+    toastStore.success(t('dashboard.tripDeleted'))
   } catch {
-    toastStore.danger('Unable to delete itinerary.')
+    toastStore.danger(t('dashboard.deleteTripError'))
   } finally {
     setItineraryActionLoading(itinerary.id, false)
   }
@@ -458,7 +460,7 @@ async function loadDashboard() {
     savedJournals.value = savedJournalData
     aiIdentifications.value = aiIdentificationData
   } catch {
-    error.value = 'Unable to load your logbook right now.'
+    error.value = t('dashboard.loadError')
   } finally {
     loading.value = false
   }
@@ -470,7 +472,7 @@ onMounted(loadDashboard)
 <template>
   <MainLayout>
     <main class="dashboard-page">
-      <LoadingState v-if="loading" message="Loading your logbook..." />
+      <LoadingState v-if="loading" :message="t('dashboard.loading')" />
 
       <div v-else class="dashboard-shell">
         <div v-if="error" class="error-note">
@@ -490,16 +492,15 @@ onMounted(loadDashboard)
             <section v-if="activePanel === 'overview'" class="overview-stack">
               <section class="welcome-card">
                 <div>
-                  <span class="eyebrow">My Logbook</span>
-                  <h1>Welcome back, {{ displayName }}</h1>
+                  <span class="eyebrow">{{ t('dashboard.myLogbook') }}</span>
+                  <h1>{{ t('dashboard.welcomeBack', { name: displayName }) }}</h1>
                   <p>
-                    Continue your reef journeys, turn completed plans into journals,
-                    and keep track of your saved islands and stories.
+                    {{ t('dashboard.welcomeIntro') }}
                   </p>
 
                   <div class="tier-summary">
                     <strong>{{ explorerLevel.name }}</strong>
-                    <small>{{ explorerLevel.progress }}% progress to {{ explorerLevel.next }}</small>
+                    <small>{{ t('dashboard.progressTo', { progress: explorerLevel.progress, next: explorerLevel.next }) }}</small>
 
                     <div class="tier-track">
                       <i :style="{ width: `${explorerLevel.progress}%` }"></i>
@@ -509,7 +510,7 @@ onMounted(loadDashboard)
 
                 <RouterLink to="/journal/create" class="create-btn">
                   <i class="bi bi-plus-circle"></i>
-                  Create journal
+                  {{ t('dashboard.createJournal') }}
                 </RouterLink>
               </section>
 
@@ -534,8 +535,8 @@ onMounted(loadDashboard)
               <section v-if="nextSteps.length" class="next-steps-card">
                 <div class="panel-heading compact">
                   <div>
-                    <span>Next steps</span>
-                    <h2>Suggested actions</h2>
+                    <span>{{ t('dashboard.nextSteps') }}</span>
+                    <h2>{{ t('dashboard.suggestedActions') }}</h2>
                   </div>
                 </div>
 
@@ -555,12 +556,12 @@ onMounted(loadDashboard)
                 <div class="panel-block large">
                   <div class="panel-heading">
                     <div>
-                      <span>Recent journals</span>
-                      <h2>Latest stories</h2>
+                      <span>{{ t('dashboard.recentJournals') }}</span>
+                      <h2>{{ t('dashboard.latestStories') }}</h2>
                     </div>
 
                     <button type="button" class="plain-link" @click="setPanel('journeys')">
-                      View timeline
+                      {{ t('dashboard.viewTimeline') }}
                     </button>
                   </div>
 
@@ -573,14 +574,14 @@ onMounted(loadDashboard)
                       <AppStampFrame
                         class="journal-thumb"
                         :image="coverFor(journal)"
-                        :alt="journal.title || 'Journal cover'"
+                        :alt="journal.title || t('dashboard.journalCover')"
                         @error="$event.target.src = '/images/island-placeholder.jpg'"
                       />
 
                       <div>
                         <small>{{ journal.island_name }} • {{ formatDate(journal.start_date || journal.created_at) }}</small>
                         <h3>{{ journal.title }}</h3>
-                        <p>{{ journal.content || 'No story written yet.' }}</p>
+                        <p>{{ journal.content || t('dashboard.noStoryWritten') }}</p>
                       </div>
 
                       <RouterLink :to="`/journal/${journal.id}`" class="circle-link">
@@ -590,7 +591,7 @@ onMounted(loadDashboard)
                   </div>
 
                   <div v-else class="empty-note">
-                    No journals yet. Create your first reef story.
+                    {{ t('dashboard.noJournalsYet') }}
                   </div>
                 </div>
 
@@ -598,8 +599,8 @@ onMounted(loadDashboard)
                   <div class="panel-block">
                     <div class="panel-heading compact">
                       <div>
-                        <span>Ready to write</span>
-                        <h2>Completed plans</h2>
+                        <span>{{ t('dashboard.readyToWrite') }}</span>
+                        <h2>{{ t('dashboard.completedPlans') }}</h2>
                       </div>
                     </div>
 
@@ -619,15 +620,15 @@ onMounted(loadDashboard)
                     </div>
 
                     <div v-else class="empty-note">
-                      No completed plans waiting.
+                      {{ t('dashboard.noCompletedPlans') }}
                     </div>
                   </div>
 
                   <div class="panel-block">
                     <div class="panel-heading compact">
                       <div>
-                        <span>Saved</span>
-                        <h2>For later</h2>
+                        <span>{{ t('dashboard.saved') }}</span>
+                        <h2>{{ t('dashboard.forLater') }}</h2>
                       </div>
                     </div>
 
@@ -635,13 +636,13 @@ onMounted(loadDashboard)
                       <button type="button" @click="setPanel('saved-islands')">
                         <i class="bi bi-bookmark-heart"></i>
                         <strong>{{ savedIslands.length }}</strong>
-                        <span>Islands</span>
+                        <span>{{ t('dashboard.islands') }}</span>
                       </button>
 
                       <button type="button" @click="setPanel('saved-journals')">
                         <i class="bi bi-bookmark-star"></i>
                         <strong>{{ savedJournals.length }}</strong>
-                        <span>Journals</span>
+                        <span>{{ t('dashboard.journals') }}</span>
                       </button>
                     </div>
                   </div>
@@ -652,12 +653,12 @@ onMounted(loadDashboard)
             <section v-else-if="activePanel === 'journeys'" class="content-panel">
               <div class="panel-heading">
                 <div>
-                  <span>Travel Timeline</span>
-                  <h2>Planned trips & completed journals</h2>
+                  <span>{{ t('dashboard.travelTimeline') }}</span>
+                  <h2>{{ t('dashboard.plannedAndCompleted') }}</h2>
                 </div>
 
                 <RouterLink to="/journal/create" class="mini-link">
-                  Create journal
+                  {{ t('dashboard.createJournal') }}
                 </RouterLink>
               </div>
 
@@ -670,23 +671,23 @@ onMounted(loadDashboard)
                 @remove-itinerary="removeItinerary"
               />
               <div v-else class="empty-note">
-                Planned trips and completed journals will appear here.
+                {{ t('dashboard.emptyTimeline') }}
               </div>
             </section>
 
             <section v-else-if="activePanel === 'marine'" class="content-panel">
               <div class="panel-heading">
                 <div>
-                  <span>My Marine Life</span>
-                  <h2>Sightings checklist</h2>
+                  <span>{{ t('dashboard.myMarineLife') }}</span>
+                  <h2>{{ t('dashboard.sightingsChecklist') }}</h2>
                 </div>
               </div>
 
               <div class="marine-sections">
                 <section>
                   <div class="subsection-heading">
-                    <span>Confirmed journal sightings</span>
-                    <small>{{ speciesChecklist.length }} species</small>
+                    <span>{{ t('dashboard.confirmedSightings') }}</span>
+                    <small>{{ t('dashboard.speciesCount', { count: speciesChecklist.length }) }}</small>
                   </div>
 
                   <div v-if="speciesChecklist.length" class="marine-grid">
@@ -701,20 +702,20 @@ onMounted(loadDashboard)
 
                       <div>
                         <h3>{{ species.name }}</h3>
-                        <p>Seen in {{ species.count }} journal{{ species.count > 1 ? 's' : '' }}</p>
+                        <p>{{ t('dashboard.seenInJournals', { count: species.count }) }}</p>
                       </div>
                     </article>
                   </div>
 
                   <div v-else class="empty-note">
-                    Add marine sightings in a journal to build this checklist.
+                    {{ t('dashboard.noMarineSightings') }}
                   </div>
                 </section>
 
                 <section>
                   <div class="subsection-heading">
-                    <span>AI identified species</span>
-                    <small>{{ aiSpeciesList.length }} saved</small>
+                    <span>{{ t('dashboard.aiIdentifiedSpecies') }}</span>
+                    <small>{{ t('dashboard.savedCount', { count: aiSpeciesList.length }) }}</small>
                   </div>
 
                   <div v-if="aiSpeciesList.length" class="ai-id-grid">
@@ -726,7 +727,7 @@ onMounted(loadDashboard)
                       <img
                         v-if="item.image_url"
                         :src="item.image_url"
-                        :alt="`AI identification photo for ${item.displayName}`"
+                        :alt="t('dashboard.aiPhotoAlt', { name: item.displayName })"
                       />
 
                       <span v-else class="ai-id-placeholder">
@@ -739,18 +740,18 @@ onMounted(loadDashboard)
 
                           <span :class="{ verified: item.isVerified }">
                             <i v-if="item.isVerified" class="bi bi-check-lg"></i>
-                            {{ item.isVerified ? 'Verified' : item.taxonomy_status || 'Pending' }}
+                            {{ item.isVerified ? t('dashboard.verified') : item.taxonomy_status || t('dashboard.pending') }}
                           </span>
                         </div>
 
-                        <p>{{ item.scientificName || 'Scientific name unavailable' }}</p>
-                        <small>{{ item.confidence || 'Confidence not stated' }} • {{ formatDate(item.created_at) }}</small>
+                        <p>{{ item.scientificName || t('dashboard.scientificNameUnavailable') }}</p>
+                        <small>{{ item.confidence || t('dashboard.confidenceNotStated') }} • {{ formatDate(item.created_at) }}</small>
                       </div>
                     </article>
                   </div>
 
                   <div v-else class="empty-note">
-                    AI species you identify from Discovery Hub will appear here.
+                    {{ t('dashboard.noAiSpecies') }}
                   </div>
                 </section>
               </div>
@@ -759,12 +760,12 @@ onMounted(loadDashboard)
             <section v-else-if="activePanel === 'saved-islands'" class="content-panel">
               <div class="panel-heading">
                 <div>
-                  <span>Saved Islands</span>
-                  <h2>Places you kept</h2>
+                  <span>{{ t('dashboard.savedIslands') }}</span>
+                  <h2>{{ t('dashboard.placesYouKept') }}</h2>
                 </div>
 
                 <RouterLink to="/discovery" class="mini-link">
-                  Explore more
+                  {{ t('dashboard.exploreMore') }}
                 </RouterLink>
               </div>
 
@@ -778,7 +779,7 @@ onMounted(loadDashboard)
                   <AppStampFrame
                     class="saved-island-stamp"
                     :image="island.cover_image || '/images/island-placeholder.jpg'"
-                    :alt="island.name || 'Saved island'"
+                    :alt="island.name || t('dashboard.savedIsland')"
                     :contain="false"
                     @error="$event.target.src = '/images/island-placeholder.jpg'"
                   />
@@ -789,15 +790,15 @@ onMounted(loadDashboard)
               </div>
 
               <div v-else class="empty-note">
-                No saved islands yet.
+                {{ t('dashboard.noSavedIslands') }}
               </div>
             </section>
 
             <section v-else-if="activePanel === 'saved-journals'" class="content-panel">
               <div class="panel-heading">
                 <div>
-                  <span>Saved Journals</span>
-                  <h2>Stories you kept</h2>
+                  <span>{{ t('dashboard.savedJournals') }}</span>
+                  <h2>{{ t('dashboard.storiesYouKept') }}</h2>
                 </div>
               </div>
 
@@ -810,14 +811,14 @@ onMounted(loadDashboard)
                   <AppStampFrame
                     class="journal-thumb"
                     :image="coverFor(journal)"
-                    :alt="journal.title || 'Saved journal'"
+                    :alt="journal.title || t('dashboard.savedJournal')"
                     @error="$event.target.src = '/images/island-placeholder.jpg'"
                   />
 
                   <div>
                     <small>{{ journal.island_name }} • {{ formatDate(journal.start_date || journal.created_at) }}</small>
                     <h3>{{ journal.title }}</h3>
-                    <p>{{ journal.content || 'No preview available.' }}</p>
+                    <p>{{ journal.content || t('dashboard.noPreview') }}</p>
                   </div>
 
                   <RouterLink :to="`/journal/${journal.id}`" class="circle-link">
@@ -827,19 +828,19 @@ onMounted(loadDashboard)
               </div>
 
               <div v-else class="empty-note">
-                Saved journals will appear here.
+                {{ t('dashboard.noSavedJournals') }}
               </div>
             </section>
 
             <section v-else-if="activePanel === 'badges'" class="content-panel">
               <div class="panel-heading">
                 <div>
-                  <span>Badges & Achievements</span>
-                  <h2>Achievements</h2>
+                  <span>{{ t('dashboard.badgesAchievements') }}</span>
+                  <h2>{{ t('dashboard.achievements') }}</h2>
                 </div>
 
                 <strong class="badge-count">
-                  {{ unlockedBadges }} / {{ badges.length }} earned
+                  {{ t('dashboard.earnedCount', { unlocked: unlockedBadges, total: badges.length }) }}
                 </strong>
               </div>
 
@@ -856,7 +857,7 @@ onMounted(loadDashboard)
 
                   <h3>{{ badge.title }}</h3>
                   <p>{{ badge.detail }}</p>
-                  <small>{{ badge.unlocked ? 'Unlocked' : 'Keep exploring' }}</small>
+                  <small>{{ badge.unlocked ? t('dashboard.unlocked') : t('dashboard.keepExploring') }}</small>
                 </article>
               </div>
             </section>

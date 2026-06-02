@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')
+﻿const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const {
@@ -165,7 +165,7 @@ async function updateSettings(req, res) {
       default_journal_visibility: ['public', 'private'].includes(req.body.default_journal_visibility)
         ? req.body.default_journal_visibility
         : 'public',
-      language: ['English', 'Bahasa Melayu', '中文'].includes(req.body.language)
+      language: ['English', '中文'].includes(req.body.language)
         ? req.body.language
         : 'English'
     })
@@ -184,3 +184,4 @@ module.exports = {
   updateProfile,
   updateSettings
 }
+
