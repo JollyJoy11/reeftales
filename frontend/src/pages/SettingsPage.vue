@@ -615,6 +615,9 @@ async function saveSettings() {
 
 .upload-content strong {
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: #2f4858;
   font-size: 0.95rem;
 }
@@ -933,6 +936,15 @@ select {
 }
 
 @media (max-width: 575px) {
+  .image-upload-card {
+    grid-template-columns: 52px 1fr;
+  }
+  
+  .upload-action {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
   .settings-shell {
     width: min(100% - 20px, 1080px);
   }
