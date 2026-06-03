@@ -379,6 +379,81 @@ const messages = {
       bestActivities: 'Best activities for your selected dates',
       activitySuitabilityHint: 'Based on rain, wind, wave height, and sea movement.'
     },
+    home: {
+      hero: {
+        eyebrow: 'Reef Tales home',
+        title: 'Discover reef islands, plan the trip, then write the story.',
+        intro: 'Start from the atlas, save the reef details that matter, and carry them into a planner or public diary without losing the thread.',
+        exploreDiscovery: 'Explore Discovery',
+        planTrip: 'Plan a Trip',
+        islandPostcardAlt: 'Island postcard',
+        turtleStampAlt: 'Sea turtle stamp',
+        routePreviewAria: 'Route preview board',
+        routeLabel: 'Saved route',
+        routeTitle: 'Sipadan field journal',
+        routeDetail: 'Weather, sightings, activities, and diary notes stay linked.',
+        stops: {
+          sipadan: {
+            name: 'Sipadan',
+            country: 'Malaysia',
+            detail: 'Turtle walls, dive timing, and saved island notes.'
+          },
+          maldives: {
+            name: 'Maldives',
+            country: 'Indian Ocean',
+            detail: 'Lagoon routes, manta channels, and calm-water plans.'
+          },
+          greatBarrierReef: {
+            name: 'Great Barrier Reef',
+            country: 'Australia',
+            detail: 'Coral gardens, outer reef stops, and journal ideas.'
+          }
+        }
+      },
+      features: {
+        eyebrow: 'From map to plan',
+        title: 'Turn a saved island into a trip you can actually use.',
+        intro: 'Keep discovery, planning, and journaling in the same flow so an island never becomes just another forgotten bookmark.',
+        cards: {
+          scout: {
+            title: 'Scout the reef',
+            text: 'Compare island profiles, wildlife notes, access windows, and the small details that make a stop worth saving.'
+          },
+          route: {
+            title: 'Shape the route',
+            text: 'Turn inspiration into a practical path with seasonal timing, activity ideas, and destination-first planning.'
+          },
+          tale: {
+            title: 'Keep the tale',
+            text: 'Collect sightings, photos, and field notes so each trip becomes part of a living reef logbook.'
+          }
+        }
+      },
+      marine: {
+        eyebrow: 'Underwater layer',
+        title: 'Look closer at the marine life around each route.',
+        intro: 'Species profiles and sighting notes help each reef feel specific before you add it to a plan or write about it in your logbook.',
+        action: 'Explore species',
+        loading: 'Loading marine life...',
+        empty: 'No marine life has been added yet.',
+        profileFallback: 'Marine profile',
+        databaseFallback: 'Marine profile from the ReefTales database.',
+        speciesAlt: '{name} preview'
+      },
+      community: {
+        eyebrow: 'Community logbook',
+        title: 'Traveler diaries keep the route alive after the trip.',
+        intro: 'Browse public notes from other explorers, save ideas for your own route, and turn a reef visit into something the community can learn from.',
+        loading: 'Loading traveler diaries...',
+        explorerFallback: 'Reef explorer',
+        journalFallback: 'Reef journal',
+        excerptFallback: 'Open this public diary from the ReefTales community.',
+        read: 'Read',
+        empty: 'No public journals yet.',
+        createFirst: 'Create the first diary',
+        recentJourney: 'Recent journey'
+      }
+    },
     footer: {
       description: 'Discover islands, document marine sightings, and share unforgettable ocean adventures.',
       discover: 'Discover',
@@ -761,6 +836,81 @@ const messages = {
       activitySuitability: '海上活动适合度',
       bestActivities: '适合所选日期的活动',
       activitySuitabilityHint: '根据降雨、风速、浪高和海流情况估算。'
+    },
+    home: {
+      hero: {
+        eyebrow: 'Reef Tales 首页',
+        title: '探索珊瑚礁岛屿，规划旅程，再写下故事。',
+        intro: '从探索图谱开始，保存重要的珊瑚礁细节，并把它们带进旅行计划或公开日记里。',
+        exploreDiscovery: '探索发现',
+        planTrip: '规划旅程',
+        islandPostcardAlt: '岛屿明信片',
+        turtleStampAlt: '海龟邮票',
+        routePreviewAria: '路线预览板',
+        routeLabel: '已保存路线',
+        routeTitle: 'Sipadan 实地日记',
+        routeDetail: '天气、目击记录、活动和日记笔记都会保持关联。',
+        stops: {
+          sipadan: {
+            name: 'Sipadan',
+            country: '马来西亚',
+            detail: '海龟峭壁、潜水时段和已保存的岛屿笔记。'
+          },
+          maldives: {
+            name: 'Maldives',
+            country: '印度洋',
+            detail: '泻湖路线、蝠鲼通道和平静海况计划。'
+          },
+          greatBarrierReef: {
+            name: 'Great Barrier Reef',
+            country: '澳大利亚',
+            detail: '珊瑚花园、外礁停靠点和日记灵感。'
+          }
+        }
+      },
+      features: {
+        eyebrow: '从地图到计划',
+        title: '把已保存的岛屿变成真正可用的旅程。',
+        intro: '让探索、规划和写日记保持在同一个流程里，岛屿就不会变成被遗忘的书签。',
+        cards: {
+          scout: {
+            title: '查看礁区',
+            text: '比较岛屿资料、野生生物记录、适合前往的季节，以及值得保存的小细节。'
+          },
+          route: {
+            title: '安排路线',
+            text: '把灵感变成实际路线，结合季节时机、活动建议和目的地优先的规划。'
+          },
+          tale: {
+            title: '留下故事',
+            text: '收集目击记录、照片和实地笔记，让每趟旅程成为你的珊瑚礁日志。'
+          }
+        }
+      },
+      marine: {
+        eyebrow: '海洋生物层',
+        title: '更靠近每条路线周围的海洋生物。',
+        intro: '物种资料和目击笔记能让每片礁区更具体，再加入计划或写进日志时更有方向。',
+        action: '探索物种',
+        loading: '正在加载海洋生物...',
+        empty: '还没有新增海洋生物。',
+        profileFallback: '海洋生物资料',
+        databaseFallback: '来自 ReefTales 数据库的海洋生物资料。',
+        speciesAlt: '{name} 预览'
+      },
+      community: {
+        eyebrow: '社区日志',
+        title: '旅行者日记让路线在旅程结束后继续被看见。',
+        intro: '浏览其他探索者的公开笔记，保存自己的路线灵感，也把一次礁区拜访变成社区可以参考的故事。',
+        loading: '正在加载旅行者日记...',
+        explorerFallback: '珊瑚礁探索者',
+        journalFallback: '珊瑚礁日记',
+        excerptFallback: '打开这篇来自 ReefTales 社区的公开日记。',
+        read: '阅读',
+        empty: '还没有公开日记。',
+        createFirst: '创建第一篇日记',
+        recentJourney: '最近旅程'
+      }
     },
     footer: {
       description: '探索海岛，记录海洋生物观察，并分享难忘的海洋旅程。',

@@ -58,18 +58,6 @@ async function initializeDatabase() {
       )
 		`);
 
-    await addColumnIfMissing('users', 'appearance_theme', "ENUM('light', 'dark') DEFAULT 'light'");
-    await addColumnIfMissing('users', 'font_size', "ENUM('small', 'normal', 'large') DEFAULT 'normal'");
-    await addColumnIfMissing('users', 'larger_text', 'BOOLEAN DEFAULT FALSE');
-    await addColumnIfMissing('users', 'reduced_motion', 'BOOLEAN DEFAULT FALSE');
-    await addColumnIfMissing('users', 'high_contrast', 'BOOLEAN DEFAULT FALSE');
-    await addColumnIfMissing('users', 'notify_likes', 'BOOLEAN DEFAULT TRUE');
-    await addColumnIfMissing('users', 'notify_comments', 'BOOLEAN DEFAULT TRUE');
-    await addColumnIfMissing('users', 'default_journal_visibility', "ENUM('public', 'private') DEFAULT 'public'");
-    await addColumnIfMissing('users', 'language', "VARCHAR(40) DEFAULT 'English'");
-    await addColumnIfMissing('users', 'reset_password_token_hash', 'VARCHAR(64)');
-    await addColumnIfMissing('users', 'reset_password_expires_at', 'DATETIME');
-
 		// ISLANDS
 		await run(`
     	CREATE TABLE IF NOT EXISTS islands (
