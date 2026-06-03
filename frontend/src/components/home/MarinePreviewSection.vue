@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -43,6 +43,7 @@ let ctx
 
 onMounted(async () => {
   await loadMarineSpecies()
+  await nextTick()
 
   ctx = gsap.context(() => {
     gsap.to('.bubble-node, .panel-bubble', {
@@ -70,6 +71,7 @@ onMounted(async () => {
         autoAlpha: 0,
         duration: 0.78,
         stagger: 0.08,
+        immediateRender: false,
         ease: 'power3.out'
       })
       .from(
@@ -81,11 +83,19 @@ onMounted(async () => {
           transformOrigin: '50% 85%',
           duration: 0.86,
           stagger: 0.14,
+          immediateRender: false,
           ease: 'power3.out'
         },
         '-=0.38'
       )
   }, sectionRef.value)
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ScrollTrigger.sort()
+      ScrollTrigger.refresh()
+    })
+  })
 })
 
 onBeforeUnmount(() => {
@@ -184,22 +194,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   padding: clamp(26px, 5vw, 46px);
   border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(255,253,248,0.96), rgba(251,247,239,0.96)),
-    repeating-linear-gradient(0deg, transparent 0 31px, rgba(216,205,187,0.24) 32px);
-}
-
-.marine-inner::before {
-  content: '';
-  position: absolute;
-  top: -12px;
-  right: 58px;
-  width: 92px;
-  height: 24px;
-  background: rgba(169,216,214,0.58);
-  border-left: 1px dashed rgba(47,72,88,0.12);
-  border-right: 1px dashed rgba(47,72,88,0.12);
-  transform: rotate(3deg);
+  background: #fbf9f1;
 }
 
 .marine-copy,

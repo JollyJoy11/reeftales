@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -64,6 +64,7 @@ let ctx
 
 onMounted(async () => {
   await loadJournals()
+  await nextTick()
 
   ctx = gsap.context(() => {
     gsap.from('.community-heading > *', {
@@ -76,6 +77,7 @@ onMounted(async () => {
       autoAlpha: 0,
       duration: 0.8,
       stagger: 0.08,
+      immediateRender: false,
       ease: 'power3.out'
     })
 
@@ -88,9 +90,17 @@ onMounted(async () => {
       y: 54,
       autoAlpha: 0,
       duration: 0.9,
+      immediateRender: false,
       ease: 'power3.out'
     })
   }, sectionRef.value)
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ScrollTrigger.sort()
+      ScrollTrigger.refresh()
+    })
+  })
 })
 
 onBeforeUnmount(() => {
@@ -258,7 +268,7 @@ onBeforeUnmount(() => {
 }
 
 .journal-preview-card::after {
-  content: '“';
+  content: '"';
   position: absolute;
   right: 22px;
   bottom: 8px;

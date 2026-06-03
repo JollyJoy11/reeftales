@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -36,7 +36,9 @@ const stops = computed(() => [
 
 let ctx
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
+
   ctx = gsap.context(() => {
     const heroTimeline = gsap.timeline({
       defaults: { ease: 'power3.out' }
@@ -93,9 +95,14 @@ onMounted(() => {
       autoAlpha: 0,
       stagger: 0.16,
       duration: 0.78,
+      immediateRender: false,
       ease: 'power3.out'
     })
   }, sectionRef.value)
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+  })
 })
 
 onBeforeUnmount(() => {
@@ -324,11 +331,11 @@ onBeforeUnmount(() => {
 }
 
 .stamp-main:hover {
-  transform: rotate(1.8deg) translate(12px, -30px) scale(1.045);
+  transform: rotate(1.8deg) translate(12px, -20px);
 }
 
 .stamp-turtle:hover {
-  transform: rotate(-5deg) translate(-10px, -30px) scale(1.06);
+  transform: rotate(-5deg) translate(-10px, -15px);
 }
 
 .stamp-wrap :deep(.app-stamp-frame) {

@@ -44,6 +44,7 @@ onMounted(() => {
       autoAlpha: 0,
       duration: 0.85,
       stagger: 0.08,
+      immediateRender: false,
       ease: 'power3.out'
     })
 
@@ -60,6 +61,7 @@ onMounted(() => {
       transformOrigin: '50% 80%',
       stagger: 0.2,
       duration: 1.05,
+      immediateRender: false,
       ease: 'power4.out'
     })
   }, sectionRef.value)
