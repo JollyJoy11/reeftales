@@ -1,4 +1,5 @@
 ﻿const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 
 const {
@@ -6,8 +7,30 @@ const {
   createUser,
   findUserById,
   updateUserProfile,
-  updateUserSettings
+  updateUserSettings,
+  savePasswordResetToken,
+  findUserByPasswordResetToken,
+  updatePasswordAndClearReset
 } = require('../models/userModel')
+const { sendPasswordResetEmail } = require('../services/emailService')
+
+function hashResetToken(token) {
+  return crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex')
+}
+
+function isStrongPassword(password) {
+  return (
+    typeof password === 'string' &&
+    password.length >= 8 &&
+    password.length <= 16 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /\d/.test(password)
+  )
+}
 
 async function register(req, res) {
   try {
@@ -177,11 +200,93 @@ async function updateSettings(req, res) {
   }
 }
 
+async function forgotPassword(req, res) {
+  try {
+    const email = req.body.email?.trim().toLowerCase()
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' })
+    }
+
+    const user = await findUserByEmail(email)
+    const response = {
+      message: 'If that email exists, a password reset link has been sent.'
+    }
+
+    if (!user) {
+      return res.json(response)
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    const tokenHash = hashResetToken(resetToken)
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 30)
+
+    await savePasswordResetToken(user.id, tokenHash, expiresAt)
+
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      req.get('origin') ||
+      'http://localhost:5173'
+
+    const resetLink = `${frontendUrl.replace(/\/$/, '')}/reset-password/${resetToken}`
+
+    const emailResult = await sendPasswordResetEmail({
+      to: user.email,
+      resetLink
+    })
+
+    if (!emailResult.sent && process.env.NODE_ENV !== 'production') {
+      response.resetLink = resetLink
+    }
+
+    res.json(response)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Unable to prepare password reset.' })
+  }
+}
+
+async function resetPassword(req, res) {
+  try {
+    const token = req.params.token
+    const password = req.body.password
+
+    if (!token) {
+      return res.status(400).json({ message: 'Reset token is required' })
+    }
+
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        message: 'Password must be 8-16 characters and include uppercase, lowercase, and a number.'
+      })
+    }
+
+    const tokenHash = hashResetToken(token)
+    const user = await findUserByPasswordResetToken(tokenHash)
+
+    if (!user) {
+      return res.status(400).json({
+        message: 'This reset link is invalid or has expired.'
+      })
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await updatePasswordAndClearReset(user.id, hashedPassword)
+
+    res.json({ message: 'Password reset successfully.' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Unable to reset password.' })
+  }
+}
+
 module.exports = {
   register,
   login,
   getCurrentUser,
   updateProfile,
-  updateSettings
+  updateSettings,
+  forgotPassword,
+  resetPassword
 }
 

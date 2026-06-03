@@ -33,3 +33,13 @@ export async function updateSettings(data) {
   const res = await api.put('/auth/me/settings', data)
   return res.data
 }
+
+export async function requestPasswordReset(email) {
+  const res = await api.post('/auth/forgot-password', { email })
+  return res.data
+}
+
+export async function resetPassword(token, password) {
+  const res = await api.post(`/auth/reset-password/${token}`, { password })
+  return res.data
+}

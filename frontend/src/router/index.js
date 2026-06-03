@@ -5,8 +5,11 @@ import Discovery from '../pages/DiscoveryHubPage.vue'
 import IslandDetails from '../pages/IslandDetailPage.vue'
 import Community from '../pages/CommunityPage.vue'
 import Journal from '../pages/JournalDetailPage.vue'
+import AuthLayout from '../layouts/AuthLayout.vue'
 import Login from '../pages/LoginPage.vue'
 import Register from '../pages/RegisterPage.vue'
+import ForgotPassword from '../pages/ForgotPasswordPage.vue'
+import ResetPassword from '../pages/ResetPasswordPage.vue'
 import Dashboard from '../pages/DashboardPage.vue'
 import CreateJournal from '../pages/CreateJournalPage.vue'
 import Planner from '../pages/TripPlannerPage.vue'
@@ -23,8 +26,16 @@ const routes = [
   { path: '/community', component: Community, meta: { title: 'Community' } },
   { path: '/journal/:id', component: Journal, meta: { title: 'Journal Details' } },
 
-  { path: '/login', component: Login, meta: { title: 'Log In' } },
-  { path: '/register', component: Register, meta: { title: 'Create Account' } },
+  {
+    path: '/',
+    component: AuthLayout,
+    children: [
+      { path: 'login', component: Login, meta: { title: 'Log In' } },
+      { path: 'register', component: Register, meta: { title: 'Create Account' } },
+      { path: 'forgot-password', component: ForgotPassword, meta: { title: 'Forgot Password' } },
+      { path: 'reset-password/:token', component: ResetPassword, meta: { title: 'Reset Password' } }
+    ]
+  },
 
   { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true, title: 'My Logbook' } },
   { path: '/journal/create', component: CreateJournal, meta: { requiresAuth: true, title: 'Create Journal' } },

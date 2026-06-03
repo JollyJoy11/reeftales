@@ -7,13 +7,17 @@ const {
   login,
   getCurrentUser,
   updateProfile,
-  updateSettings
+  updateSettings,
+  forgotPassword,
+  resetPassword
 } = require('../controllers/authController')
 
 const { protect } = require('../middleware/authMiddleware')
 
 router.post('/register', register)
 router.post('/login', login)
+router.post('/forgot-password', forgotPassword)
+router.post('/reset-password/:token', resetPassword)
 router.get('/me', protect, getCurrentUser)
 router.put('/me/profile', protect, updateProfile)
 router.put('/me/settings', protect, updateSettings)

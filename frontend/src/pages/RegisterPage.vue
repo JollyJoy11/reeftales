@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import AuthLayout from '@/layouts/AuthLayout.vue'
 import Stamp from '@/components/Stamp.vue'
 import { useToastStore } from '@/stores/toastStore'
 
@@ -97,8 +96,7 @@ async function handleRegister() {
 </script>
 
 <template>
-  <AuthLayout>
-    <div class="postcard-card">
+  <div class="postcard-card">
       <div class="postcard-left">
         <Stamp image="/images/stamp-turtle.jpg" />
 
@@ -269,8 +267,7 @@ async function handleRegister() {
             <RouterLink to="/login">Login</RouterLink>
           </div>
       </div>
-    </div>
-  </AuthLayout>
+  </div>
 </template>
 
 <style scoped>

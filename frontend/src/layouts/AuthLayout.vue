@@ -1,8 +1,9 @@
 ﻿<script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, useSlots } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const slots = useSlots()
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
 const currentLanguage = ref(localStorage.getItem('language') || 'English')
 
@@ -37,7 +38,13 @@ onMounted(() => {
       <span>Back</span>
     </button>
 
-    <slot />
+    <slot v-if="slots.default" />
+
+    <RouterView v-else v-slot="{ Component }">
+      <Transition name="auth-card" mode="out-in">
+        <component :is="Component" />
+      </Transition>
+    </RouterView>
 
     <div class="auth-floating-tools">
       <button class="auth-tool-btn" @click="toggleTheme">
@@ -137,6 +144,13 @@ onMounted(() => {
 .auth-back-btn:hover {
   background: #efe7dc;
   color: #1897a0;
+}
+
+.auth-card-enter-active,
+.auth-card-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 </style>
 

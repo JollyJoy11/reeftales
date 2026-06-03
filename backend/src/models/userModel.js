@@ -113,10 +113,53 @@ async function updateUserSettings(userId, data) {
   return findUserById(userId)
 }
 
+async function savePasswordResetToken(userId, tokenHash, expiresAt) {
+  await db.query(
+    `
+    UPDATE users
+    SET reset_password_token_hash = ?, reset_password_expires_at = ?
+    WHERE id = ?
+    `,
+    [tokenHash, expiresAt, userId]
+  )
+}
+
+async function findUserByPasswordResetToken(tokenHash) {
+  const [rows] = await db.query(
+    `
+    SELECT *
+    FROM users
+    WHERE reset_password_token_hash = ?
+      AND reset_password_expires_at > NOW()
+    LIMIT 1
+    `,
+    [tokenHash]
+  )
+
+  return rows[0]
+}
+
+async function updatePasswordAndClearReset(userId, hashedPassword) {
+  await db.query(
+    `
+    UPDATE users
+    SET
+      password = ?,
+      reset_password_token_hash = NULL,
+      reset_password_expires_at = NULL
+    WHERE id = ?
+    `,
+    [hashedPassword, userId]
+  )
+}
+
 module.exports = {
   findUserByEmail,
   createUser,
   findUserById,
   updateUserProfile,
-  updateUserSettings
+  updateUserSettings,
+  savePasswordResetToken,
+  findUserByPasswordResetToken,
+  updatePasswordAndClearReset
 }
