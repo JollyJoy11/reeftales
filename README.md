@@ -136,14 +136,14 @@ VITE_API_BASE_URL=https://your-render-backend-url.onrender.com/api
 
 ## Seed Images
 
-Seed image metadata is stored in:
+Seed image metadata is committed in:
 
 ```text
 backend/src/database/seedIslandImages.generated.json
 backend/src/database/seedSpeciesImages.generated.json
 ```
 
-Image source and license notes are listed in [IMAGE_CREDITS.md](IMAGE_CREDITS.md).
+The seeded islands, species, demo journal covers, and demo journal media use those Cloudinary URLs, so the ignored `backend/seed-images/` folder is not required to run or assess the project. Image source and license notes are listed in [IMAGE_CREDITS.md](IMAGE_CREDITS.md).
 
 To regenerate species seed images from Wikimedia Commons and upload them to Cloudinary:
 
@@ -161,7 +161,7 @@ cd backend
 npm run upload:island-images
 ```
 
-The `backend/seed-images/` folder is ignored by Git because it is only temporary local input for uploading.
+The `backend/seed-images/` folder is ignored by Git because it is only temporary local input for uploading/regenerating Cloudinary seed image metadata.
 
 ## Notes For Assessment
 

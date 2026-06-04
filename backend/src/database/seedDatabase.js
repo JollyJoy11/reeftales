@@ -415,14 +415,14 @@ async function seedDatabase(connection) {
     }
 
     const journals = [
-      { id: 1, user_id: 1, island_id: 5, title: 'My Magical Redang Adventure', content: 'Spent four incredible days snorkeling around Redang Island. The coral gardens were vibrant and I spotted turtles near the shallow reef.', cover_image: seedImage('journals', 'redang-adventure.jpg'), start_date: '2025-06-15', end_date: '2025-06-18', mood: 'excited', visibility: 'public' },
-      { id: 2, user_id: 2, island_id: 4, title: 'Diving Through Sipadan', content: 'One of the best underwater experiences I have ever had. Huge schools of barracuda and reef sharks surrounded the dive site.', cover_image: seedImage('journals', 'sipadan-dive.jpg'), start_date: '2025-05-20', end_date: '2025-05-24', mood: 'amazed', visibility: 'public' },
-      { id: 3, user_id: 1, island_id: 1, title: 'Peaceful Evenings in Maldives', content: 'Relaxed by the crystal-clear waters and kayaked through the lagoon during sunset.', cover_image: seedImage('journals', 'maldives-evening.jpg'), start_date: '2025-04-08', end_date: '2025-04-12', mood: 'relaxed', visibility: 'public' },
-      { id: 4, user_id: 3, island_id: 9, title: 'Raja Ampat Colour Notes', content: 'Every reef wall felt alive with soft corals, tiny fish, and wide blue water beyond the drop-off.', cover_image: seedImage('journals', 'raja-ampat-colour.jpg'), start_date: '2025-07-02', end_date: '2025-07-07', mood: 'joyful', visibility: 'public' },
-      { id: 5, user_id: 2, island_id: 10, title: 'Komodo Current Diary', content: 'The currents were strong, but the manta encounters made every careful drift dive unforgettable.', cover_image: seedImage('journals', 'komodo-current.jpg'), start_date: '2025-08-10', end_date: '2025-08-14', mood: 'adventurous', visibility: 'public' },
-      { id: 6, user_id: 1, island_id: 7, title: 'Perhentian Turtle Morning', content: 'Started the day in calm water and watched a turtle move slowly across the seagrass.', cover_image: seedImage('journals', 'perhentian-turtle.jpg'), start_date: '2025-06-04', end_date: '2025-06-06', mood: 'peaceful', visibility: 'public' },
-      { id: 7, user_id: 3, island_id: 8, title: 'First Look at the Great Barrier Reef', content: 'The reef stretched further than I could imagine, with bright coral plates and schools of butterflyfish.', cover_image: seedImage('journals', 'great-barrier-reef.jpg'), start_date: '2025-09-01', end_date: '2025-09-05', mood: 'amazed', visibility: 'public' },
-      { id: 8, user_id: 2, island_id: 11, title: 'Palawan Lagoon Days', content: 'Island hopping through limestone lagoons felt like moving through a postcard.', cover_image: seedImage('journals', 'palawan-lagoon.jpg'), start_date: '2025-03-18', end_date: '2025-03-22', mood: 'relaxed', visibility: 'public' }
+      { id: 1, user_id: 1, island_id: 5, title: 'My Magical Redang Adventure', content: 'Spent four incredible days snorkeling around Redang Island. The coral gardens were vibrant and I spotted turtles near the shallow reef.', cover_image: islandImage('redang', 'redang.jpg'), start_date: '2025-06-15', end_date: '2025-06-18', mood: 'excited', visibility: 'public' },
+      { id: 2, user_id: 2, island_id: 4, title: 'Diving Through Sipadan', content: 'One of the best underwater experiences I have ever had. Huge schools of barracuda and reef sharks surrounded the dive site.', cover_image: islandImage('sipadan', 'sipadan.jpg'), start_date: '2025-05-20', end_date: '2025-05-24', mood: 'amazed', visibility: 'public' },
+      { id: 3, user_id: 1, island_id: 1, title: 'Peaceful Evenings in Maldives', content: 'Relaxed by the crystal-clear waters and kayaked through the lagoon during sunset.', cover_image: islandImage('maldives', 'maldives.jpg'), start_date: '2025-04-08', end_date: '2025-04-12', mood: 'relaxed', visibility: 'public' },
+      { id: 4, user_id: 3, island_id: 9, title: 'Raja Ampat Colour Notes', content: 'Every reef wall felt alive with soft corals, tiny fish, and wide blue water beyond the drop-off.', cover_image: islandImage('raja-ampat', 'raja-ampat.jpg'), start_date: '2025-07-02', end_date: '2025-07-07', mood: 'joyful', visibility: 'public' },
+      { id: 5, user_id: 2, island_id: 10, title: 'Komodo Current Diary', content: 'The currents were strong, but the manta encounters made every careful drift dive unforgettable.', cover_image: islandImage('komodo', 'komodo.jpg'), start_date: '2025-08-10', end_date: '2025-08-14', mood: 'adventurous', visibility: 'public' },
+      { id: 6, user_id: 1, island_id: 7, title: 'Perhentian Turtle Morning', content: 'Started the day in calm water and watched a turtle move slowly across the seagrass.', cover_image: islandImage('perhentian', 'perhentian.jpg'), start_date: '2025-06-04', end_date: '2025-06-06', mood: 'peaceful', visibility: 'public' },
+      { id: 7, user_id: 3, island_id: 8, title: 'First Look at the Great Barrier Reef', content: 'The reef stretched further than I could imagine, with bright coral plates and schools of butterflyfish.', cover_image: islandImage('great-barrier-reef', 'great-barrier-reef.jpg'), start_date: '2025-09-01', end_date: '2025-09-05', mood: 'amazed', visibility: 'public' },
+      { id: 8, user_id: 2, island_id: 11, title: 'Palawan Lagoon Days', content: 'Island hopping through limestone lagoons felt like moving through a postcard.', cover_image: islandImage('palawan', 'palawan.jpg'), start_date: '2025-03-18', end_date: '2025-03-22', mood: 'relaxed', visibility: 'public' }
     ]
 
     await insertIgnore(connection, 'journals', [
@@ -517,16 +517,16 @@ async function seedDatabase(connection) {
       'caption',
       'display_order'
     ], [
-      { journal_id: 1, species_id: 1, activity_id: 1, media_url: seedImage('journals', 'redang-turtle.jpg'), media_type: 'photo', caption: 'Sea turtle swimming beside coral reef', display_order: 1 },
-      { journal_id: 1, species_id: null, activity_id: 5, media_url: seedImage('journals', 'redang-kayak.jpg'), media_type: 'photo', caption: 'Sunset kayaking view', display_order: 2 },
-      { journal_id: 2, species_id: 12, activity_id: 2, media_url: seedImage('journals', 'sipadan-barracuda.jpg'), media_type: 'photo', caption: 'Barracuda school during dive', display_order: 1 },
-      { journal_id: 2, species_id: 5, activity_id: 6, media_url: seedImage('journals', 'sipadan-reef-shark.jpg'), media_type: 'photo', caption: 'Reef shark encounter', display_order: 2 },
-      { journal_id: 3, species_id: 4, activity_id: 5, media_url: seedImage('journals', 'maldives-manta.jpg'), media_type: 'photo', caption: 'Manta ray near lagoon channel', display_order: 1 },
-      { journal_id: 4, species_id: 24, activity_id: 2, media_url: seedImage('journals', 'raja-ampat-seafan.jpg'), media_type: 'photo', caption: 'Sea fan coral on reef wall', display_order: 1 },
-      { journal_id: 5, species_id: 4, activity_id: 2, media_url: seedImage('journals', 'komodo-manta.jpg'), media_type: 'photo', caption: 'Manta ray drift dive', display_order: 1 },
-      { journal_id: 6, species_id: 1, activity_id: 1, media_url: seedImage('journals', 'perhentian-turtle.jpg'), media_type: 'photo', caption: 'Morning turtle route', display_order: 1 },
-      { journal_id: 7, species_id: 14, activity_id: 6, media_url: seedImage('journals', 'great-barrier-clam.jpg'), media_type: 'photo', caption: 'Giant clam in clear water', display_order: 1 },
-      { journal_id: 8, species_id: null, activity_id: 3, media_url: seedImage('journals', 'palawan-lagoon.jpg'), media_type: 'photo', caption: 'Island hopping through limestone lagoon', display_order: 1 }
+      { journal_id: 1, species_id: 1, activity_id: 1, media_url: speciesImage('green-sea-turtle', 'green-sea-turtle.jpg'), media_type: 'photo', caption: 'Sea turtle swimming beside coral reef', display_order: 1 },
+      { journal_id: 1, species_id: null, activity_id: 5, media_url: islandImage('redang', 'redang.jpg'), media_type: 'photo', caption: 'Sunset kayaking view', display_order: 2 },
+      { journal_id: 2, species_id: 12, activity_id: 2, media_url: speciesImage('great-barracuda', 'great-barracuda.jpg'), media_type: 'photo', caption: 'Barracuda school during dive', display_order: 1 },
+      { journal_id: 2, species_id: 5, activity_id: 6, media_url: speciesImage('blacktip-reef-shark', 'blacktip-reef-shark.jpg'), media_type: 'photo', caption: 'Reef shark encounter', display_order: 2 },
+      { journal_id: 3, species_id: 4, activity_id: 5, media_url: speciesImage('reef-manta-ray', 'reef-manta-ray.jpg'), media_type: 'photo', caption: 'Manta ray near lagoon channel', display_order: 1 },
+      { journal_id: 4, species_id: 24, activity_id: 2, media_url: speciesImage('sea-fan-coral', 'sea-fan-coral.jpg'), media_type: 'photo', caption: 'Sea fan coral on reef wall', display_order: 1 },
+      { journal_id: 5, species_id: 4, activity_id: 2, media_url: speciesImage('reef-manta-ray', 'reef-manta-ray.jpg'), media_type: 'photo', caption: 'Manta ray drift dive', display_order: 1 },
+      { journal_id: 6, species_id: 1, activity_id: 1, media_url: speciesImage('green-sea-turtle', 'green-sea-turtle.jpg'), media_type: 'photo', caption: 'Morning turtle route', display_order: 1 },
+      { journal_id: 7, species_id: 14, activity_id: 6, media_url: speciesImage('giant-clam', 'giant-clam.jpg'), media_type: 'photo', caption: 'Giant clam in clear water', display_order: 1 },
+      { journal_id: 8, species_id: null, activity_id: 3, media_url: islandImage('palawan', 'palawan.jpg'), media_type: 'photo', caption: 'Island hopping through limestone lagoon', display_order: 1 }
     ])
 
     await insertIfMissing(connection, 'comments', [
