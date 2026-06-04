@@ -1,6 +1,6 @@
 ﻿<script setup>
 import { computed, ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
@@ -18,6 +18,7 @@ import { setI18nLanguage } from '@/i18n'
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const route = useRoute()
+const router = useRouter()
 const { t } = useI18n()
 
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
@@ -73,6 +74,7 @@ function isSectionActive(section) {
 function handleLogout() {
   authStore.logout()
   savedIslandStore.clear()
+  router.push('/')
 }
 
 const userLevel = computed(() => {

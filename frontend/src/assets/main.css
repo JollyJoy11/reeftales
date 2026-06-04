@@ -1280,7 +1280,6 @@ body:not(.dark-mode) .postcard-left p {
 
 body:not(.dark-mode) a,
 body:not(.dark-mode) .plain-link,
-body:not(.dark-mode) .mini-link,
 body:not(.dark-mode) .view-all-diaries,
 body:not(.dark-mode) .write-diary-link {
   color: #0f6f78;
@@ -1288,6 +1287,7 @@ body:not(.dark-mode) .write-diary-link {
 
 body:not(.dark-mode) .btn-primary,
 body:not(.dark-mode) .create-btn,
+body:not(.dark-mode) .mini-link,
 body:not(.dark-mode) .save-btn,
 body:not(.dark-mode) .primary-btn,
 body:not(.dark-mode) .open-btn,
@@ -1300,6 +1300,7 @@ body:not(.dark-mode) .upload-action {
 
 body:not(.dark-mode) .btn-primary:hover,
 body:not(.dark-mode) .create-btn:hover,
+body:not(.dark-mode) .mini-link:hover,
 body:not(.dark-mode) .save-btn:hover,
 body:not(.dark-mode) .primary-btn:hover,
 body:not(.dark-mode) .open-btn:hover,
@@ -1378,6 +1379,7 @@ body.dark-mode .loading-state {
 
 body.dark-mode .btn-primary,
 body.dark-mode .create-btn,
+body.dark-mode .mini-link,
 body.dark-mode .save-btn,
 body.dark-mode .primary-btn,
 body.dark-mode .open-btn,
@@ -1390,6 +1392,7 @@ body.dark-mode .upload-action {
 
 body.dark-mode .btn-primary:hover,
 body.dark-mode .create-btn:hover,
+body.dark-mode .mini-link:hover,
 body.dark-mode .save-btn:hover,
 body.dark-mode .primary-btn:hover,
 body.dark-mode .open-btn:hover,
@@ -1402,8 +1405,7 @@ body.dark-mode .preview-habitat-btn:hover {
 body.dark-mode .btn-outline-primary,
 body.dark-mode .back-link,
 body.dark-mode .view-species-link,
-body.dark-mode .plain-link,
-body.dark-mode .mini-link {
+body.dark-mode .plain-link {
   color: #67e8f9 !important;
   border-color: #67e8f9 !important;
 }
