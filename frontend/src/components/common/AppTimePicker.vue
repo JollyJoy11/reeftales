@@ -1,6 +1,6 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
+import { useAuthStore } from '@/stores/authStore'
 
 defineProps({
   modelValue: {
@@ -11,19 +11,7 @@ defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const isDark = ref(document.body.classList.contains('dark-mode'))
-
-let observer
-onMounted(() => {
-  observer = new MutationObserver(() => {
-    isDark.value = document.body.classList.contains('dark-mode')
-  })
-  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
-})
-
-onBeforeUnmount(() => {
-  observer?.disconnect()
-})
+const authStore = useAuthStore()
 
 function handleUpdate(value) {
   if (!value) {
@@ -74,7 +62,7 @@ function formatTime(value) {
     <i class="bi bi-clock time-input-icon" aria-hidden="true"></i>
     <VueDatePicker
       :model-value="convertToPickerTime(modelValue)"
-      :dark="isDark"
+      :dark="authStore.isDark"
       time-picker
       auto-apply
       hide-input-icon

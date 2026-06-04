@@ -491,19 +491,6 @@ const messages = {
     }
   },
   zh: {
-    common: {
-      save: '保存',
-      saving: '保存中...',
-      light: '浅色',
-      dark: '深色',
-      small: '小',
-      normal: '标准',
-      large: '大',
-      public: '公开',
-      private: '私密',
-      english: 'English',
-      chinese: '中文'
-    },
     nav: {
       discovery: '探索',
       community: '社区游记',

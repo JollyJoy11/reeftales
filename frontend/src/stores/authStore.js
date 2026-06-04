@@ -35,7 +35,11 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isLoggedIn: (state) => !!state.token
+    isLoggedIn: (state) => !!state.token,
+    isDark: (state) => {
+      const theme = state.user?.appearance_theme ?? localStorage.getItem('theme') ?? 'light'
+      return theme === 'dark'
+    }
   },
 
   actions: {
