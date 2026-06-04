@@ -165,12 +165,14 @@ onBeforeUnmount(() => {
 .feature-card {
   min-height: 320px;
   padding: clamp(26px, 4vw, 38px);
-  border: 1px dashed var(--border);
+  border: 1px solid rgba(150,128,100,0.36);
   border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(255,253,248,0.96), rgba(251,247,239,0.96)),
-    repeating-linear-gradient(0deg, transparent 0 31px, rgba(216,205,187,0.22) 32px);
-  box-shadow: 0 16px 34px rgba(47,72,88,0.09);
+    linear-gradient(180deg, #ffffff 0%, #f2e6d5 100%),
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(121,97,70,0.08) 32px);
+  box-shadow:
+    0 20px 42px rgba(47,72,88,0.15),
+    inset 0 0 0 1px rgba(255,255,255,0.62);
   will-change: transform, opacity;
 }
 
@@ -184,7 +186,9 @@ onBeforeUnmount(() => {
 
 .feature-card:hover {
   border-color: rgba(24,151,160,0.45);
-  box-shadow: 0 22px 44px rgba(15, 143, 152, 0.12);
+  box-shadow:
+    0 24px 48px rgba(15, 143, 152, 0.16),
+    inset 0 0 0 1px rgba(255,255,255,0.72);
 }
 
 .feature-topline {

@@ -115,7 +115,8 @@ const islandImageAlt = computed(() => {
 <style scoped>
 .island-label-card {
   padding: 12px;
-  background: #fcecd9;
+  background: #f4dfc4;
+  box-shadow: 0 18px 36px rgba(47,72,88,0.16);
   transition: transform 0.2s ease;
   transform: rotate(0.4deg);
   
@@ -133,6 +134,7 @@ const islandImageAlt = computed(() => {
 
 .island-label-card:hover {
   transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 22px 44px rgba(15,143,152,0.18);
 }
 
 .save-island-btn {
@@ -207,7 +209,7 @@ const islandImageAlt = computed(() => {
 .subtitle {
   text-align: center;
   font-size: 0.78rem;
-  color: var(--text-secondary);
+  color: #475569;
 }
 
 .info-grid {
@@ -229,10 +231,11 @@ const islandImageAlt = computed(() => {
 .info-grid span {
   display: block;
   font-size: 0.7rem;
-  color: var(--text-secondary);
+  color: #536273;
 }
 
 .info-grid strong {
+  color: #1e293b;
   font-size: 0.78rem;
 }
 

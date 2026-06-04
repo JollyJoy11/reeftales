@@ -433,8 +433,7 @@ body.dark-mode .species-desc {
 body.dark-mode .island-label-card,
 body.dark-mode .species-label-card,
 body.dark-mode .ai-identify-card {
-  background: #212c3b !important;
-  border-color: rgba(255,255,255,0.08) !important;
+  background: #303844 !important;
 }
 
 body.dark-mode .stamp-image-area,
@@ -447,7 +446,7 @@ body.dark-mode .species-image {
   border: 2px solid #c4a88d;
 }
 body.dark-mode .label-body {
-  background: #212c3b !important;
+  background: #303844 !important;
   color: #f8fafc !important;
 }
 
@@ -973,11 +972,6 @@ body.dark-mode .trend-row {
   border-color: rgba(255,255,255,0.1);
 }
 
-body.dark-mode .dashboard-side-nav {
-  background: #253244;
-  border-color: rgba(255,255,255,0.12);
-}
-
 body.dark-mode .profile-mini strong,
 body.dark-mode .mobile-menu-toggle {
   color: #f8fafc;
@@ -1353,8 +1347,36 @@ body:not(.dark-mode) .journal-card,
 body:not(.dark-mode) .timeline-card,
 body:not(.dark-mode) .species-mini-card,
 body:not(.dark-mode) .saved-island-card,
-body:not(.dark-mode) .badge-card {
-  border-color: #d0c0aa !important;
+body:not(.dark-mode) .badge-card,
+body:not(.dark-mode) .feature-card,
+body:not(.dark-mode) .journey-stop-card,
+body:not(.dark-mode) .species-postcard,
+body:not(.dark-mode) .journal-preview-card,
+body:not(.dark-mode) .sidebar-card,
+body:not(.dark-mode) .stat-card,
+body:not(.dark-mode) .welcome-card,
+body:not(.dark-mode) .marine-card,
+body:not(.dark-mode) .ai-id-card,
+body:not(.dark-mode) .step-card,
+body:not(.dark-mode) .planner-weather-card,
+body:not(.dark-mode) .activity-suitability-card,
+body:not(.dark-mode) .activity-card,
+body:not(.dark-mode) .trip-preview-card,
+body:not(.dark-mode) .info-card,
+body:not(.dark-mode) .island-journal-card,
+body:not(.dark-mode) .encounter-card,
+body:not(.dark-mode) .uploaded-card,
+body:not(.dark-mode) .included-panel,
+body:not(.dark-mode) .filter-panel,
+body:not(.dark-mode) .mode-card,
+body:not(.dark-mode) .source-summary-panel,
+body:not(.dark-mode) .profile-card,
+body:not(.dark-mode) .nav-card,
+body:not(.dark-mode) .preference-card {
+  border-color: #c8b69c !important;
+  box-shadow:
+    0 18px 38px rgba(47,72,88,0.13),
+    inset 0 0 0 1px rgba(255,255,255,0.58) !important;
 }
 
 body.dark-mode {
@@ -1434,8 +1456,8 @@ body.dark-mode .form-select,
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select {
-  background-color: #273548 !important;
-  border-color: rgba(226, 232, 240, 0.28) !important;
+  background-color: #0f172a !important;
+  border-color: rgba(103,232,249,0.36) !important;
   color: #f8fafc !important;
 }
 
@@ -1954,11 +1976,11 @@ body.dark-mode .media-scroll-btn:disabled {
 }
 
 body.dark-mode .journal-cover-frame {
-  background: #1f2937;
-  border-color: rgba(226,232,240,0.18);
+  background: #172235;
+  border-color: rgba(226,232,240,0.28);
   box-shadow:
-    0 14px 30px rgba(0,0,0,0.22),
-    inset 0 0 18px rgba(255,255,255,0.06);
+    0 18px 38px rgba(0,0,0,0.34),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 body.dark-mode .journal-cover {
@@ -2148,13 +2170,23 @@ body.dark-mode .sea-icon {
 }
 
 body.dark-mode .community-search {
-  background: #111827;
-  border-color: rgba(103,232,249,0.42);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  background: #0f172a;
+  border: 1.5px solid rgba(103,232,249,0.56);
+  box-shadow:
+    0 12px 26px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+body.dark-mode .community-search i {
+  color: #67e8f9;
 }
 
 body.dark-mode .community-search input {
-  color: var(--text-primary);
+  color: #f8fafc;
+  caret-color: #67e8f9;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 body.dark-mode .community-search:focus-within {
@@ -2165,7 +2197,23 @@ body.dark-mode .community-search:focus-within {
 }
 
 body.dark-mode .community-search input::placeholder {
-  color: var(--text-secondary);
+  color: #94a3b8;
+}
+
+body.dark-mode footer .form-select {
+  background-color: #1b2638 !important;
+  border: 1.5px solid rgba(103,232,249,0.36) !important;
+  color: #f8fafc !important;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+body.dark-mode footer .form-select:focus {
+  border-color: #67e8f9 !important;
+  box-shadow:
+    0 0 0 3px rgba(103,232,249,0.16),
+    0 10px 24px rgba(0,0,0,0.18);
 }
 
 
@@ -2246,19 +2294,87 @@ body.dark-mode .home-page {
   color: var(--text-primary);
 }
 
+body.dark-mode .discovery-map-shell {
+  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .marine-map-overlay {
+  background: rgba(15,23,42,0.94);
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+}
+
+body.dark-mode .marine-content strong {
+  color: #f8fafc;
+}
+
+body.dark-mode .marine-content p {
+  color: #cbd5e1;
+}
+
+body.dark-mode :global(.discovery-island-marker) {
+  background: #67e8f9;
+  border-color: rgba(15,23,42,0.8);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+  color: #071e26;
+}
+
+body.dark-mode :global(.reef-map-popup .leaflet-popup-content-wrapper) {
+  background: #1f2937;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.5);
+}
+
+body.dark-mode :global(.reef-popup-card) {
+  color: #f8fafc;
+}
+
+body.dark-mode :global(.reef-popup-card img) {
+  opacity: 0.8;
+}
+
+body.dark-mode :global(.reef-popup-content span) {
+  color: #67e8f9;
+}
+
+body.dark-mode :global(.reef-popup-content strong) {
+  color: #f8fafc;
+}
+
+body.dark-mode :global(.reef-popup-content small) {
+  color: #cbd5e1;
+}
+
+body.dark-mode :global(.reef-popup-action) {
+  color: #67e8f9;
+}
+
 body.dark-mode .island-hero-split {
+  background:
+    radial-gradient(circle at top right, rgba(38,210,222,0.14), transparent 34%),
+    #172235;
   border-color: var(--border);
   box-shadow: 0 18px 40px rgba(0,0,0,0.28);
 }
 
 body.dark-mode .hero-polaroid {
-  background: var(--surface);
-  border-color: rgba(255,255,255,0.08);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  background: #111827;
+  border-color: rgba(226,232,240,0.28);
+  box-shadow:
+    0 20px 44px rgba(0,0,0,0.38),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
 }
 
 body.dark-mode .hero-polaroid img {
-  border-color: rgba(255,255,255,0.08);
+  border-color: rgba(226,232,240,0.24);
+  background: #07111f;
+}
+
+body.dark-mode .hero-polaroid span,
+body.dark-mode .hero-polaroid small,
+body.dark-mode .hero-polaroid em,
+body.dark-mode .hero-polaroid .polaroid-caption {
+  color: #cbd5e1;
 }
 
 body.dark-mode .floating-shell {
@@ -2271,6 +2387,33 @@ body.dark-mode .map-card-panel,
 body.dark-mode .island-journal-card {
   border-color: var(--border);
   box-shadow: 0 18px 36px rgba(0,0,0,0.25);
+}
+
+body.dark-mode .discovery-detail-page {
+  background:
+    radial-gradient(circle at top left, rgba(38,210,222,0.14), transparent 32%),
+    linear-gradient(180deg, #1a202c 0%, #202938 100%);
+}
+
+body.dark-mode .species-hero {
+  background:
+    radial-gradient(circle at top right, rgba(38,210,222,0.14), transparent 34%),
+    #172235;
+  border-color: var(--border);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+}
+
+body.dark-mode .species-profile-photo {
+  background: #111827;
+  border: 1px solid rgba(226,232,240,0.28);
+  box-shadow:
+    0 20px 44px rgba(0,0,0,0.38),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+body.dark-mode .species-profile-photo img {
+  border-color: rgba(226,232,240,0.24);
+  background: #07111f;
 }
 
 body.dark-mode .activity-empty,
@@ -2515,4 +2658,9 @@ body.dark-mode .logbook-tab.active {
   background: rgba(103,232,249,0.16);
   border-color: rgba(103,232,249,0.38);
   color: #e0faff;
+}
+
+body.dark-mode .app-stamp-frame img {
+  background: #07111f;
+  border-color: rgba(226,232,240,0.22);
 }

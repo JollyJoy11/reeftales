@@ -95,6 +95,7 @@ function selectPanel(panelId) {
   border-radius: 22px;
   background: rgba(255, 253, 248, 0.92);
   box-shadow: 0 16px 34px rgba(47, 72, 88, 0.08);
+  overflow: hidden;
 }
 
 .mobile-menu-toggle {

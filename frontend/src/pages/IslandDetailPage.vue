@@ -402,7 +402,8 @@ onMounted(async () => {
 
 <template>
   <MainLayout>
-    <section class="container py-4">
+    <main class="discovery-detail-page">
+      <section class="container py-4">
       <LoadingState
         v-if="loading"
         message="Loading island details..."
@@ -632,11 +633,20 @@ onMounted(async () => {
           </main>
         </div>
       </template>
-    </section>
+      </section>
+    </main>
   </MainLayout>
 </template>
 
 <style scoped>
+.discovery-detail-page {
+  min-height: calc(100vh - 80px);
+  padding: 18px 0 46px;
+  background:
+    radial-gradient(circle at top left, rgba(169,216,214,0.28), transparent 32%),
+    linear-gradient(180deg, #fffdf8 0%, #f7efe2 100%);
+}
+
 .back-link {
   display: inline-flex;
   align-items: center;
