@@ -11,16 +11,26 @@ async function initializeDatabase() {
       password: process.env.DB_PASSWORD
     });
 
-    // create database
-    await connection.query(`
-      CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}
-				CHARACTER SET utf8mb4
-				COLLATE utf8mb4_unicode_ci
-    `);
+    const databaseName = process.env.DB_NAME;
+    const escapedDatabaseName = connection.escapeId(databaseName);
+
+    // Local MySQL usually allows database creation. Hosted services like Aiven
+    // usually provide an existing database such as defaultdb, so creation can fail.
+    try {
+      await connection.query(`
+        CREATE DATABASE IF NOT EXISTS ${escapedDatabaseName}
+          CHARACTER SET utf8mb4
+          COLLATE utf8mb4_unicode_ci
+      `);
+    } catch (error) {
+      console.warn(
+        `Skipping database creation for ${databaseName}: ${error.message}`
+      );
+    }
 
     // use database
     await connection.query(`
-      USE ${process.env.DB_NAME}
+      USE ${escapedDatabaseName}
     `);
 
 		await connection.query(`
@@ -460,6 +470,7 @@ async function initializeDatabase() {
 
   } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
