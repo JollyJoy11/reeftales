@@ -181,10 +181,15 @@ function getDayLabel(rain) {
 .planner-weather-card {
   display: grid;
   gap: 14px;
+  min-width: 0;
   padding: 16px;
   border: 1px dashed var(--border);
   border-radius: 20px;
   background: var(--surface);
+}
+
+.weather-heading {
+  min-width: 0;
 }
 
 .weather-heading span {
@@ -219,6 +224,7 @@ function getDayLabel(rain) {
   grid-template-columns: 38px minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: center;
+  min-width: 0;
   padding: 10px;
   border-radius: 16px;
   border: 1px solid transparent;
@@ -262,6 +268,7 @@ function getDayLabel(rain) {
 .weather-day-card small,
 .weather-day-card em {
   display: block;
+  overflow-wrap: anywhere;
 }
 
 .weather-day-card strong {
@@ -277,9 +284,11 @@ function getDayLabel(rain) {
 
 .day-weather-info {
   text-align: right;
+  min-width: max-content;
 }
 
 .weather-day-card em {
+  justify-self: end;
   padding: 4px 8px;
   border-radius: 999px;
   background: rgba(255,255,255,0.65);
@@ -309,8 +318,13 @@ function getDayLabel(rain) {
   display: flex;
   gap: 10px;
   align-items: center;
+  min-width: 0;
   padding: 12px;
   border-radius: 16px;
+}
+
+.sea-summary > div {
+  min-width: 0;
 }
 
 .sea-summary.good {
@@ -350,19 +364,6 @@ function getDayLabel(rain) {
   margin: 0;
   color: var(--text-secondary);
   font-size: 0.76rem;
-}
-
-@media (max-width: 575px) {
-  .weather-day-card {
-    grid-template-columns: 38px minmax(0, 1fr);
-  }
-
-  .day-weather-info {
-    text-align: left;
-  }
-
-  .weather-day-card em {
-    width: fit-content;
-  }
+  overflow-wrap: anywhere;
 }
 </style>

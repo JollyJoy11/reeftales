@@ -21,6 +21,8 @@ const steps = [
   { number: 6, label: 'Publish', icon: 'bi bi-send' }
 ]
 
+const totalSteps = steps.length
+
 function goToStep(item) {
   if (item.number > props.maxStep) return
   emit('update:step', item.number)
@@ -28,41 +30,56 @@ function goToStep(item) {
 </script>
 
 <template>
-  <div class="step-indicator">
-    <template
-      v-for="(item, index) in steps"
-      :key="item.number"
-    >
-      <button
-        type="button"
-        class="step-pill"
-        :class="{
-          active: step === item.number,
-          completed: maxStep > item.number && step !== item.number,
-          disabled: item.number > maxStep
-        }"
-        :disabled="item.number > maxStep"
-        @click="goToStep(item)"
-      >
-        <i :class="item.icon"></i>
-        <span>{{ item.label }}</span>
-      </button>
+  <div class="step-indicator-wrap">
+    <div class="mobile-step-summary">
+      <span>Step {{ step }} of {{ totalSteps }}</span>
+      <strong>{{ steps[step - 1]?.label }}</strong>
+    </div>
 
-      <i
-        v-if="index !== steps.length - 1"
-        class="bi bi-chevron-right step-arrow"
-      ></i>
-    </template>
+    <div class="step-indicator" aria-label="Journal creation steps">
+      <template
+        v-for="(item, index) in steps"
+        :key="item.number"
+      >
+        <button
+          type="button"
+          class="step-pill"
+          :class="{
+            active: step === item.number,
+            completed: maxStep > item.number && step !== item.number,
+            disabled: item.number > maxStep
+          }"
+          :aria-current="step === item.number ? 'step' : undefined"
+          :disabled="item.number > maxStep"
+          @click="goToStep(item)"
+        >
+          <i :class="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </button>
+
+        <i
+          v-if="index !== steps.length - 1"
+          class="bi bi-chevron-right step-arrow"
+        ></i>
+      </template>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.step-indicator-wrap {
+  margin-bottom: 24px;
+}
+
+.mobile-step-summary {
+  display: none;
+}
+
 .step-indicator {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 24px;
 }
 
 .step-pill {
@@ -96,5 +113,68 @@ function goToStep(item) {
 .step-arrow {
   color: #94a3b8;
   font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .step-indicator-wrap {
+    display: grid;
+    gap: 10px;
+  }
+
+  .mobile-step-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+  }
+
+  .mobile-step-summary span {
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .mobile-step-summary strong {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+  }
+
+  .step-indicator {
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 2px 10px;
+    scroll-padding-inline: 12px;
+    scrollbar-width: none;
+  }
+
+  .step-indicator::-webkit-scrollbar {
+    display: none;
+  }
+
+  .step-pill {
+    min-width: 78px;
+    flex: 0 0 78px;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    padding: 9px 8px;
+    border-radius: 16px;
+    font-size: 0.72rem;
+    line-height: 1.1;
+  }
+
+  .step-pill i {
+    font-size: 1.05rem;
+  }
+
+  .step-arrow {
+    display: none;
+  }
 }
 </style>

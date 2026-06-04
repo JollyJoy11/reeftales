@@ -408,6 +408,18 @@ function handleLanguageChange(language) {
   border-bottom: none;
 }
 
+.preference-card > .preference-row:first-child {
+  border-radius: 17px 17px 0 0;
+}
+
+.preference-card > .dropdown:last-child .preference-row {
+  border-radius: 0 0 17px 17px;
+}
+
+.preference-row.dropdown-toggle::after {
+  display: none;
+}
+
 .reef-mobile-link:hover,
 .preference-row:hover,
 .reef-mobile-link.section-active {

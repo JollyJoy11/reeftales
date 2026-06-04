@@ -18,6 +18,8 @@ const savingProfile = ref(false)
 const savingSettings = ref(false)
 const selectedProfileFile = ref(null)
 const profilePreviewUrl = ref(authStore.user?.profile_image || '')
+const croppedProfilePreviewUrl = ref('')
+const profileImageInput = ref(null)
 const cropperRef = ref(null)
 
 const profileForm = reactive({
@@ -28,7 +30,7 @@ const profileForm = reactive({
 
 const settingsForm = reactive({
   appearance_theme: authStore.user?.appearance_theme || localStorage.getItem('theme') || 'light',
-  color_scheme: localStorage.getItem('color_scheme') || 'teal',
+  color_scheme: authStore.user?.color_scheme || localStorage.getItem('color_scheme') || 'teal',
   font_size: authStore.user?.font_size || 'normal',
   larger_text: Boolean(authStore.user?.larger_text),
   reduced_motion: Boolean(authStore.user?.reduced_motion),
@@ -52,11 +54,28 @@ function handleProfileFile(event) {
 
   if (!file.type.startsWith('image/')) {
     toastStore.danger(t('settings.chooseImage'))
+    event.target.value = ''
     return
   }
 
   selectedProfileFile.value = file
+  croppedProfilePreviewUrl.value = ''
   profilePreviewUrl.value = URL.createObjectURL(file)
+}
+
+function clearSelectedProfileImage() {
+  selectedProfileFile.value = null
+  croppedProfilePreviewUrl.value = ''
+  profilePreviewUrl.value = profileForm.profile_image
+
+  if (profileImageInput.value) {
+    profileImageInput.value.value = ''
+  }
+}
+
+function updateCroppedProfilePreview({ canvas } = {}) {
+  if (!canvas) return
+  croppedProfilePreviewUrl.value = canvas.toDataURL('image/jpeg', 0.9)
 }
 
 async function createCroppedProfileFile() {
@@ -99,7 +118,11 @@ async function saveProfile() {
     })
 
     selectedProfileFile.value = null
+    croppedProfilePreviewUrl.value = ''
     profilePreviewUrl.value = profileImage
+    if (profileImageInput.value) {
+      profileImageInput.value.value = ''
+    }
     toastStore.success(t('settings.profileUpdated'))
   } catch (error) {
     toastStore.danger(error.response?.data?.message || t('settings.profileError'))
@@ -174,7 +197,7 @@ onMounted(() => {
               :disabled="savingProfile"
               @click="saveProfile"
             >
-              {{ savingProfile ? t('settings.savingProfile') : t('settings.saveProfile') }}
+              {{ savingProfile ? t('settings.savingProfile') : selectedProfileFile ? t('settings.saveCroppedImage') : t('settings.saveProfile') }}
             </button>
           </div>
 
@@ -199,6 +222,7 @@ onMounted(() => {
 
                 <label class="image-upload-card">
                   <input
+                    ref="profileImageInput"
                     type="file"
                     accept="image/*"
                     @change="handleProfileFile"
@@ -246,7 +270,8 @@ onMounted(() => {
               <button
                 type="button"
                 class="clear-image-btn"
-                @click="selectedProfileFile = null; profilePreviewUrl = profileForm.profile_image"
+                :aria-label="t('common.cancel')"
+                @click="clearSelectedProfileImage"
               >
                 <i class="bi bi-x-lg"></i>
               </button>
@@ -259,17 +284,37 @@ onMounted(() => {
                 :src="profilePreviewUrl"
                 :stencil-props="{ aspectRatio: 1 }"
                 :canvas="{ width: 512, height: 512 }"
+                @change="updateCroppedProfilePreview"
               />
 
               <div class="crop-helper-card">
                 <div class="mini-preview">
-                  <img :src="profilePreviewUrl" :alt="t('settings.selectedProfilePreviewAlt')" />
+                  <img :src="croppedProfilePreviewUrl || profilePreviewUrl" :alt="t('settings.selectedProfilePreviewAlt')" />
                 </div>
 
-                <strong>{{ t('settings.profilePhotoTip') }}</strong>
+                <strong>{{ t('settings.liveAvatarPreview') }}</strong>
                 <small>
-                  {{ t('settings.squarePhotoHint') }}
+                  {{ t('settings.cropApplyHint') }}
                 </small>
+
+                <div class="crop-actions">
+                  <button
+                    type="button"
+                    class="crop-cancel-btn"
+                    @click="clearSelectedProfileImage"
+                  >
+                    {{ t('common.cancel') }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="save-btn crop-save-btn"
+                    :disabled="savingProfile"
+                    @click="saveProfile"
+                  >
+                    {{ savingProfile ? t('settings.savingProfile') : t('settings.saveCroppedImage') }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -722,6 +767,7 @@ onMounted(() => {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;
   gap: 14px;
+  align-items: stretch;
 }
 
 .profile-cropper {
@@ -736,6 +782,7 @@ onMounted(() => {
   display: grid;
   align-content: start;
   gap: 10px;
+  min-width: 0;
   padding: 14px;
   border: 1px dashed var(--border);
   border-radius: 18px;
@@ -771,11 +818,29 @@ onMounted(() => {
   text-align: center;
 }
 
-.profile-cropper {
-  height: 320px;
-  overflow: hidden;
-  border-radius: 16px;
-  background: var(--accent-soft);
+.crop-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.crop-cancel-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  font-weight: 900;
+}
+
+.crop-cancel-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.crop-save-btn {
+  width: 100%;
+  padding-inline: 12px;
 }
 
 label,
@@ -948,12 +1013,32 @@ select {
 @media (max-width: 900px) {
   .settings-grid,
   .profile-editor,
-  .profile-fields {
+  .profile-fields,
+  .crop-layout {
     grid-template-columns: 1fr;
   }
 
   .profile-preview {
     margin: 0 auto;
+  }
+
+  .crop-helper-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .mini-preview {
+    margin: 0;
+  }
+
+  .crop-helper-card strong,
+  .crop-helper-card small {
+    text-align: left;
+  }
+
+  .crop-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -974,6 +1059,35 @@ select {
   .settings-hero,
   .settings-card {
     padding: 18px;
+  }
+
+  .crop-panel {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .crop-panel-heading {
+    gap: 10px;
+  }
+
+  .profile-cropper {
+    height: 260px;
+    border-radius: 14px;
+  }
+
+  .crop-helper-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .crop-helper-card strong,
+  .crop-helper-card small {
+    text-align: center;
+  }
+
+  .crop-actions {
+    width: 100%;
+    grid-template-columns: 1fr;
   }
 
   .section-title,

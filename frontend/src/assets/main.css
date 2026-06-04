@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap');
 
 :root {
   --page-bg: #fffdf8;
@@ -2346,4 +2346,173 @@ body.dark-mode .journal-meta span {
 body.dark-mode .journal-story,
 body.dark-mode .board-title-row span {
   color: var(--text-secondary);
+}
+
+body.dark-mode .reef-mobile-menu {
+  background: #111827;
+  color: #f8fafc;
+}
+
+body.dark-mode .reef-menu-header {
+  border-bottom: 1px solid rgba(226,232,240,0.12);
+}
+
+body.dark-mode .mobile-brand small,
+body.dark-mode .preference-row small {
+  color: #d8e2ef;
+}
+
+body.dark-mode .reef-close-btn {
+  background: #1f2937;
+  border-color: rgba(226,232,240,0.22);
+  color: #67e8f9;
+}
+
+body.dark-mode .reef-close-btn:hover {
+  background: #253244;
+  color: #e0faff;
+}
+
+body.dark-mode .profile-card,
+body.dark-mode .nav-card,
+body.dark-mode .preference-card {
+  background: #17243a;
+  border-color: rgba(226,232,240,0.2);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.28);
+}
+
+body.dark-mode .profile-top {
+  background: #111827;
+}
+
+body.dark-mode .mobile-profile-avatar {
+  background: rgba(103,232,249,0.16);
+  border-color: #253244;
+  color: #67e8f9;
+}
+
+body.dark-mode .account-row,
+body.dark-mode .reef-mobile-link,
+body.dark-mode .preference-row {
+  background: transparent;
+  border-color: rgba(226,232,240,0.14);
+  color: #f8fafc;
+}
+
+body.dark-mode .account-row:hover,
+body.dark-mode .reef-mobile-link:hover,
+body.dark-mode .preference-row:hover,
+body.dark-mode .reef-mobile-link.section-active {
+  background: #253244;
+  color: #e0faff;
+}
+
+body.dark-mode .account-row:hover i,
+body.dark-mode .reef-mobile-link:hover i,
+body.dark-mode .preference-row:hover i {
+  color: #67e8f9;
+}
+
+body.dark-mode .link-icon {
+  background: #111827;
+  border-color: rgba(103,232,249,0.28);
+  color: #67e8f9;
+}
+
+body.dark-mode .reef-mobile-link.section-active .link-icon {
+  background: rgba(103,232,249,0.18);
+  border-color: rgba(103,232,249,0.44);
+}
+
+body.dark-mode .mobile-section-label {
+  color: #67e8f9;
+}
+
+body.dark-mode .mobile-section-label::after {
+  border-top-color: rgba(226,232,240,0.18);
+}
+
+body.dark-mode .reef-language-menu {
+  background: #111827;
+  border: 1px solid rgba(226,232,240,0.18);
+  box-shadow: 0 18px 34px rgba(0,0,0,0.42);
+}
+
+body.dark-mode .reef-language-menu .dropdown-item {
+  color: #f8fafc;
+  border-radius: 12px;
+}
+
+body.dark-mode .reef-language-menu .dropdown-item:hover,
+body.dark-mode .reef-language-menu .dropdown-item:focus {
+  background: #253244;
+  color: #e0faff;
+}
+
+body.dark-mode .reef-language-menu .dropdown-item.active {
+  background: #67e8f9;
+  color: #071e26;
+}
+
+body.dark-mode .mobile-login-btn {
+  border-color: #67e8f9;
+  color: #67e8f9;
+}
+
+body.dark-mode .mobile-register-btn {
+  background: #67e8f9;
+  border-color: #67e8f9;
+  color: #071e26;
+}
+
+body.dark-mode .mobile-logout-btn {
+  background: rgba(127,29,29,0.26);
+  border-color: rgba(248,113,113,0.48);
+  color: #fecdd3;
+}
+
+body.dark-mode .mobile-logout-btn:hover {
+  background: rgba(153,27,27,0.42);
+  border-color: #fb7185;
+  color: #fff1f2;
+}
+
+body.dark-mode .mobile-menu-toggle {
+  background: #17243a;
+  color: #f8fafc;
+  border-bottom: 1px solid rgba(226,232,240,0.14);
+}
+
+body.dark-mode .mobile-menu-toggle:hover,
+body.dark-mode .mobile-menu-toggle[aria-expanded="true"] {
+  background: #253244;
+  color: #e0faff;
+}
+
+body.dark-mode .mobile-menu-toggle i {
+  color: #67e8f9;
+}
+
+body.dark-mode .side-nav-content {
+  background: #17243a;
+}
+
+body.dark-mode .profile-mini {
+  border-bottom-color: rgba(226,232,240,0.16);
+}
+
+body.dark-mode .profile-mini > span {
+  background: rgba(103,232,249,0.16);
+  color: #67e8f9;
+}
+
+body.dark-mode .logbook-tab {
+  color: #d8e2ef;
+}
+
+body.dark-mode .logbook-tab:hover,
+body.dark-mode .logbook-tab.active {
+  background: rgba(103,232,249,0.16);
+  border-color: rgba(103,232,249,0.38);
+  color: #e0faff;
 }

@@ -14,6 +14,7 @@ function applyUserPreferences(user) {
   const colorSchemes = ['teal', 'sunset']
 
   localStorage.setItem('theme', theme)
+  localStorage.setItem('color_scheme', colorScheme)
   localStorage.setItem('language', user?.language || localStorage.getItem('language') || 'English')
   setI18nLanguage(user?.language || localStorage.getItem('language') || 'English')
 

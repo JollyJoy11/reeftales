@@ -113,6 +113,7 @@ async function login(req, res) {
         profile_image: user.profile_image,
         bio: user.bio,
         appearance_theme: user.appearance_theme,
+        color_scheme: user.color_scheme,
         font_size: user.font_size,
         larger_text: user.larger_text,
         reduced_motion: user.reduced_motion,
@@ -177,6 +178,9 @@ async function updateSettings(req, res) {
       appearance_theme: ['light', 'dark'].includes(req.body.appearance_theme)
         ? req.body.appearance_theme
         : 'light',
+      color_scheme: ['teal', 'sunset'].includes(req.body.color_scheme)
+        ? req.body.color_scheme
+        : 'teal',
       font_size: ['small', 'normal', 'large'].includes(req.body.font_size)
         ? req.body.font_size
         : 'normal',

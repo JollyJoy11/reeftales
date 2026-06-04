@@ -440,7 +440,16 @@ watch(
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,700&display=swap');
 
 nav{
+  position: sticky;
+  top: 0;
+  z-index: 1040;
   background: #efe7dc;
+  border-bottom: 1px solid rgba(196,164,132,0.28);
+  backdrop-filter: blur(14px);
+}
+
+.navbar > .container {
+  gap: 14px;
 }
 
 .navbar-brand {
@@ -460,6 +469,33 @@ nav{
   width: 40px;
   height: 40px;
   object-fit: contain;
+}
+
+.mobile-menu-btn {
+  width: 46px;
+  height: 46px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(24,151,160,0.24);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--accent-strong);
+  padding: 0;
+  box-shadow: 0 8px 18px rgba(47,72,88,0.08);
+}
+
+.mobile-menu-btn i {
+  font-size: 1.6rem !important;
+  line-height: 1;
+}
+
+.mobile-menu-btn:hover,
+.mobile-menu-btn:focus-visible,
+.mobile-menu-btn[aria-expanded="true"] {
+  background: var(--accent-soft);
+  border-color: rgba(24,151,160,0.34);
+  color: var(--accent-strong);
 }
 
 .theme-switch {
@@ -738,6 +774,83 @@ nav{
     display: flex;
     align-items: center;
   }
+}
+
+@media (max-width: 991px) {
+  nav.navbar {
+    padding-block: 10px !important;
+  }
+
+  .navbar > .container {
+    width: 100%;
+    max-width: none;
+    min-height: 54px;
+    padding-inline: 16px;
+    justify-content: space-between;
+  }
+
+  .navbar-brand {
+    min-width: 0;
+    max-width: calc(100% - 62px);
+    margin-right: 0 !important;
+    gap: 8px;
+    font-size: clamp(1.35rem, 6vw, 1.65rem);
+    white-space: nowrap;
+  }
+
+  .navbar-brand span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+  }
+
+  .mobile-menu-btn {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .navbar > .container {
+    padding-inline: 12px;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mobile-menu-btn {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+:global(body.dark-mode) .mobile-menu-btn {
+  background: #17243a;
+  border-color: rgba(226,232,240,0.14);
+  color: #f8fafc;
+}
+
+:global(body.dark-mode) .mobile-menu-btn:hover,
+:global(body.dark-mode) .mobile-menu-btn:focus-visible,
+:global(body.dark-mode) .mobile-menu-btn[aria-expanded="true"] {
+  background: #253244;
+  border-color: rgba(103,232,249,0.34);
+  color: #e0faff;
+}
+
+:global(body.dark-mode) .mobile-menu-btn i {
+  color: #67e8f9;
 }
 </style>
 

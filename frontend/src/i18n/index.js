@@ -128,6 +128,9 @@ const messages = {
       cropPreview: 'Crop Preview',
       adjustExplorerPhoto: 'Adjust your explorer photo',
       cropInstruction: 'Drag or zoom the image so your face or icon sits nicely in the frame.',
+      saveCroppedImage: 'Save cropped image',
+      liveAvatarPreview: 'Live avatar preview',
+      cropApplyHint: 'This circle is what will be saved as your profile image.',
       selectedProfilePreviewAlt: 'Selected profile image preview',
       profilePhotoTip: 'Profile photo tip',
       squarePhotoHint: 'Square images work best because your avatar is displayed as a circle across Reef Tales.'
@@ -593,6 +596,9 @@ const messages = {
       cropPreview: '裁剪预览',
       adjustExplorerPhoto: '调整你的探索者头像',
       cropInstruction: '拖动或缩放图片，让脸部或图标自然地落在头像框里。',
+      saveCroppedImage: '保存裁剪后的图片',
+      liveAvatarPreview: '头像实时预览',
+      cropApplyHint: '这个圆形预览将会保存为你的头像。',
       selectedProfilePreviewAlt: '已选择的头像图片预览',
       profilePhotoTip: '头像小建议',
       squarePhotoHint: '正方形图片效果最好，因为 Reef Tales 会把头像显示成圆形。'

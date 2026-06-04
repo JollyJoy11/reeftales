@@ -100,7 +100,7 @@ export function calculateExplorerProgress({
 
   let tier = {
     name: 'New Tide Explorer',
-    progress: 16,
+    progress: 0,
     next: 'Island Voyager I'
   }
 

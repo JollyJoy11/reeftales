@@ -44,6 +44,7 @@ async function findUserById(id) {
       profile_image,
       bio,
       appearance_theme,
+      color_scheme,
       font_size,
       larger_text,
       reduced_motion,
@@ -86,6 +87,7 @@ async function updateUserSettings(userId, data) {
     UPDATE users
     SET
       appearance_theme = ?,
+      color_scheme = ?,
       font_size = ?,
       larger_text = ?,
       reduced_motion = ?,
@@ -98,6 +100,7 @@ async function updateUserSettings(userId, data) {
     `,
     [
       data.appearance_theme,
+      data.color_scheme,
       data.font_size,
       data.larger_text,
       data.reduced_motion,

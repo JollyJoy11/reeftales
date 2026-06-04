@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
 
@@ -38,8 +38,14 @@ function selectMedia(mediaId) {
 }
 
 function scrollMediaStrip(direction) {
-  mediaStripRef.value?.scrollBy({
-    top: direction * 92,
+  const strip = mediaStripRef.value
+  if (!strip) return
+
+  const isHorizontal = strip.scrollWidth > strip.clientWidth
+
+  strip.scrollBy({
+    top: isHorizontal ? 0 : direction * 92,
+    left: isHorizontal ? direction * 86 : 0,
     behavior: 'smooth'
   })
 }
@@ -48,8 +54,15 @@ function updateMediaScrollState() {
   const strip = mediaStripRef.value
   if (!strip) return
 
-  canScrollMediaUp.value = strip.scrollTop > 2
-  canScrollMediaDown.value = strip.scrollTop + strip.clientHeight < strip.scrollHeight - 2
+  const isHorizontal = strip.scrollWidth > strip.clientWidth
+
+  canScrollMediaUp.value = isHorizontal
+    ? strip.scrollLeft > 2
+    : strip.scrollTop > 2
+
+  canScrollMediaDown.value = isHorizontal
+    ? strip.scrollLeft + strip.clientWidth < strip.scrollWidth - 2
+    : strip.scrollTop + strip.clientHeight < strip.scrollHeight - 2
 }
 
 watch(
@@ -60,6 +73,14 @@ watch(
   },
   { immediate: true }
 )
+
+onMounted(() => {
+  window.addEventListener('resize', updateMediaScrollState)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateMediaScrollState)
+})
 </script>
 
 <template>
@@ -147,6 +168,9 @@ watch(
   grid-template-columns: 93px minmax(0, 1fr);
   gap: 0;
   align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin-bottom: 18px;
 }
 
@@ -158,6 +182,7 @@ watch(
   position: relative;
   align-self: start;
   z-index: 2;
+  min-width: 0;
   height: max-content;
   transform: translate(20px, 18px);
   box-shadow:
@@ -292,6 +317,10 @@ watch(
 
 .journal-cover-frame {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background:
     linear-gradient(
       180deg,
@@ -310,6 +339,7 @@ watch(
 .journal-cover {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
   object-fit: contain;
   background: #f8f5ea;
@@ -317,7 +347,9 @@ watch(
 
 .journal-cover-video {
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
   background: #102f3a;
 }
 
@@ -350,9 +382,10 @@ watch(
   transform: scale(0.985);
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .cover-media-cluster {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .media-side-strip {
@@ -363,16 +396,57 @@ watch(
     max-height: none;
     padding: 14px 10px;
     scroll-padding-inline: 14px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
   }
 
   .media-strip-shell {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: 8px;
     transform: none;
-    background:
-      linear-gradient(#eee4be, #eee4be) center / 100% 64px no-repeat;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+  }
+
+  .journal-cover-frame {
+    padding: 10px;
+    transform: none;
   }
 
   .media-scroll-btn {
-    display: none;
+    position: static;
+    width: 34px;
+    height: 34px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .media-scroll-btn.top {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .media-scroll-btn.bottom {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .media-scroll-btn.top i,
+  .media-scroll-btn.bottom i {
+    transform: rotate(-90deg);
+  }
+
+  .media-scroll-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .media-scroll-btn:disabled {
+    opacity: 0.35;
   }
 
   .media-thumb :deep(.app-stamp-frame) {

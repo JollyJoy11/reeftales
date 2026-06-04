@@ -459,6 +459,7 @@ onMounted(loadJournal)
   grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
   gap: 0;
   align-items: stretch;
+  min-width: 0;
   padding: 10px;
   border-radius: 24px;
   background: var(--surface);
@@ -467,6 +468,7 @@ onMounted(loadJournal)
 }
 
 .journal-page {
+  min-width: 0;
   padding: 24px;
   min-height: 760px;
   background:
@@ -512,6 +514,7 @@ onMounted(loadJournal)
   padding: 6px 10px;
   font-size: 0.78rem;
   font-weight: 900;
+  white-space: nowrap;
 }
 
 .journal-kicker {
@@ -526,6 +529,7 @@ onMounted(loadJournal)
   color: var(--text-primary);
   font-weight: 900;
   margin: 8px 0 12px;
+  overflow-wrap: anywhere;
 }
 
 .journal-meta {
@@ -542,16 +546,20 @@ onMounted(loadJournal)
   color: #1f4e5f;
   font-size: 0.8rem;
   font-weight: 800;
+  max-width: 100%;
 }
 
 .journal-story {
   color: #55677d;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .detail-scrapbook-board {
+  width: min(100%, 560px);
   max-width: 560px;
   aspect-ratio: 4 / 4.8;
+  margin-inline: auto;
 }
 
 .detail-scrapbook-board :deep(.scrapbook-item-card.type-media) {
@@ -609,6 +617,78 @@ onMounted(loadJournal)
   .detail-top-row {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .journal-book-shell {
+    padding: 8px;
+    border-radius: 20px;
+  }
+
+  .journal-page {
+    padding: 18px;
+  }
+
+  .journal-left-page h1 {
+    font-size: clamp(2rem, 8vw, 2.85rem);
+    line-height: 1.05;
+  }
+
+  .journal-meta {
+    gap: 6px;
+  }
+
+  .journal-meta span {
+    width: fit-content;
+  }
+
+  .board-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .detail-scrapbook-board {
+    width: min(100%, 430px);
+    max-width: 430px;
+    aspect-ratio: 4 / 5.3;
+  }
+}
+
+@media (max-width: 576px) {
+  .journal-book-shell {
+    padding: 6px;
+    border-radius: 16px;
+  }
+
+  .journal-page {
+    padding: 14px;
+  }
+
+  .journal-left-page {
+    border-radius: 12px 12px 0 0;
+  }
+
+  .journal-right-page {
+    border-radius: 0 0 12px 12px;
+  }
+
+  .detail-top-row {
+    gap: 8px;
+  }
+
+  .detail-date {
+    white-space: normal;
+  }
+
+  .journal-meta span {
+    font-size: 0.72rem;
+    padding: 5px 8px;
+  }
+
+  .detail-scrapbook-board :deep(.scrapbook-item-card.type-media) {
+    padding: 8px 8px 34px;
   }
 }
 

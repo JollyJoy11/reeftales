@@ -118,6 +118,7 @@ const emit = defineEmits([
 .traveler-notes-panel {
   margin-top: 22px;
   padding: 18px;
+  min-width: 0;
   border: 1px dashed var(--border);
   border-radius: 20px;
   background:
@@ -137,6 +138,7 @@ const emit = defineEmits([
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .notes-kicker {
@@ -227,6 +229,7 @@ const emit = defineEmits([
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+  min-width: 0;
   border: 1px solid #eadfca;
   border-radius: 999px;
   background: var(--surface);
@@ -285,6 +288,7 @@ const emit = defineEmits([
 .comment-item strong,
 .comment-item p {
   display: block;
+  overflow-wrap: anywhere;
 }
 
 .comment-item strong {
@@ -297,6 +301,44 @@ const emit = defineEmits([
   color: var(--text-secondary);
   font-size: 0.82rem;
   line-height: 1.45;
+}
+
+@media (max-width: 576px) {
+  .traveler-notes-panel {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .traveler-notes-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .engagement-actions {
+    justify-content: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .comment-compose {
+    grid-template-columns: 1fr;
+  }
+
+  .comment-avatar {
+    display: none;
+  }
+
+  .comment-input-wrap {
+    grid-template-columns: 1fr;
+    border-radius: 16px;
+  }
+
+  .comment-input-wrap button {
+    min-height: 40px;
+  }
+
+  .comment-item {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
 }
 </style>
 
