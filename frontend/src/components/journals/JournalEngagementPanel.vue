@@ -118,7 +118,7 @@ const emit = defineEmits([
 .traveler-notes-panel {
   margin-top: 22px;
   padding: 18px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 20px;
   background:
     repeating-linear-gradient(
@@ -140,7 +140,7 @@ const emit = defineEmits([
 }
 
 .notes-kicker {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -149,7 +149,7 @@ const emit = defineEmits([
 
 .traveler-notes-header h3 {
   margin: 2px 0 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.05rem;
   font-weight: 900;
 }
@@ -158,7 +158,7 @@ const emit = defineEmits([
   border: 1px dashed rgba(24,151,160,0.4);
   border-radius: 999px;
   padding: 5px 9px;
-  color: #1897a0;
+  color: var(--accent);
   background: rgba(255,255,255,0.65);
   font-size: 0.72rem;
   font-weight: 900;
@@ -193,11 +193,11 @@ const emit = defineEmits([
 }
 
 .engagement-icon-btn:hover:not(:disabled) {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .engagement-icon-btn.active {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .engagement-icon-btn:disabled {
@@ -218,8 +218,8 @@ const emit = defineEmits([
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 900;
 }
 
@@ -229,7 +229,7 @@ const emit = defineEmits([
   align-items: center;
   border: 1px solid #eadfca;
   border-radius: 999px;
-  background: #fffdf8;
+  background: var(--surface);
   overflow: hidden;
 }
 
@@ -237,15 +237,19 @@ const emit = defineEmits([
   width: 100%;
   border: none;
   background: transparent;
-  color: #2f4858;
+  color: var(--text-primary);
   padding: 9px 12px;
   font-size: 0.85rem;
   outline: none;
 }
 
+.comment-input-wrap input::placeholder {
+  color: var(--text-secondary);
+}
+
 .comment-input-wrap button {
   border: none;
-  background: #1897a0;
+  background: var(--accent);
   color: #fff;
   align-self: stretch;
   padding: 0 16px;
@@ -284,14 +288,15 @@ const emit = defineEmits([
 }
 
 .comment-item strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
 }
 
 .comment-item p {
   margin: 2px 0 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
   line-height: 1.45;
 }
 </style>
+

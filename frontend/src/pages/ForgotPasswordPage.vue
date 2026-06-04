@@ -134,7 +134,7 @@ async function handleForgotPassword() {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border-left: 1px solid rgba(0,0,0,0.06);
 }
 
@@ -158,14 +158,14 @@ async function handleForgotPassword() {
   gap: 6px;
   margin-top: 14px;
   padding: 12px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 14px;
-  background: #fffdf8;
+  background: var(--surface);
   font-size: 0.86rem;
 }
 
 .dev-reset-link strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .dev-reset-link a,

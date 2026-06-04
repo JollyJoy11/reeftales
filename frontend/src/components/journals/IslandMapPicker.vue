@@ -290,12 +290,12 @@ onBeforeUnmount(() => {
   margin-top: 12px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: #deefec;
-  color: #2f4858;
+  background: var(--accent-soft);
+  color: var(--text-primary);
 }
 
 .bi-geo-fill {
-  color: #1897a0;
+  color: var(--accent);
   padding-right: 5px;
 }
 
@@ -319,7 +319,7 @@ onBeforeUnmount(() => {
 }
 
 .requirement-badge.required {
-  background: #fff1f2;
+  background: var(--surface-soft);
   color: #b42334;
   border: 1px solid rgba(180,35,52,0.24);
 }
@@ -343,7 +343,7 @@ onBeforeUnmount(() => {
   padding: 8px;
   border: 1px solid #eadfca;
   border-radius: 12px;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 18px 34px rgba(47,72,88,0.16);
 }
 
@@ -358,19 +358,19 @@ onBeforeUnmount(() => {
 
 .island-search-option:hover,
 .island-search-option.selected {
-  border-color: #1897a0;
-  background: #deefec;
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .island-search-option span {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .island-search-option small {
   display: block;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
 }
 
@@ -383,8 +383,8 @@ onBeforeUnmount(() => {
   padding: 12px;
   border: 1px dashed #eadfca;
   border-radius: 14px;
-  color: #64748b;
-  background: #fbf9f1;
+  color: var(--text-secondary);
+  background: var(--surface-soft);
   font-weight: 700;
   box-shadow: 0 16px 28px rgba(47,72,88,0.12);
 }
@@ -399,23 +399,41 @@ onBeforeUnmount(() => {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #fffdf8;
+  background: var(--surface);
   display: grid;
   place-items: center;
   font-size: 1.05rem;
-  border: 2px solid #1897a0;
-  color: #1897a0;
+  border: 2px solid var(--accent);
+  color: var(--accent);
   box-shadow: 0 5px 14px rgba(0,0,0,0.18);
   transition: 0.2s ease;
   cursor: pointer;
 }
 
 :deep(.island-marker.selected) {
-  background: #1897a0;
+  background: var(--accent);
   color: white;
   transform: scale(1.2);
   box-shadow:
     0 0 0 7px rgba(24,151,160,0.18),
     0 10px 22px rgba(0,0,0,0.26);
+}
+
+:global(body.dark-mode .island-marker) {
+  background: #0f172a;
+  border-color: #67e8f9;
+  color: #67e8f9;
+  box-shadow:
+    0 0 0 3px rgba(15,23,42,0.9),
+    0 8px 18px rgba(0,0,0,0.42);
+}
+
+:global(body.dark-mode .island-marker.selected) {
+  background: #67e8f9;
+  border-color: #e0faff;
+  color: #071e26;
+  box-shadow:
+    0 0 0 7px rgba(103,232,249,0.24),
+    0 12px 24px rgba(0,0,0,0.42);
 }
 </style>

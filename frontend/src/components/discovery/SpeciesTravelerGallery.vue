@@ -74,7 +74,7 @@ defineProps({
 }
 
 .section-heading span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -82,13 +82,13 @@ defineProps({
 }
 
 .section-heading h3 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   margin: 2px 0 4px;
 }
 
 .section-heading p {
-  color: #64748b;
+  color: var(--text-secondary);
   margin-bottom: 14px;
 }
 
@@ -114,7 +114,7 @@ defineProps({
 }
 
 .traveler-image-card:hover {
-  border-color: #1897a0;
+  border-color: var(--accent);
 }
 
 .gallery-item-0,
@@ -199,18 +199,18 @@ defineProps({
   gap: 6px;
   padding: 28px;
   border-radius: 22px;
-  border: 1px dashed #d8cdbb;
-  background: #fbf9f1;
-  color: #64748b;
+  border: 1px dashed var(--border);
+  background: var(--surface-soft);
+  color: var(--text-secondary);
   text-align: center;
 }
 
 .empty-panel i {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1.7rem;
 }
 
 .empty-panel strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 </style>

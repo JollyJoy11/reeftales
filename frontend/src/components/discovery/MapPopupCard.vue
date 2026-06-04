@@ -32,7 +32,7 @@ defineProps({
   display: block;
   min-width: 170px;
   text-decoration: none;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .map-popup-card strong,
@@ -46,6 +46,6 @@ defineProps({
 
 .map-popup-card span {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 </style>

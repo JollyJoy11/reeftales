@@ -145,12 +145,12 @@ const islandImageAlt = computed(() => {
   border: none;
   border-radius: 50%;
   background: rgba(255,255,255,0.9);
-  color: #1897a0;
+  color: var(--accent);
   box-shadow: 0 6px 14px rgba(0,0,0,0.18);
 }
 
 .save-island-btn:hover {
-  background: #1897a0;
+  background: var(--accent);
   color: white;
 }
 
@@ -207,14 +207,14 @@ const islandImageAlt = computed(() => {
 .subtitle {
   text-align: center;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-top: 1px solid #d8cdbb;
-  border-bottom: 1px solid #d8cdbb;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   margin: 12px 0;
 }
 
@@ -223,13 +223,13 @@ const islandImageAlt = computed(() => {
 }
 
 .info-grid div:first-child {
-  border-right: 1px solid #d8cdbb;
+  border-right: 1px solid var(--border);
 }
 
 .info-grid span {
   display: block;
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .info-grid strong {

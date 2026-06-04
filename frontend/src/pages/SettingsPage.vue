@@ -1,5 +1,5 @@
 ﻿<script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { Cropper } from 'vue-advanced-cropper'
 import { useI18n } from 'vue-i18n'
 import 'vue-advanced-cropper/dist/style.css'
@@ -28,6 +28,7 @@ const profileForm = reactive({
 
 const settingsForm = reactive({
   appearance_theme: authStore.user?.appearance_theme || localStorage.getItem('theme') || 'light',
+  color_scheme: localStorage.getItem('color_scheme') || 'teal',
   font_size: authStore.user?.font_size || 'normal',
   larger_text: Boolean(authStore.user?.larger_text),
   reduced_motion: Boolean(authStore.user?.reduced_motion),
@@ -37,6 +38,8 @@ const settingsForm = reactive({
   default_journal_visibility: authStore.user?.default_journal_visibility || 'public',
   language: authStore.user?.language || localStorage.getItem('language') || 'English'
 })
+
+const autoSaveReady = ref(false)
 
 const profileInitial = computed(() =>
   profileForm.username?.charAt(0)?.toUpperCase() || 'U'
@@ -69,6 +72,15 @@ async function createCroppedProfileFile() {
   })
 }
 
+const appearanceColorSchemes = ['teal', 'sunset']
+
+function applyColorScheme(colorScheme = 'teal') {
+  const scheme = appearanceColorSchemes.includes(colorScheme) ? colorScheme : 'teal'
+  appearanceColorSchemes.forEach((item) => {
+    document.body.classList.toggle(`color-scheme-${item}`, item === scheme)
+  })
+}
+
 async function saveProfile() {
   try {
     savingProfile.value = true
@@ -96,21 +108,43 @@ async function saveProfile() {
   }
 }
 
-async function saveSettings() {
+async function saveSettings(showSuccessToast = false) {
   try {
     savingSettings.value = true
     await authStore.saveSettings(settingsForm)
     localStorage.setItem('theme', settingsForm.appearance_theme)
+    localStorage.setItem('color_scheme', settingsForm.color_scheme)
     localStorage.setItem('language', settingsForm.language)
     setI18nLanguage(settingsForm.language)
     document.body.classList.toggle('dark-mode', settingsForm.appearance_theme === 'dark')
-    toastStore.success(t('settings.settingsSaved'))
+    document.body.classList.toggle('large-text-mode', Boolean(settingsForm.larger_text) || settingsForm.font_size === 'large')
+    document.body.classList.toggle('small-text-mode', settingsForm.font_size === 'small')
+    document.body.classList.toggle('reduced-motion-mode', settingsForm.reduced_motion)
+    document.body.classList.toggle('high-contrast-mode', settingsForm.high_contrast)
+    applyColorScheme(settingsForm.color_scheme)
+
+    if (showSuccessToast) {
+      toastStore.success(t('settings.settingsSaved'))
+    }
   } catch {
     toastStore.danger(t('settings.settingsError'))
   } finally {
     savingSettings.value = false
   }
 }
+
+watch(
+  settingsForm,
+  async () => {
+    if (!autoSaveReady.value) return
+    await saveSettings(false)
+  },
+  { deep: true }
+)
+
+onMounted(() => {
+  autoSaveReady.value = true
+})
 </script>
 
 <template>
@@ -268,6 +302,21 @@ async function saveSettings() {
 
             <div class="setting-row">
               <div>
+                <strong>{{ t('settings.colorPalette') }}</strong>
+                <small>{{ t('settings.colorPaletteHint') }}</small>
+              </div>
+
+              <span class="select-shell">
+                <select v-model="settingsForm.color_scheme">
+                  <option value="teal">{{ t('settings.colorPalettes.teal') }}</option>
+                  <option value="sunset">{{ t('settings.colorPalettes.sunset') }}</option>
+                </select>
+                <i class="bi bi-chevron-down"></i>
+              </span>
+            </div>
+
+            <div class="setting-row">
+              <div>
                 <strong>{{ t('settings.fontSize') }}</strong>
                 <small>{{ t('settings.fontHint') }}</small>
               </div>
@@ -291,15 +340,6 @@ async function saveSettings() {
               </div>
               <i class="bi bi-universal-access"></i>
             </div>
-
-            <label class="toggle-row">
-              <div>
-                <strong>{{ t('settings.largerText') }}</strong>
-                <small>{{ t('settings.largerTextHint') }}</small>
-              </div>
-              <input v-model="settingsForm.larger_text" type="checkbox" class="switch-input" />
-              <i class="switch-track"></i>
-            </label>
 
             <label class="toggle-row">
               <div>
@@ -399,17 +439,6 @@ async function saveSettings() {
           </article>
         </section>
 
-        <div class="settings-footer">
-          <button
-            type="button"
-            class="save-btn main-save"
-            :disabled="savingSettings"
-            @click="saveSettings"
-          >
-            <i class="bi bi-save"></i>
-            {{ savingSettings ? t('settings.savingSettings') : t('settings.saveSettings') }}
-          </button>
-        </div>
       </section>
     </main>
   </MainLayout>
@@ -432,7 +461,7 @@ async function saveSettings() {
 .settings-hero {
   margin-bottom: 20px;
   padding: 26px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255,253,248,0.96), rgba(251,247,239,0.96)),
@@ -442,7 +471,7 @@ async function saveSettings() {
 
 .settings-hero span,
 .section-title span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.74rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -451,7 +480,7 @@ async function saveSettings() {
 
 .settings-hero h1 {
   margin: 6px 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   font-size: clamp(2rem, 4vw, 3rem);
 }
@@ -459,7 +488,7 @@ async function saveSettings() {
 .settings-hero p {
   max-width: 680px;
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   line-height: 1.65;
 }
 
@@ -471,10 +500,10 @@ async function saveSettings() {
 
 .settings-card {
   padding: 20px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 22px;
-  background: #fffdf8;
-  box-shadow: 0 14px 30px rgba(47,72,88,0.08);
+  background: var(--surface);
+  box-shadow: 0 14px 30px var(--shadow);
 }
 
 .profile-card {
@@ -491,7 +520,7 @@ async function saveSettings() {
 
 .section-title h2 {
   margin: 3px 0 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 900;
 }
@@ -502,8 +531,8 @@ async function saveSettings() {
   display: grid;
   place-items: center;
   border-radius: 16px;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 1.2rem;
 }
 
@@ -521,9 +550,9 @@ async function saveSettings() {
   place-items: center;
   overflow: hidden;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
-  border: 3px solid #7bbfc4;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 3px solid var(--accent);
   font-size: 2rem;
   font-weight: 900;
 }
@@ -561,7 +590,7 @@ async function saveSettings() {
 .profile-upload-field span {
   font-size: 0.84rem;
   font-weight: 900;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .image-upload-card {
@@ -573,17 +602,17 @@ async function saveSettings() {
 
   padding: 16px;
   border-radius: 18px;
-  border: 1px dashed #9dd0cc;
+  border: 1px dashed var(--accent-soft);
 
-  background: #fbf9f1;
+  background: var(--surface-soft);
   cursor: pointer;
 
   transition: all 0.2s ease;
 }
 
 .image-upload-card:hover {
-  border-color: #1897a0;
-  background: #f6fffd;
+  border-color: var(--accent);
+  background: var(--surface);
 }
 
 .image-upload-card input {
@@ -603,8 +632,8 @@ async function saveSettings() {
 
   border-radius: 16px;
 
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 
   font-size: 1.4rem;
 }
@@ -618,14 +647,14 @@ async function saveSettings() {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .upload-content small {
   display: block;
   margin-top: 4px;
-  color: #64748b;
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
@@ -633,7 +662,7 @@ async function saveSettings() {
   padding: 8px 14px;
   border-radius: 999px;
 
-  background: #1897a0;
+  background: var(--accent);
   color: white !important;
 
   font-size: 0.8rem;
@@ -645,7 +674,7 @@ async function saveSettings() {
   gap: 14px;
   margin-top: 18px;
   padding: 16px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 20px;
   background:
     linear-gradient(180deg, rgba(255,253,248,0.96), rgba(251,247,239,0.96)),
@@ -660,7 +689,7 @@ async function saveSettings() {
 }
 
 .crop-panel-heading span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -670,13 +699,13 @@ async function saveSettings() {
 .crop-panel-heading strong {
   display: block;
   margin-top: 3px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 .crop-panel-heading p {
   margin: 3px 0 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.8rem;
 }
 
@@ -685,7 +714,7 @@ async function saveSettings() {
   height: 34px;
   border: none;
   border-radius: 50%;
-  background: #fff1f2;
+  background: var(--surface-soft);
   color: #dc3545;
 }
 
@@ -700,7 +729,7 @@ async function saveSettings() {
   overflow: hidden;
   border: 1px solid #eadfca;
   border-radius: 18px;
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 .crop-helper-card {
@@ -708,9 +737,9 @@ async function saveSettings() {
   align-content: start;
   gap: 10px;
   padding: 14px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .mini-preview {
@@ -719,7 +748,7 @@ async function saveSettings() {
   margin: 0 auto;
   overflow: hidden;
   border-radius: 50%;
-  background: #deefec;
+  background: var(--accent-soft);
   border: 4px solid #fffdf8;
   box-shadow: 0 10px 20px rgba(47,72,88,0.12);
 }
@@ -731,12 +760,12 @@ async function saveSettings() {
 }
 
 .crop-helper-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   text-align: center;
 }
 
 .crop-helper-card small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
   line-height: 1.45;
   text-align: center;
@@ -746,12 +775,12 @@ async function saveSettings() {
   height: 320px;
   overflow: hidden;
   border-radius: 16px;
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 label,
 .setting-row {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 label {
@@ -764,11 +793,11 @@ textarea,
 select {
   width: 100%;
   margin-top: 6px;
-  border: 1px solid #d8cdbb;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
-  background: #fffdf8;
-  color: #2f4858;
+  background: var(--surface-soft);
+  color: var(--text-primary);
   font: inherit;
 }
 
@@ -779,9 +808,8 @@ textarea {
 select {
   min-width: 150px;
   appearance: none;
-  background:
-    linear-gradient(180deg, #fffdf8, #fbf7ef);
-  color: #2f4858;
+  background: var(--surface-soft);
+  color: var(--text-primary);
   font-weight: 800;
 }
 
@@ -801,7 +829,7 @@ select {
 .select-shell i {
   position: absolute;
   right: 12px;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.85rem;
   pointer-events: none;
 }
@@ -824,7 +852,7 @@ select {
 .setting-row strong,
 .toggle-row strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.92rem;
 }
 
@@ -832,7 +860,7 @@ select {
 .toggle-row small {
   display: block;
   margin-top: 2px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 600;
 }
@@ -859,7 +887,7 @@ select {
   height: 28px;
   flex: 0 0 auto;
   border-radius: 999px;
-  background: #d8cdbb;
+  background: var(--border);
   transition: background 0.18s ease;
 }
 
@@ -871,13 +899,13 @@ select {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 3px 8px rgba(47,72,88,0.18);
   transition: transform 0.18s ease;
 }
 
 .switch-input:checked + .switch-track {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 .switch-input:checked + .switch-track::after {
@@ -897,26 +925,20 @@ select {
   border: none;
   border-radius: 999px;
   padding: 10px 16px;
-  background: #1897a0;
+  background: var(--accent);
   color: #ffffff;
   font-weight: 900;
   box-shadow: 0 10px 20px rgba(24,151,160,0.16);
 }
 
 .save-btn:hover:not(:disabled) {
-  background: #147d84;
+  background: var(--accent-strong);
   transform: translateY(-1px);
 }
 
 .save-btn:disabled {
   cursor: wait;
   opacity: 0.65;
-}
-
-.settings-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 18px;
 }
 
 .main-save {
@@ -963,10 +985,6 @@ select {
 
   .setting-row select {
     max-width: none;
-  }
-
-  .settings-footer {
-    justify-content: stretch;
   }
 
   .main-save {

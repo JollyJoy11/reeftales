@@ -232,9 +232,25 @@ watch(searchQuery, () => {
 .navbar-search__box .form-control,
 .navbar-search__box .input-group-text {
   box-shadow: none;
-  border-color: #d8cdbb !important;
-  background: #fffdf8;
+  border-color: var(--border) !important;
+  background: var(--surface);
   font-size: 14px;
+}
+
+body.dark-mode .navbar-search__box .form-control,
+body.dark-mode .navbar-search__box .input-group-text {
+  background: #111827 !important;
+  border-color: rgba(103,232,249,0.42) !important;
+  color: #f8fafc !important;
+}
+
+body.dark-mode .navbar-search__box .form-control:focus {
+  border-color: #67e8f9 !important;
+  box-shadow: 0 0 0 3px rgba(103,232,249,0.16);
+}
+
+body.dark-mode .navbar-search__box .input-group-text {
+  color: #67e8f9 !important;
 }
 
 .navbar-search__suggestions {
@@ -245,8 +261,8 @@ watch(searchQuery, () => {
   display: grid;
   gap: 4px;
   padding: 8px;
-  background: #fffdf8;
-  border: 1px dashed #d8cdbb;
+  background: var(--surface);
+  border: 1px dashed var(--border);
   border-radius: 16px;
   overflow: hidden;
   z-index: 1000;
@@ -260,11 +276,11 @@ watch(searchQuery, () => {
   padding: 10px;
   border-radius: 12px;
   text-decoration: none;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .navbar-search__item:hover {
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 .navbar-search__item > i {
@@ -273,12 +289,12 @@ watch(searchQuery, () => {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .navbar-search__item:hover > i {
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .navbar-search__item span {
@@ -292,7 +308,7 @@ watch(searchQuery, () => {
 
 .navbar-search__item strong {
   overflow: hidden;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 900;
   text-overflow: ellipsis;
@@ -301,7 +317,7 @@ watch(searchQuery, () => {
 
 .navbar-search__item small {
   overflow: hidden;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -319,13 +335,13 @@ watch(searchQuery, () => {
 }
 
 .navbar-search__item--quick {
-  border-top: 1px dashed #d8cdbb;
+  border-top: 1px dashed var(--border);
   border-radius: 0;
 }
 
 .navbar-search__note {
   padding: 12px 10px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
   font-weight: 700;
   text-align: center;

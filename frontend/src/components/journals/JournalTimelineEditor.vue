@@ -204,7 +204,7 @@ watch(
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   margin-bottom: 4px;
 }
@@ -215,7 +215,7 @@ watch(
 
 .section-heading p {
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.86rem;
 }
 
@@ -260,7 +260,7 @@ watch(
   padding: 0 12px;
   border-radius: 14px;
   background: rgba(24,151,160,0.12);
-  color: #1897a0;
+  color: var(--accent);
   border: 1px dashed rgba(24,151,160,0.35);
   display: grid;
   place-items: center;
@@ -282,7 +282,7 @@ watch(
   top: 16px;
   right: 16px;
   border: none;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   color: #94a3b8;
   width: 34px;
   height: 34px;
@@ -291,7 +291,7 @@ watch(
 
 .remove-icon-btn:hover {
   color: #dc3545;
-  background: #fff1f2;
+  background: var(--surface-soft);
 }
 
 .timeline-fields {
@@ -315,7 +315,7 @@ watch(
 }
 
 .form-label {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -337,7 +337,7 @@ watch(
 
 .timeline-drag-handle:hover {
   background: rgba(24,151,160,0.16);
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .timeline-drag-handle:active {
@@ -345,8 +345,8 @@ watch(
 }
 
 .timeline-chosen {
-  border-color: #1897a0 !important;
-  background: #deefec !important;
+  border-color: var(--accent) !important;
+  background: var(--accent-soft) !important;
 }
 
 .timeline-active {
@@ -356,7 +356,7 @@ watch(
 
 .timeline-ghost {
   opacity: 0.35;
-  border: 2px dashed #1897a0 !important;
+  border: 2px dashed var(--accent) !important;
 }
 
 @media (max-width: 768px) {

@@ -153,7 +153,7 @@ async function handleLogin() {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border-left: 1px solid rgba(0,0,0,0.06);
 }
 
@@ -207,13 +207,13 @@ async function handleLogin() {
   border-left: none;
   border-color: #C4A484;
   color: #1e293b;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .input-group .btn-outline-secondary:hover,
 .input-group .btn-outline-secondary:focus,
 .input-group .btn-outline-secondary:active {
-  background: #fffdf8 !important;
+  background: var(--surface) !important;
   color: #1e293b !important;
   border-color: #C4A484 !important;
   box-shadow: none !important;

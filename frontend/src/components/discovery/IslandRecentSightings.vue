@@ -81,7 +81,7 @@ function sightingImageAlt(sighting) {
 }
 
 .section-heading h3 {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .sighting-list {
@@ -99,8 +99,8 @@ function sightingImageAlt(sighting) {
   align-items: center;
   padding: 12px;
   border-radius: 18px;
-  border: 1px solid #eadfca;
-  background: #fffdf8;
+  border: 1px solid var(--border);
+  background: var(--surface);
   text-decoration: none;
   transition:
     transform 0.18s ease,
@@ -110,7 +110,7 @@ function sightingImageAlt(sighting) {
 
 .sighting-card:hover {
   transform: translateY(-2px);
-  border-color: #1897a0;
+  border-color: var(--accent);
   box-shadow: 0 12px 24px rgba(47,72,88,0.1);
 }
 
@@ -119,25 +119,25 @@ function sightingImageAlt(sighting) {
   height: 58px;
   border-radius: 16px;
   object-fit: cover;
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 .sighting-card strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .sighting-card span,
 .sighting-card small {
   display: block;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
 .sighting-card small {
   margin-top: 2px;
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 900;
 }
 
@@ -147,14 +147,14 @@ function sightingImageAlt(sighting) {
   gap: 8px;
   padding: 14px;
   border-radius: 16px;
-  border: 1px dashed #d8cdbb;
-  background: #fbf9f1;
-  color: #64748b;
+  border: 1px dashed var(--border);
+  background: var(--surface-soft);
+  color: var(--text-secondary);
   font-weight: 800;
 }
 
 .sighting-empty i {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 @media (max-width: 768px) {

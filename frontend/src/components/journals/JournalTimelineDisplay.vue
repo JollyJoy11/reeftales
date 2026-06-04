@@ -92,7 +92,7 @@ function formatActivityTime(time) {
 }
 
 .detail-section h2 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.05rem;
   font-weight: 900;
   margin-bottom: 12px;
@@ -110,7 +110,7 @@ function formatActivityTime(time) {
 .timeline-day-tabs button {
   border: none;
   background: transparent;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
   font-weight: 900;
   position: relative;
@@ -119,7 +119,7 @@ function formatActivityTime(time) {
 }
 
 .timeline-day-tabs button.active {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .timeline-day-tabs button::after {
@@ -130,7 +130,7 @@ function formatActivityTime(time) {
   bottom: -11px;
   height: 3px;
   border-radius: 999px;
-  background: #1897a0;
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 0.22s ease;
@@ -200,13 +200,13 @@ function formatActivityTime(time) {
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  background: #1897a0;
-  box-shadow: 0 0 0 5px #deefec;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft);
 }
 
 .timeline-dot.hollow {
-  background: #fffdf8;
-  border: 2px solid #1897a0;
+  background: var(--surface);
+  border: 2px solid var(--accent);
 }
 
 .timeline-card {
@@ -227,8 +227,8 @@ function formatActivityTime(time) {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .timeline-icon svg {
@@ -242,13 +242,13 @@ function formatActivityTime(time) {
 }
 
 .timeline-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .timeline-card small,
 .timeline-card time {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
 }
 
@@ -263,7 +263,7 @@ function formatActivityTime(time) {
   gap: 12px;
   align-items: center;
   padding: 14px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
   background: rgba(251, 249, 241, 0.72);
 }
@@ -274,8 +274,8 @@ function formatActivityTime(time) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 1.2rem;
 }
 
@@ -285,12 +285,12 @@ function formatActivityTime(time) {
 }
 
 .section-empty-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .section-empty-card span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.86rem;
 }
 
@@ -304,3 +304,4 @@ function formatActivityTime(time) {
   }
 }
 </style>
+

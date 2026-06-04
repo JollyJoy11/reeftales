@@ -182,13 +182,13 @@ function getDayLabel(rain) {
   display: grid;
   gap: 14px;
   padding: 16px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 20px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .weather-heading span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -198,13 +198,13 @@ function getDayLabel(rain) {
 .weather-heading strong {
   display: block;
   margin-top: 4px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.05rem;
 }
 
 .weather-heading p {
   margin: 4px 0 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
   line-height: 1.45;
 }
@@ -222,10 +222,16 @@ function getDayLabel(rain) {
   padding: 10px;
   border-radius: 16px;
   border: 1px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.weather-day-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
 .weather-day-card.good {
-  background: #deefec;
+  background: var(--accent-soft);
   border-color: rgba(24,151,160,0.22);
 }
 
@@ -247,7 +253,7 @@ function getDayLabel(rain) {
   display: grid;
   place-items: center;
   background: rgba(255,255,255,0.62);
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1.1rem;
 }
 
@@ -259,13 +265,13 @@ function getDayLabel(rain) {
 }
 
 .weather-day-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.84rem;
 }
 
 .weather-day-card span,
 .weather-day-card small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.72rem;
 }
 
@@ -277,7 +283,7 @@ function getDayLabel(rain) {
   padding: 4px 8px;
   border-radius: 999px;
   background: rgba(255,255,255,0.65);
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.68rem;
   font-style: normal;
   font-weight: 900;
@@ -289,13 +295,13 @@ function getDayLabel(rain) {
   align-items: center;
   padding: 12px;
   border-radius: 16px;
-  background: #fbf9f1;
-  color: #64748b;
+  background: var(--surface-soft);
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
 .weather-empty i {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1.2rem;
 }
 
@@ -308,7 +314,7 @@ function getDayLabel(rain) {
 }
 
 .sea-summary.good {
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 .sea-summary.okay {
@@ -320,7 +326,7 @@ function getDayLabel(rain) {
 }
 
 .sea-summary.neutral {
-  background: #fbf9f1;
+  background: var(--surface-soft);
 }
 
 .sea-summary span,
@@ -330,19 +336,19 @@ function getDayLabel(rain) {
 }
 
 .sea-summary span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
 .sea-summary strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .sea-summary p {
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
 }
 

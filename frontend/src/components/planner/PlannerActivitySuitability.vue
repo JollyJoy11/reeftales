@@ -140,13 +140,13 @@ function scoreStars(score) {
 .activity-suitability-card {
   margin-top: 14px;
   padding: 16px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 20px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .activity-heading span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -156,13 +156,13 @@ function scoreStars(score) {
 .activity-heading strong {
   display: block;
   margin-top: 4px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 .activity-heading p {
   margin: 4px 0 14px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
@@ -178,7 +178,7 @@ function scoreStars(score) {
   align-items: flex-start;
   padding: 12px;
   border-radius: 16px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border: 1px solid #eadfca;
 }
 
@@ -189,8 +189,8 @@ function scoreStars(score) {
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .activity-card strong,
@@ -200,12 +200,12 @@ function scoreStars(score) {
 }
 
 .activity-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
 }
 
 .activity-card span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
 }

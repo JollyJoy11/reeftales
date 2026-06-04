@@ -22,7 +22,7 @@ defineProps({
   align-items: center;
   justify-content: center;
   gap: 14px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .loading-state p {

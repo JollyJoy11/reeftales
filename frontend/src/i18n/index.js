@@ -25,7 +25,16 @@ const messages = {
       public: 'Public',
       private: 'Private',
       english: 'English',
-      chinese: '中文'
+      chinese: '中文',
+      oneDayTrip: 'One-day trip',
+      tripDate: 'Trip Date',
+      startDate: 'Start Date',
+      endDate: 'End Date',
+      selectDate: 'Select date',
+      selectStartDate: 'Select start date',
+      selectEndDate: 'Select end date',
+      cancel: 'Cancel',
+      select: 'Select'
     },
     nav: {
       discovery: 'Discovery',
@@ -75,6 +84,12 @@ const messages = {
       appearance: 'Appearance',
       theme: 'Theme',
       themeHint: 'Choose how Reef Tales looks.',
+      colorPalette: 'Color palette',
+      colorPaletteHint: 'Choose the accent colour used throughout the app.',
+      colorPalettes: {
+        teal: 'Teal',
+        sunset: 'Sunset'
+      },
       fontSize: 'Font size',
       fontHint: 'Adjust reading comfort.',
       accessibility: 'Accessibility',
@@ -98,6 +113,7 @@ const messages = {
       language: 'Language',
       interface: 'Interface',
       languageHint: 'Choose your preferred interface language.',
+      autoSaveNote: 'Changes save automatically as you make them.',
       saveSettings: 'Save settings',
       savingSettings: 'Saving settings...',
       profileUpdated: 'Profile updated.',
@@ -533,6 +549,12 @@ const messages = {
       appearance: '外观',
       theme: '主题',
       themeHint: '选择 Reef Tales 的显示风格。',
+      colorPalette: '颜色方案',
+      colorPaletteHint: '选择应用程序中使用的强调色。',
+      colorPalettes: {
+        teal: '青绿色',
+        sunset: '夕阳'
+      },
       fontSize: '字体大小',
       fontHint: '调整阅读舒适度。',
       accessibility: '无障碍',
@@ -556,6 +578,7 @@ const messages = {
       language: '语言',
       interface: '界面语言',
       languageHint: '选择你偏好的界面语言。',
+      autoSaveNote: '更改将自动保存。',
       saveSettings: '保存设置',
       savingSettings: '保存设置中...',
       profileUpdated: '个人资料已更新。',
@@ -573,6 +596,28 @@ const messages = {
       selectedProfilePreviewAlt: '已选择的头像图片预览',
       profilePhotoTip: '头像小建议',
       squarePhotoHint: '正方形图片效果最好，因为 Reef Tales 会把头像显示成圆形。'
+    },
+    common: {
+      save: '保存',
+      saving: '保存中...',
+      light: '明亮',
+      dark: '深色',
+      small: '小',
+      normal: '正常',
+      large: '大',
+      public: '公开',
+      private: '私密',
+      english: 'English',
+      chinese: '中文',
+      oneDayTrip: '单日行程',
+      tripDate: '行程日期',
+      startDate: '开始日期',
+      endDate: '结束日期',
+      selectDate: '选择日期',
+      selectStartDate: '选择开始日期',
+      selectEndDate: '选择结束日期',
+      cancel: '取消',
+      select: '选择'
     },
     dashboard: {
       myPassport: '我的护照',

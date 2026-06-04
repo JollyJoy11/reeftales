@@ -54,7 +54,7 @@ function polaroidAlt(item) {
   height: 100%;
   object-fit: contain;
   display: block;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border: 2px solid #475569;
 }
 

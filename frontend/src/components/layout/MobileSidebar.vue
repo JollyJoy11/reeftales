@@ -30,6 +30,14 @@ function handleMobileLogout() {
   emit('logout')
   closeMobileMenu()
 }
+
+function handleThemeToggle() {
+  emit('toggle-theme')
+}
+
+function handleLanguageChange(language) {
+  emit('change-language', language)
+}
 </script>
 
 <template>
@@ -121,7 +129,12 @@ function handleMobileLogout() {
       </div>
 
       <div class="preference-card">
-        <button class="preference-row" @click="emit('toggle-theme')">
+        <button
+          class="preference-row"
+          type="button"
+          :aria-pressed="currentTheme === 'dark'"
+          @click="handleThemeToggle"
+        >
           <span class="link-icon">
             <i :class="currentTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-brightness-high-fill'"></i>
           </span>
@@ -134,7 +147,11 @@ function handleMobileLogout() {
         </button>
 
         <div class="dropdown">
-          <button class="preference-row dropdown-toggle" data-bs-toggle="dropdown">
+          <button
+            class="preference-row dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
             <span class="link-icon">
               <i class="bi bi-globe2"></i>
             </span>
@@ -144,8 +161,26 @@ function handleMobileLogout() {
           </button>
 
           <ul class="dropdown-menu w-100 reef-language-menu">
-            <li><button class="dropdown-item" @click="emit('change-language', 'English')">{{ t('common.english') }}</button></li>
-            <li><button class="dropdown-item" @click="emit('change-language', '中文')">{{ t('common.chinese') }}</button></li>
+            <li>
+              <button
+                class="dropdown-item"
+                :class="{ active: currentLanguage === 'English' }"
+                type="button"
+                @click="handleLanguageChange('English')"
+              >
+                {{ t('common.english') }}
+              </button>
+            </li>
+            <li>
+              <button
+                class="dropdown-item"
+                :class="{ active: currentLanguage === '中文' }"
+                type="button"
+                @click="handleLanguageChange('中文')"
+              >
+                {{ t('common.chinese') }}
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -201,7 +236,7 @@ function handleMobileLogout() {
 .mobile-brand strong {
   display: block;
   font-family: 'Spectral', serif;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 24px;
   line-height: 1;
 }
@@ -218,7 +253,7 @@ function handleMobileLogout() {
   border: 1px solid #e7ddd1;
   border-radius: 50%;
   background: transparent;
-  color: #147d84;
+  color: var(--accent-strong);
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -227,7 +262,7 @@ function handleMobileLogout() {
 }
 
 .reef-close-btn:hover {
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .reef-menu-body {
@@ -237,7 +272,7 @@ function handleMobileLogout() {
 
 /* Profile */
 .profile-card {
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid #e7ddd1;
   border-radius: 24px;
   overflow: hidden;
@@ -256,8 +291,8 @@ function handleMobileLogout() {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -279,12 +314,12 @@ function handleMobileLogout() {
 }
 
 .profile-top small {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .profile-top strong {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 18px;
   font-weight: 900;
 }
@@ -295,20 +330,20 @@ function handleMobileLogout() {
   gap: 14px;
   padding: 14px 22px;
   text-decoration: none;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   border-top: 1px solid #ece3d8;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .account-row i:first-child {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 20px;
 }
 
 .account-row:hover {
   background: #f8efe4;
-  color: #147d84;
+  color: var(--accent-strong);
 }
 
 /* Section label */
@@ -317,7 +352,7 @@ function handleMobileLogout() {
   align-items: center;
   gap: 14px;
   margin: 22px 0 12px;
-  color: #147d84;
+  color: var(--accent-strong);
   font-size: 13px;
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -327,7 +362,7 @@ function handleMobileLogout() {
 .mobile-section-label::after {
   content: "";
   flex: 1;
-  border-top: 1px dashed #d8cdbb;
+  border-top: 1px dashed var(--border);
 }
 
 /* Navigation */
@@ -338,14 +373,14 @@ function handleMobileLogout() {
 }
 
 .nav-card {
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid #e7ddd1;
   border-radius: 18px;
   overflow: hidden;
 }
 
 .preference-card {
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid #e7ddd1;
   border-radius: 18px;
   overflow: visible;
@@ -362,7 +397,7 @@ function handleMobileLogout() {
   border: none;
   border-bottom: 1px solid #ece3d8;
   background: transparent;
-  color: #2f4858;
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 800;
   transition: 0.2s ease;
@@ -377,7 +412,7 @@ function handleMobileLogout() {
 .preference-row:hover,
 .reef-mobile-link.section-active {
   background: #f8efe4;
-  color: #147d84;
+  color: var(--accent-strong);
 }
 
 .link-icon {
@@ -389,13 +424,13 @@ function handleMobileLogout() {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 18px;
   flex-shrink: 0;
 }
 
 .reef-mobile-link.section-active .link-icon {
-  background: #deefec;
+  background: var(--accent-soft);
   border-color: rgba(24, 151, 160, 0.25);
 }
 
@@ -409,9 +444,15 @@ function handleMobileLogout() {
   border: none;
   border-radius: 16px;
   padding: 8px;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 14px 28px rgba(47, 72, 88, 0.14);
   z-index: 3000;
+}
+
+.reef-language-menu .dropdown-item.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 900;
 }
 
 /* Bottom buttons */
@@ -435,15 +476,15 @@ function handleMobileLogout() {
 }
 
 .mobile-login-btn {
-  border: 1px solid #1897a0;
-  color: #1897a0;
+  border: 1px solid var(--accent);
+  color: var(--accent);
   background: transparent;
 }
 
 .mobile-register-btn {
-  background: #1897a0;
+  background: var(--accent);
   color: white;
-  border: 1px solid #1897a0;
+  border: 1px solid var(--accent);
 }
 
 .mobile-logout-btn {

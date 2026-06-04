@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const { t } = useI18n()
 
 const calendarOpen = ref(false)
 const oneDayTrip = ref(false)
@@ -138,7 +140,7 @@ onBeforeUnmount(() => {
         <span class="toggle-track">
           <span class="toggle-thumb"></span>
         </span>
-        <span>One-day trip</span>
+        <span>{{ t('common.oneDayTrip') }}</span>
       </button>
     </div>
 
@@ -147,10 +149,10 @@ onBeforeUnmount(() => {
 
       <button class="date-field" type="button" @click="calendarOpen = true">
         <span class="date-field-label">
-          {{ oneDayTrip ? 'Trip Date' : 'Start Date' }}
+          {{ oneDayTrip ? t('common.tripDate') : t('common.startDate') }}
         </span>
         <span class="date-field-value">
-          {{ formatDate(modelValue[0]) || (oneDayTrip ? 'Select date' : 'Select start date') }}
+          {{ formatDate(modelValue[0]) || (oneDayTrip ? t('common.selectDate') : t('common.selectStartDate')) }}
         </span>
       </button>
 
@@ -160,9 +162,9 @@ onBeforeUnmount(() => {
         type="button"
         @click="calendarOpen = true"
       >
-        <span class="date-field-label">End Date</span>
+        <span class="date-field-label">{{ t('common.endDate') }}</span>
         <span class="date-field-value">
-          {{ formatDate(modelValue[1]) || 'Select end date' }}
+          {{ formatDate(modelValue[1]) || t('common.selectEndDate') }}
         </span>
       </button>
     </div>
@@ -187,7 +189,7 @@ onBeforeUnmount(() => {
         <template #action-row="{ selectDate, disabled }">
           <div class="date-action-row">
             <button class="date-action-btn cancel" type="button" @click="calendarOpen = false">
-              Cancel
+              {{ t('common.cancel') }}
             </button>
 
             <button
@@ -196,7 +198,7 @@ onBeforeUnmount(() => {
               :disabled="disabled"
               @click="selectDate(); calendarOpen = false"
             >
-              Select
+              {{ t('common.select') }}
             </button>
           </div>
         </template>
@@ -227,20 +229,20 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px dashed #c4a484;
+  border: 1px dashed var(--border);
   border-radius: 999px;
   padding: 7px 12px;
-  background: #fbf9f1;
-  color: #5b4636;
+  background: var(--surface-soft);
+  color: var(--text-primary);
   font-size: 0.84rem;
   font-weight: 700;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+  box-shadow: 0 8px 18px var(--shadow);
 }
 
 .one-day-toggle.active {
-  border-color: #1897a0;
-  background: #deefec;
-  color: #0f766e;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .toggle-track {
@@ -248,7 +250,7 @@ onBeforeUnmount(() => {
   height: 18px;
   padding: 2px;
   border-radius: 999px;
-  background: #d8cdbb;
+  background: var(--border);
   transition: background 0.2s ease;
 }
 
@@ -257,12 +259,12 @@ onBeforeUnmount(() => {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #fffdf8;
+  background: var(--surface);
   transition: transform 0.2s ease;
 }
 
 .one-day-toggle.active .toggle-track {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 .one-day-toggle.active .toggle-thumb {
@@ -276,16 +278,16 @@ onBeforeUnmount(() => {
   gap: 10px;
   width: 100%;
   padding: 6px 8px 6px 42px;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .date-input-icon {
   position: absolute;
   left: 16px;
   top: 50%;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1rem;
   transform: translateY(-50%);
   pointer-events: none;
@@ -305,13 +307,13 @@ onBeforeUnmount(() => {
 }
 
 .date-field:hover {
-  background: rgba(24, 151, 160, 0.08);
+  background: var(--accent-soft);
 }
 
 .date-field-label {
   display: block;
   margin-bottom: 2px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -319,7 +321,7 @@ onBeforeUnmount(() => {
 .date-field-value {
   display: block;
   min-height: 24px;
-  color: #1e293b;
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
@@ -329,21 +331,69 @@ onBeforeUnmount(() => {
   left: 0;
   z-index: 30;
   width: 100%;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: #fffdf8;
-  box-shadow: 0 15px 35px rgba(27, 167, 177, 0.08);
+  background: var(--surface);
+  box-shadow: 0 15px 35px var(--shadow);
   padding: 14px;
 }
 
+.date-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.date-action-btn {
+  min-height: 40px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.date-action-btn.cancel {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.date-action-btn.select {
+  background: var(--accent);
+  color: #fff;
+}
+
+.date-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.date-action-btn:not(:disabled):hover {
+  opacity: 0.92;
+}
+
 .reef-date-picker :deep(.dp--theme-light) {
-  --dp-background-color: #fffdf8;
-  --dp-border-color: #eadfca;
+  --dp-background-color: var(--surface);
+  --dp-border-color: var(--border);
   --dp-border-radius: 16px;
-  --dp-primary-color: #1897a0;
+  --dp-primary-color: var(--accent);
   --dp-primary-text-color: #ffffff;
-  --dp-hover-color: rgba(24, 151, 160, 0.08);
-  --dp-text-color: #475569;
+  --dp-hover-color: var(--accent-soft);
+  --dp-text-color: var(--text-secondary);
+  --dp-menu-min-width: 100%;
+}
+
+.reef-date-picker :deep(.dp--theme-dark) {
+  --dp-background-color: var(--surface);
+  --dp-border-color: var(--border);
+  --dp-border-radius: 16px;
+  --dp-primary-color: var(--accent);
+  --dp-primary-text-color: #ffffff;
+  --dp-hover-color: var(--accent-soft);
+  --dp-text-color: var(--text-primary);
   --dp-menu-min-width: 100%;
 }
 
@@ -401,11 +451,11 @@ onBeforeUnmount(() => {
 
 .reef-date-picker :deep(.dp--month-year-select) {
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .reef-date-picker :deep(.dp--calendar-header-item) {
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-weight: 700;
   padding: 8px 0;
 }
@@ -417,7 +467,7 @@ onBeforeUnmount(() => {
 }
 
 .reef-date-picker :deep(.dp--today) {
-  border: 1px solid #1897a0 !important;
+  border: 1px solid var(--accent) !important;
   border-radius: 50% !important;
 }
 
@@ -426,7 +476,7 @@ onBeforeUnmount(() => {
 .reef-date-picker :deep(.dp--range-border-start.dp--active),
 .reef-date-picker :deep(.dp--range-border-end.dp--active),
 .reef-date-picker :deep(.dp--active) {
-  background: #1897a0 !important;
+  background: var(--accent) !important;
   color: white !important;
 }
 
@@ -478,14 +528,14 @@ onBeforeUnmount(() => {
   border: 1px solid #eadfca;
   border-radius: 999px;
   padding: 4px 10px;
-  background: #fffdf8;
+  background: var(--surface);
   color: #475569;
   font-size: 0.86rem;
 }
 
 .date-action-btn.select {
-  border-color: #1897a0;
-  background: #1897a0;
+  border-color: var(--accent);
+  background: var(--accent);
   color: #fff;
 }
 

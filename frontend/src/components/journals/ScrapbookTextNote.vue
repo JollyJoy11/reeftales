@@ -39,7 +39,7 @@ const emit = defineEmits(['update:text'])
   border: none;
   resize: none;
   background: #fff8d9;
-  color: #2f4858;
+  color: var(--text-primary);
   font-family: 'Spectral', serif;
   font-size: 1rem;
   font-style: italic;

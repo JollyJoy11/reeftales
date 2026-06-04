@@ -188,7 +188,7 @@ onBeforeUnmount(() => {
 .sub-badge {
   display: block;
   margin-bottom: 12px;
-  color: #0f8f98;
+  color: var(--accent);
   font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.15em;
@@ -241,7 +241,7 @@ onBeforeUnmount(() => {
   min-height: 326px;
   flex: 0 0 auto;
   padding: 22px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
   background:
     linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.92)),
@@ -335,8 +335,8 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 900;
 }
 
@@ -346,7 +346,7 @@ onBeforeUnmount(() => {
 }
 
 .journal-author-row strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.92rem;
   white-space: nowrap;
   overflow: hidden;
@@ -369,7 +369,7 @@ onBeforeUnmount(() => {
   border: 1px dashed rgba(24,151,160,0.24);
   border-radius: 999px;
   background: rgba(222,239,236,0.58);
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 900;
   white-space: nowrap;
@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
 
 .journal-card-link h3 {
   margin: 18px 0 12px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.38rem;
   line-height: 1.18;
 }
@@ -391,7 +391,7 @@ onBeforeUnmount(() => {
   border-left: 3px solid rgba(24,151,160,0.28);
   border-radius: 12px;
   background: rgba(255,255,255,0.48);
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.92rem;
   line-height: 1.62;
   display: -webkit-box;
@@ -445,14 +445,14 @@ onBeforeUnmount(() => {
   gap: 8px;
   place-items: center;
   border-radius: 8px;
-  background: #fffdf8;
-  color: #64748b;
+  background: var(--surface);
+  color: var(--text-secondary);
   font-weight: 800;
   text-align: center;
 }
 
 .journal-empty a {
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 900;
 }
 

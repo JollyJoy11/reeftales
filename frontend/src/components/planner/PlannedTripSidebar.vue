@@ -157,9 +157,9 @@ function tripDateLabel(trip) {
   flex-direction: column;
   gap: 16px;
   padding: 18px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 24px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   box-shadow: 0 16px 34px rgba(47,72,88,0.08);
   max-height: calc(100vh - 60px);
 }
@@ -179,7 +179,7 @@ function tripDateLabel(trip) {
 }
 
 .sidebar-section h4 {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.8rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -188,7 +188,7 @@ function tripDateLabel(trip) {
 
 .sidebar-header h3 {
   margin: 2px 0 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
@@ -198,14 +198,14 @@ function tripDateLabel(trip) {
   flex-shrink: 0;
   border: none;
   border-radius: 10px;
-  background: #1897a0;
+  background: var(--accent);
   color: white;
   box-shadow: 0 10px 22px rgba(24,151,160,0.22);
   transition: 0.18s ease;
 }
 
 .new-trip-icon-btn:hover {
-  background: #147d84;
+  background: var(--accent-strong);
   transform: translateY(-2px);
   box-shadow:
     0 14px 26px rgba(24,151,160,0.24),
@@ -216,7 +216,7 @@ function tripDateLabel(trip) {
   display: grid;
   gap: 10px;
   padding: 14px 0;
-  border-top: 1px dashed #d8cdbb;
+  border-top: 1px dashed var(--border);
 }
 
 .sidebar-section h4 {
@@ -236,8 +236,8 @@ function tripDateLabel(trip) {
   border: 1px solid #eadfca;
   border-radius: 999px;
   padding: 6px 10px 6px 6px;
-  background: #fffdf8;
-  color: #2f4858;
+  background: var(--surface);
+  color: var(--text-primary);
   font-size: 0.78rem;
   font-weight: 900;
   transition: 0.18s ease;
@@ -245,8 +245,8 @@ function tripDateLabel(trip) {
 
 .saved-island-pill:hover {
   transform: translateY(-2px);
-  border-color: #1897a0;
-  background: #deefec;
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .saved-island-pill img {
@@ -268,18 +268,18 @@ function tripDateLabel(trip) {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 14px;
   padding: 11px 12px;
-  background: #fffdf8;
+  background: var(--surface);
   text-align: left;
   transition: 0.18s ease;
 }
 
 .saved-journal-card:hover {
   transform: translateY(-2px);
-  border-color: #1897a0;
-  background: #f8fffd;
+  border-color: var(--accent);
+  background: var(--surface-soft);
   box-shadow: 0 8px 18px rgba(47,72,88,0.08);
 }
 
@@ -290,7 +290,7 @@ function tripDateLabel(trip) {
 }
 
 .saved-journal-card small {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.62rem;
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -298,35 +298,35 @@ function tripDateLabel(trip) {
 }
 
 .saved-journal-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
 }
 
 .saved-journal-card span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.74rem;
 }
 
 .saved-journal-card i {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .mini-ticket {
   position: relative;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
   transition: 0.18s ease;
 }
 
 .mini-ticket:hover {
   transform: translateY(-2px);
-  border-color: #1897a0;
+  border-color: var(--accent);
   box-shadow: 0 10px 22px rgba(47,72,88,0.08);
 }
 
 .mini-ticket.active {
-  border-color: #1897a0;
+  border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(24,151,160,0.1);
 }
 
@@ -355,21 +355,21 @@ function tripDateLabel(trip) {
 }
 
 .ticket-copy small {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.68rem;
   font-weight: 900;
 }
 
 .ticket-copy strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   line-height: 1.25;
 }
 
 .ticket-copy span,
 .ticket-copy em,
 .sidebar-empty {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
 }
 
@@ -399,19 +399,19 @@ function tripDateLabel(trip) {
   justify-items: center;
   gap: 6px;
   padding: 22px 14px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  color: #64748b;
+  color: var(--text-secondary);
   text-align: center;
 }
 
 .empty-trips i {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1.6rem;
 }
 
 .empty-trips strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .sidebar-content::-webkit-scrollbar {
@@ -428,7 +428,7 @@ function tripDateLabel(trip) {
 }
 
 .sidebar-content::-webkit-scrollbar-thumb:hover {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 @media (max-width: 991px) {
@@ -439,3 +439,4 @@ function tripDateLabel(trip) {
   }
 }
 </style>
+

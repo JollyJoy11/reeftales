@@ -163,8 +163,8 @@ function formatValue(value, suffix) {
   margin-top: 14px;
   padding: 14px;
   border-radius: 18px;
-  background: #fffdf8;
-  border: 1px solid #eadfca;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 .visit-outlook {
@@ -173,11 +173,11 @@ function formatValue(value, suffix) {
   gap: 10px;
   padding: 12px;
   border-radius: 14px;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .visit-outlook.good {
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 .visit-outlook.warning {
@@ -189,7 +189,7 @@ function formatValue(value, suffix) {
 }
 
 .visit-outlook i {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1.2rem;
 }
 
@@ -204,7 +204,7 @@ function formatValue(value, suffix) {
 .visit-outlook span {
   display: block;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .weather-current {
@@ -217,8 +217,8 @@ function formatValue(value, suffix) {
   width: 48px;
   height: 48px;
   border-radius: 16px;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,12 +228,12 @@ function formatValue(value, suffix) {
 .weather-label {
   display: block;
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .weather-current strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.3rem;
 }
 
@@ -242,7 +242,7 @@ function formatValue(value, suffix) {
   display: block;
   margin: 0;
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .forecast-row {
@@ -255,7 +255,7 @@ function formatValue(value, suffix) {
 .forecast-item {
   padding: 10px 8px;
   border-radius: 14px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   text-align: center;
 }
 
@@ -263,12 +263,12 @@ function formatValue(value, suffix) {
 .forecast-item small {
   display: block;
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .forecast-item strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
   margin: 2px 0;
 }
@@ -278,25 +278,26 @@ function formatValue(value, suffix) {
   place-items: center;
   gap: 4px;
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .weather-empty i {
   font-size: 1.8rem;
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .marine-section {
   margin-top: 14px;
   padding-top: 14px;
   border-top: 1px dashed #eadfca;
+  background: none;
 }
 
 .marine-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 800;
   font-size: 0.85rem;
   margin-bottom: 10px;
@@ -311,12 +312,12 @@ function formatValue(value, suffix) {
 .marine-item {
   padding: 10px 8px;
   border-radius: 14px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   text-align: center;
 }
 
 .marine-item i {
-  color: #1897a0;
+  color: var(--accent);
   margin-bottom: 4px;
   font-size: 1rem;
 }
@@ -324,13 +325,13 @@ function formatValue(value, suffix) {
 .marine-item span,
 .marine-item small {
   display: block;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.7rem;
 }
 
 .marine-item strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.85rem;
 }
 

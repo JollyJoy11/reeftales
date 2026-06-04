@@ -97,7 +97,7 @@ const emit = defineEmits([
 .scrapbook-item-tools button {
   border: 1px solid #eadfca;
   border-radius: 999px;
-  background: #fffdf8;
+  background: var(--surface);
   color: #1f4e5f;
   min-width: 28px;
   height: 26px;

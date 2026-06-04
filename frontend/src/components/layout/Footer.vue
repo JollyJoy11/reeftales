@@ -1,17 +1,61 @@
-<script setup>
+﻿<script setup>
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
 
 import { setI18nLanguage } from '@/i18n'
 import { useAuthStore } from '@/stores/authStore'
 
 const authStore = useAuthStore()
 const { t } = useI18n()
-const currentLanguage = computed(() => localStorage.getItem('language') || 'English')
+const currentLanguage = ref(authStore.user?.language || localStorage.getItem('language') || 'English')
 
-function changeLanguage(event) {
-  setI18nLanguage(event.target.value)
+function applyLanguage(language) {
+  currentLanguage.value = language
+  localStorage.setItem('language', language)
+  setI18nLanguage(language)
 }
+
+function settingsPayload(overrides = {}) {
+  const user = authStore.user || {}
+
+  return {
+    appearance_theme: user.appearance_theme || localStorage.getItem('theme') || 'light',
+    font_size: user.font_size || 'normal',
+    larger_text: Boolean(user.larger_text),
+    reduced_motion: Boolean(user.reduced_motion),
+    high_contrast: Boolean(user.high_contrast),
+    notify_likes: user.notify_likes !== 0,
+    notify_comments: user.notify_comments !== 0,
+    default_journal_visibility: user.default_journal_visibility || 'public',
+    language: user.language || currentLanguage.value || 'English',
+    ...overrides
+  }
+}
+
+async function persistFooterSettings(overrides) {
+  if (!authStore.isLoggedIn) return
+
+  try {
+    await authStore.saveSettings(settingsPayload(overrides))
+  } catch {
+    await authStore.loadCurrentUser().catch(() => {})
+  }
+}
+
+async function changeLanguage(event) {
+  const language = event.target.value
+
+  applyLanguage(language)
+  await persistFooterSettings({ language })
+}
+
+watch(
+  () => authStore.user?.language,
+  language => {
+    applyLanguage(language || localStorage.getItem('language') || 'English')
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -93,7 +137,7 @@ footer {
 .website-brand h4{
   padding-top: 8px;
   font-family: 'Spectral', serif;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 36px;
 }
 
@@ -114,6 +158,6 @@ footer {
 
 .form-select {
   border-color: #C4A484;
-  background: #fffdf8;
+  background: var(--surface);
 }
 </style>

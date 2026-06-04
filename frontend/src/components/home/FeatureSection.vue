@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
   padding: clamp(72px, 9vw, 112px) 0 clamp(64px, 9vw, 100px);
   background:
     radial-gradient(circle at top left, rgba(169,216,214,0.22), transparent 30%),
-    linear-gradient(180deg, #fffdf8 0%, #fbf9f1 100%);
+    linear-gradient(180deg, #fffdf8 0%, var(--surface-soft) 100%);
 }
 
 .feature-heading {
@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
 .sub-badge {
   display: block;
   margin-bottom: 12px;
-  color: #0f8f98;
+  color: var(--accent);
   font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.15em;
@@ -145,7 +145,7 @@ onBeforeUnmount(() => {
 .feature-card {
   min-height: 320px;
   padding: clamp(26px, 4vw, 38px);
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
   background:
     linear-gradient(180deg, rgba(255,253,248,0.96), rgba(251,247,239,0.96)),
@@ -189,8 +189,8 @@ onBeforeUnmount(() => {
   place-items: center;
   border: 1px solid rgba(15, 143, 152, 0.2);
   border-radius: 50%;
-  color: #0f8f98;
-  background: #fffdf8;
+  color: var(--accent);
+  background: var(--surface);
   font-size: 1.2rem;
 }
 

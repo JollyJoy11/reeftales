@@ -35,13 +35,13 @@ const emit = defineEmits(['update:modelValue'])
   align-items: center;
   padding: 16px;
   border-radius: 18px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border: 1px dashed #c4a484;
 }
 
 .visibility-toggle-box small {
   display: block;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .visibility-switch {
@@ -50,7 +50,7 @@ const emit = defineEmits(['update:modelValue'])
   border: none;
   border-radius: 999px;
   padding: 4px;
-  background: #d8cdbb;
+  background: var(--border);
 }
 
 .visibility-switch span {
@@ -63,7 +63,7 @@ const emit = defineEmits(['update:modelValue'])
 }
 
 .visibility-switch.active {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 .visibility-switch.active span {

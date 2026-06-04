@@ -538,7 +538,7 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   margin-right: 8px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   margin-bottom: 4px;
 }
@@ -562,7 +562,7 @@ onBeforeUnmount(() => {
 }
 
 .scrapbook-heading p {
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -601,7 +601,7 @@ onBeforeUnmount(() => {
   padding: 14px;
   border: 1px dashed #eadfca;
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .asset-group {
@@ -630,9 +630,9 @@ onBeforeUnmount(() => {
 }
 
 .piece-action-btn {
-  border: 1px solid #1897a0;
+  border: 1px solid var(--accent);
   border-radius: 12px;
-  background: #fffdf8;
+  background: var(--surface);
   color: #1f4e5f;
   padding: 9px 10px;
   display: inline-flex;
@@ -644,7 +644,7 @@ onBeforeUnmount(() => {
 }
 
 .piece-action-btn:hover:not(:disabled) {
-  background: #deefec;
+  background: var(--accent-soft);
   color: #0f766e;
 }
 
@@ -656,7 +656,7 @@ onBeforeUnmount(() => {
 .sticker-pick {
   border: 2px solid var(--sticker-color);
   border-radius: 10px;
-  background: #fffdf8;
+  background: var(--surface);
   color: var(--sticker-color);
   padding: 7px 12px;
   display: inline-flex;
@@ -682,8 +682,8 @@ onBeforeUnmount(() => {
 .media-pick {
   border: 1px dashed #c4a484;
   border-radius: 14px;
-  background: #fffdf8;
-  color: #2f4858;
+  background: var(--surface);
+  color: var(--text-primary);
   padding: 9px;
   display: grid;
   gap: 7px;
@@ -700,8 +700,8 @@ onBeforeUnmount(() => {
 }
 
 .media-pick:hover:not(:disabled) {
-  border-color: #1897a0;
-  color: #1897a0;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .media-pick.used {
@@ -712,8 +712,8 @@ onBeforeUnmount(() => {
 .arrange-empty-source {
   border: 1px dashed #eadfca;
   border-radius: 16px;
-  background: #fbf9f1;
-  color: #64748b;
+  background: var(--surface-soft);
+  color: var(--text-secondary);
   padding: 18px;
   display: flex;
   align-items: center;
@@ -727,7 +727,7 @@ onBeforeUnmount(() => {
   gap: 8px;
   border: 1px dashed rgba(24,151,160,0.35);
   border-radius: 14px;
-  background: #deefec;
+  background: var(--accent-soft);
   color: #0f766e;
   padding: 10px 12px;
   font-size: 0.82rem;
@@ -740,7 +740,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.handle) {
-  background: #1897a0;
+  background: var(--accent);
   border-color: #fff;
 }
 

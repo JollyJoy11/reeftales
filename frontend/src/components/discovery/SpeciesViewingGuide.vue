@@ -88,7 +88,7 @@ defineProps({
 
 <style scoped>
 .section-heading span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -96,13 +96,13 @@ defineProps({
 }
 
 .section-heading h3 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   margin: 2px 0 4px;
 }
 
 .section-heading p {
-  color: #64748b;
+  color: var(--text-secondary);
   margin-bottom: 14px;
 }
 
@@ -110,7 +110,7 @@ defineProps({
   position: relative;
   padding: 18px;
   border-radius: 24px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border: 1px dashed #eadfca;
 }
 
@@ -126,7 +126,7 @@ defineProps({
   align-items: center;
   padding: 12px;
   border-radius: 16px;
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid #eadfca;
 }
 
@@ -137,19 +137,19 @@ defineProps({
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .guide-list span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
 .guide-list strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
@@ -171,7 +171,7 @@ defineProps({
 
 .data-source-details summary {
   cursor: pointer;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.82rem;
   font-weight: 900;
 }
@@ -185,19 +185,19 @@ defineProps({
 .source-summary-grid div {
   padding: 14px;
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid #eadfca;
 }
 
 .source-summary-grid strong {
   display: block;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1.25rem;
   font-weight: 900;
 }
 
 .source-summary-grid span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   font-weight: 800;
 }

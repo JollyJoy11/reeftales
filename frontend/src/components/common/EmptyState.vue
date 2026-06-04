@@ -36,21 +36,21 @@ defineProps({
   align-items: center;
   justify-content: center;
   border-radius: 22px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border: 1px dashed #c4a484;
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
   padding: 32px;
 }
 
 .empty-state i {
   font-size: 2.4rem;
-  color: #1897a0;
+  color: var(--accent);
   margin-bottom: 12px;
 }
 
 .empty-state h5 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -68,10 +68,10 @@ defineProps({
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid #1897a0;
+  border: 1px solid var(--accent);
   border-radius: 999px;
   padding: 9px 14px;
-  background: #1897a0;
+  background: var(--accent);
   color: #ffffff;
   font-family: inherit;
   font-size: 0.86rem;
@@ -81,7 +81,7 @@ defineProps({
 
 .empty-actions :deep(a:hover),
 .empty-actions :deep(button:hover) {
-  background: #147d84;
+  background: var(--accent-strong);
   color: #ffffff;
 }
 </style>

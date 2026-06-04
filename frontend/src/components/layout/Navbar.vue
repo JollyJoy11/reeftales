@@ -159,20 +159,59 @@ async function handleReadAllNotifications() {
   }))
 }
 
-function toggleTheme() {
-  currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
-  localStorage.setItem('theme', currentTheme.value)
-  document.body.classList.toggle('dark-mode', currentTheme.value === 'dark')
+function applyTheme(theme) {
+  currentTheme.value = theme
+  localStorage.setItem('theme', theme)
+  document.body.classList.toggle('dark-mode', theme === 'dark')
 }
 
-function changeLanguage(language) {
+function applyLanguage(language) {
   currentLanguage.value = language
   localStorage.setItem('language', language)
   setI18nLanguage(language)
 }
 
+function settingsPayload(overrides = {}) {
+  const user = authStore.user || {}
+
+  return {
+    appearance_theme: user.appearance_theme || currentTheme.value || 'light',
+    font_size: user.font_size || 'normal',
+    larger_text: Boolean(user.larger_text),
+    reduced_motion: Boolean(user.reduced_motion),
+    high_contrast: Boolean(user.high_contrast),
+    notify_likes: user.notify_likes !== 0,
+    notify_comments: user.notify_comments !== 0,
+    default_journal_visibility: user.default_journal_visibility || 'public',
+    language: user.language || currentLanguage.value || 'English',
+    ...overrides
+  }
+}
+
+async function persistNavbarSettings(overrides) {
+  if (!authStore.isLoggedIn) return
+
+  try {
+    await authStore.saveSettings(settingsPayload(overrides))
+  } catch {
+    await authStore.loadCurrentUser().catch(() => {})
+  }
+}
+
+async function toggleTheme() {
+  const nextTheme = currentTheme.value === 'light' ? 'dark' : 'light'
+  applyTheme(nextTheme)
+  await persistNavbarSettings({ appearance_theme: nextTheme })
+}
+
+async function changeLanguage(language) {
+  applyLanguage(language)
+  await persistNavbarSettings({ language })
+}
+
 onMounted(() => {
-  document.body.classList.toggle('dark-mode', currentTheme.value === 'dark')
+  applyTheme(authStore.user?.appearance_theme || localStorage.getItem('theme') || currentTheme.value)
+  applyLanguage(authStore.user?.language || localStorage.getItem('language') || currentLanguage.value)
   loadProfileStats()
   loadNotifications()
 })
@@ -182,6 +221,20 @@ watch(
   () => {
     loadProfileStats()
     loadNotifications()
+  }
+)
+
+watch(
+  () => authStore.user?.appearance_theme,
+  theme => {
+    applyTheme(theme || localStorage.getItem('theme') || 'light')
+  }
+)
+
+watch(
+  () => authStore.user?.language,
+  language => {
+    applyLanguage(language || localStorage.getItem('language') || 'English')
   }
 )
 </script>
@@ -393,7 +446,7 @@ nav{
   align-items: center;
   gap: 4px;
   font-family: 'Spectral', serif;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 26px;
 }
 
@@ -412,7 +465,7 @@ nav{
   height: 30px;
   border: none;
   border-radius: 999px;
-  background: #d8cdbb;
+  background: var(--border);
   padding: 3px;
   display: flex;
   align-items: center;
@@ -477,9 +530,9 @@ nav{
 .notification-dropdown {
   width: 330px;
   padding: 10px;
-  border: 1px dashed #d8cdbb !important;
+  border: 1px dashed var(--border) !important;
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .notification-heading {
@@ -488,24 +541,24 @@ nav{
   justify-content: space-between;
   gap: 12px;
   padding: 8px 8px 10px;
-  border-bottom: 1px dashed #d8cdbb;
+  border-bottom: 1px dashed var(--border);
 }
 
 .notification-heading strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .notification-heading button {
   border: none;
   background: transparent;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.78rem;
   font-weight: 900;
 }
 
 .notification-empty {
   padding: 18px 8px 10px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.88rem;
   font-weight: 700;
   text-align: center;
@@ -517,7 +570,7 @@ nav{
   gap: 10px;
   padding: 10px 8px;
   border-radius: 12px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.86rem;
   font-weight: 700;
   text-decoration: none;
@@ -525,7 +578,7 @@ nav{
 
 .notification-item:hover,
 .notification-item.unread {
-  background: #deefec;
+  background: var(--accent-soft);
 }
 
 .notification-icon {
@@ -534,14 +587,14 @@ nav{
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #fffdf8;
-  color: #1897a0;
+  background: var(--surface);
+  color: var(--accent);
 }
 
 .notification-item small {
   display: block;
   margin-top: 3px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.74rem;
 }
 
@@ -552,9 +605,9 @@ nav{
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid rgba(24,151,160,0.24);
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 900;
   text-decoration: none;
   box-shadow: 0 8px 18px rgba(47,72,88,0.08);
@@ -571,9 +624,9 @@ nav{
 .profile-dropdown {
   min-width: 250px;
   padding: 10px;
-  border: 1px dashed #d8cdbb !important;
+  border: 1px dashed var(--border) !important;
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .profile-dropdown-header {
@@ -582,7 +635,7 @@ nav{
   gap: 12px;
   align-items: center;
   padding: 10px 10px 12px;
-  border-bottom: 1px dashed #d8cdbb;
+  border-bottom: 1px dashed var(--border);
   margin-bottom: 8px;
 }
 
@@ -594,8 +647,8 @@ nav{
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 900;
 }
 
@@ -605,12 +658,12 @@ nav{
 }
 
 .profile-dropdown-header small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 700;
 }
 
 .profile-dropdown-header strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
@@ -624,8 +677,8 @@ nav{
 }
 
 .profile-menu-item:hover {
-  background: #deefec;
-  color: #147d84;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .main-nav-item .nav-link.section-active {

@@ -241,19 +241,19 @@ function isActionLoading(entry) {
   display: grid;
   gap: 2px;
   padding: 12px 14px;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .timeline-summary strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.35rem;
   line-height: 1;
 }
 
 .timeline-summary span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.74rem;
   font-weight: 900;
 }
@@ -280,14 +280,14 @@ function isActionLoading(entry) {
   justify-items: end;
   align-content: start;
   padding-top: 18px;
-  color: #9a7b55;
+  color: var(--text-secondary);
   font-size: 0.76rem;
   font-weight: 900;
   line-height: 1.1;
 }
 
 .timeline-date small {
-  color: #b59a75;
+  color: var(--text-muted);
 }
 
 .timeline-rail {
@@ -302,7 +302,7 @@ function isActionLoading(entry) {
   position: absolute;
   top: 42px;
   bottom: -18px;
-  border-left: 2px dashed rgba(24, 151, 160, 0.35);
+  border-left: 2px dashed var(--border-strong);
 }
 
 .timeline-entry.last .timeline-rail::before {
@@ -317,16 +317,16 @@ function isActionLoading(entry) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #1897a0;
+  background: var(--accent);
   color: #fff;
   font-size: 0.72rem;
-  box-shadow: 0 0 0 6px #deefec;
+  box-shadow: 0 0 0 6px var(--accent-soft);
 }
 
 .timeline-dot.hollow {
-  background: #fffdf8;
-  border: 2px solid #1897a0;
-  color: #1897a0;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  color: var(--accent);
 }
 
 .timeline-card {
@@ -334,12 +334,10 @@ function isActionLoading(entry) {
   display: grid;
   gap: 14px;
   padding: 16px;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   border-radius: 18px;
-  background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.94), rgba(251, 247, 239, 0.94)),
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(216, 205, 187, 0.26) 27px);
-  box-shadow: 0 12px 26px rgba(47, 72, 88, 0.09);
+  background: var(--surface);
+  box-shadow: 0 12px 26px rgba(47, 72, 88, 0.08);
   overflow: hidden;
 }
 
@@ -348,10 +346,8 @@ function isActionLoading(entry) {
 }
 
 .timeline-entry.is-ready .timeline-card {
-  border-color: rgba(245, 169, 142, 0.8);
-  background:
-    linear-gradient(180deg, rgba(255, 248, 243, 0.96), rgba(255, 253, 248, 0.92)),
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(245, 169, 142, 0.17) 27px);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 18%, var(--surface) 82%);
 }
 
 .timeline-card-header,
@@ -373,19 +369,19 @@ function isActionLoading(entry) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .timeline-entry.is-ready .timeline-icon,
 .timeline-entry.is-ready .timeline-dot {
-  background: #fee7dc;
-  color: #bd704e;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .timeline-entry.is-ready .timeline-dot {
-  border-color: #bd704e;
-  box-shadow: 0 0 0 6px #fee7dc;
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 6px var(--accent-soft);
 }
 
 .timeline-title-row {
@@ -400,12 +396,12 @@ function isActionLoading(entry) {
 }
 
 .timeline-title-row strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .timeline-title-row small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
 }
 
@@ -414,21 +410,21 @@ function isActionLoading(entry) {
   height: fit-content;
   padding: 5px 9px;
   border-radius: 999px;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
 .timeline-entry.is-ready .timeline-status {
-  background: #fee7dc;
-  color: #bd704e;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .timeline-entry.is-planned .timeline-status {
-  background: #f4eadc;
-  color: #8c7250;
+  background: var(--surface-soft);
+  color: var(--accent-strong);
 }
 
 .timeline-main {
@@ -439,7 +435,7 @@ function isActionLoading(entry) {
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
-  color: #64748b;
+  color: var(--text-secondary);
   line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -466,8 +462,8 @@ function isActionLoading(entry) {
   gap: 5px;
   padding: 5px 9px;
   border-radius: 999px;
-  background: #f4eadc;
-  color: #7c6f63;
+  background: var(--surface-soft);
+  color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -497,25 +493,26 @@ function isActionLoading(entry) {
 .open-btn {
   gap: 8px;
   padding: 8px 14px;
-  background: #1897a0;
+  background: var(--accent);
   color: #fff;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .open-btn.secondary {
-  background: #deefec;
-  color: #147d84;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .open-btn:hover,
 .open-btn:focus-visible {
-  background: #147d84;
+  background: var(--accent-strong);
   color: #fff;
 }
 
 .open-btn.secondary:hover,
 .open-btn.secondary:focus-visible {
-  background: #c9e5e2;
-  color: #0f6970;
+  background: var(--surface);
+  color: var(--accent-strong);
 }
 
 .timeline-single-action {
@@ -525,19 +522,19 @@ function isActionLoading(entry) {
 .visibility-toggle {
   gap: 6px;
   padding: 7px 11px;
-  background: #deefec;
-  color: #147d84;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .visibility-toggle.private {
-  background: #f4eadc;
-  color: #8c7250;
+  background: var(--surface-soft);
+  color: var(--accent-strong);
 }
 
 .delete-journal-btn {
   width: 34px;
-  background: #fff1f1;
-  color: #a94444;
+  background: var(--surface-soft);
+  color: var(--accent-strong);
 }
 
 .visibility-toggle:hover,
@@ -577,7 +574,7 @@ function isActionLoading(entry) {
   .timeline-dot {
     width: 24px;
     height: 24px;
-    box-shadow: 0 0 0 5px #deefec;
+    box-shadow: 0 0 0 5px var(--accent-soft);
   }
 
   .timeline-card {
@@ -610,3 +607,4 @@ function isActionLoading(entry) {
   }
 }
 </style>
+

@@ -68,14 +68,14 @@ function sightingQuantity(sighting) {
 }
 
 .section-title-row h2 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.05rem;
   font-weight: 900;
   margin-bottom: 0;
 }
 
 .section-title-row span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.74rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -118,7 +118,7 @@ function sightingQuantity(sighting) {
 }
 
 .encounter-icon.tone-0 {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 .encounter-icon.tone-1 {
@@ -155,7 +155,7 @@ function sightingQuantity(sighting) {
   border: 1px dashed rgba(24,151,160,0.42);
   border-radius: 999px;
   padding: 4px 8px;
-  color: #1897a0;
+  color: var(--accent);
   background: rgba(255,255,255,0.72);
   font-size: 0.72rem;
   font-weight: 900;
@@ -180,7 +180,7 @@ function sightingQuantity(sighting) {
   gap: 12px;
   align-items: center;
   padding: 14px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
   background: rgba(251, 249, 241, 0.72);
 }
@@ -191,8 +191,8 @@ function sightingQuantity(sighting) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 1.2rem;
 }
 
@@ -202,12 +202,12 @@ function sightingQuantity(sighting) {
 }
 
 .section-empty-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .section-empty-card span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.86rem;
 }
 
@@ -233,3 +233,4 @@ function sightingQuantity(sighting) {
   }
 }
 </style>
+

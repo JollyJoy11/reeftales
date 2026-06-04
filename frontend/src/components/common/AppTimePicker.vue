@@ -83,7 +83,7 @@ function formatTime(value) {
   left: 14px;
   top: 50%;
   z-index: 2;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 1rem;
   transform: translateY(-50%);
   pointer-events: none;

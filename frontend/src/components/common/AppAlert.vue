@@ -48,27 +48,35 @@ onMounted(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 2000;
-  min-width: 280px;
+  min-width: 300px;
   max-width: 420px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 5px 16px;
-  border-radius: 10px;
-  background: #fbf9f1;
-  color: #2f4858;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--surface-soft);
+  color: var(--text-primary);
   border: 1px solid #eadfca;
   box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+  font-weight: 800;
+}
+
+.app-toast > i {
+  flex: 0 0 auto;
+  font-size: 1.1rem;
 }
 
 .app-toast.danger {
-  border: 1px solid #dc3545;
-  background-color: #f9e2e4;
+  border-color: #dc3545;
+  background-color: #fff1f2;
+  color: #7f1d1d;
 }
 
 .app-toast.success {
-  border: 1px solid #18a060;
-  background-color: #dffeef;
+  border-color: #0f8f62;
+  background-color: #dcfce7;
+  color: #064e3b;
 }
 
 .app-toast button {

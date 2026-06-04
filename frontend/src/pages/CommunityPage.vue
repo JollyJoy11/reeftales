@@ -78,147 +78,157 @@ watch(
       v-if="errorMessage" :message="errorMessage" variant="danger" @close="errorMessage = ''"
     />
 
-    <section class="container py-4">
-      <div class="community-hero mb-4">
-        <div class="hero-copy">
-          <span class="eyebrow">{{ t('community.eyebrow') }}</span>
-          <h1>{{ t('community.title') }}</h1>
-          <p>
-            {{ t('community.intro') }}
-          </p>
+    <main class="community-page">
+      <section class="container py-4">
+        <div class="community-hero mb-4">
+          <div class="hero-copy">
+            <span class="eyebrow">{{ t('community.eyebrow') }}</span>
+            <h1>{{ t('community.title') }}</h1>
+            <p>
+              {{ t('community.intro') }}
+            </p>
 
-          <div class="community-search">
-            <i class="bi bi-search"></i>
-            <input
-              v-model="search"
-              type="search"
-              :placeholder="t('community.searchPlaceholder')"
+            <div class="community-search">
+              <i class="bi bi-search"></i>
+              <input
+                v-model="search"
+                type="search"
+                :placeholder="t('community.searchPlaceholder')"
+              />
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <div class="hero-stats">
+              <span>
+                <strong>{{ journals.length }}</strong>
+                {{ t('community.diaries') }}
+              </span>
+              <span>
+                <strong>{{ trendingIslands.length }}</strong>
+                {{ t('community.islands') }}
+              </span>
+            </div>
+
+            <RouterLink to="/journal/create" class="create-journal-btn">
+              <i class="bi bi-pencil-square"></i>
+              {{ t('community.createJournal') }}
+            </RouterLink>
+          </div>
+        </div>
+
+        <LoadingState
+          v-if="loading"
+          :message="t('community.loading')"
+        />
+
+        <div v-else class="row g-4">
+          <main class="col-12 col-lg-8 order-2 order-lg-1">
+            <div class="journal-toolbar">
+              <span>{{ t('community.diariesFound', { count: journals.length }) }}</span>
+
+              <div class="journal-sort">
+                <button
+                  v-for="option in sortOptions"
+                  :key="option.value"
+                  type="button"
+                  :class="{ active: sortBy === option.value }"
+                  @click="sortBy = option.value"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <div v-if="journals.length" class="row g-4">
+              <div
+                v-for="journal in journals"
+                :key="journal.id"
+                class="col-12 col-md-6"
+              >
+                <JournalCard :journal="journal" />
+              </div>
+            </div>
+
+            <EmptyState
+              v-else
+              icon="bi bi-journal-text"
+              :title="t('community.emptyTitle')"
+              :message="t('community.emptyMessage')"
             />
-          </div>
-        </div>
+          </main>
 
-        <div class="hero-actions">
-          <div class="hero-stats">
-            <span>
-              <strong>{{ journals.length }}</strong>
-              {{ t('community.diaries') }}
-            </span>
-            <span>
-              <strong>{{ trendingIslands.length }}</strong>
-              {{ t('community.islands') }}
-            </span>
-          </div>
+          <aside class="col-12 col-lg-4 order-1 order-lg-2">
+            <div class="community-sidebar">
+              <section class="sidebar-card">
+                <h6><i class="bi bi-compass"></i> {{ t('community.trendingIslands') }}</h6>
 
-          <RouterLink to="/journal/create" class="create-journal-btn">
-            <i class="bi bi-pencil-square"></i>
-            {{ t('community.createJournal') }}
-          </RouterLink>
-        </div>
-      </div>
+                <div
+                  v-for="(island, index) in trendingIslands"
+                  :key="island.name"
+                  class="trend-row"
+                >
+                  <span class="trend-number">
+                    {{ String(index + 1).padStart(2, '0') }}
+                  </span>
 
-      <LoadingState
-        v-if="loading"
-        :message="t('community.loading')"
-      />
+                  <div>
+                    <strong>{{ island.name }}</strong>
+                    <small>{{ t('community.diariesShared', { count: island.diary_count }) }}</small>
+                  </div>
+                </div>
 
-      <div v-else class="row g-4">
-        <main class="col-12 col-lg-8 order-2 order-lg-1">
-          <div class="journal-toolbar">
-            <span>{{ t('community.diariesFound', { count: journals.length }) }}</span>
+                <p v-if="!trendingIslands.length" class="sidebar-empty">
+                  {{ t('community.noTrending') }}
+                </p>
+              </section>
 
-            <div class="journal-sort">
-              <button
-                v-for="option in sortOptions"
-                :key="option.value"
-                type="button"
-                :class="{ active: sortBy === option.value }"
-                @click="sortBy = option.value"
-              >
-                {{ option.label }}
-              </button>
+              <section class="sidebar-card">
+                <h6><i class="bi bi-stars"></i> {{ t('community.topExplorers') }}</h6>
+
+                <div
+                  v-for="explorer in topExplorers"
+                  :key="explorer.username"
+                  class="explorer-row"
+                >
+                  <img
+                    v-if="explorer.profile_image"
+                    :src="explorer.profile_image"
+                    class="explorer-avatar"
+                    :alt="`${explorer.username || 'Explorer'} profile photo`"
+                  />
+
+                  <div v-else class="explorer-avatar avatar-fallback">
+                    {{ getInitial(explorer.username) }}
+                  </div>
+
+                  <div>
+                    <strong>{{ explorer.username }}</strong>
+                    <small>{{ t('community.publicDiaries', { count: explorer.diary_count }) }}</small>
+                  </div>
+                </div>
+
+                <p v-if="!topExplorers.length" class="sidebar-empty">
+                  {{ t('community.noExplorers') }}
+                </p>
+              </section>
             </div>
-          </div>
-
-          <div v-if="journals.length" class="row g-4">
-            <div
-              v-for="journal in journals"
-              :key="journal.id"
-              class="col-12 col-md-6"
-            >
-              <JournalCard :journal="journal" />
-            </div>
-          </div>
-
-          <EmptyState
-            v-else
-            icon="bi bi-journal-text"
-            :title="t('community.emptyTitle')"
-            :message="t('community.emptyMessage')"
-          />
-        </main>
-
-        <aside class="col-12 col-lg-4 order-1 order-lg-2">
-          <div class="community-sidebar">
-            <section class="sidebar-card">
-              <h6><i class="bi bi-compass"></i> {{ t('community.trendingIslands') }}</h6>
-
-              <div
-                v-for="(island, index) in trendingIslands"
-                :key="island.name"
-                class="trend-row"
-              >
-                <span class="trend-number">
-                  {{ String(index + 1).padStart(2, '0') }}
-                </span>
-
-                <div>
-                  <strong>{{ island.name }}</strong>
-                  <small>{{ t('community.diariesShared', { count: island.diary_count }) }}</small>
-                </div>
-              </div>
-
-              <p v-if="!trendingIslands.length" class="sidebar-empty">
-                {{ t('community.noTrending') }}
-              </p>
-            </section>
-
-            <section class="sidebar-card">
-              <h6><i class="bi bi-stars"></i> {{ t('community.topExplorers') }}</h6>
-
-              <div
-                v-for="explorer in topExplorers"
-                :key="explorer.username"
-                class="explorer-row"
-              >
-                <img
-                  v-if="explorer.profile_image"
-                  :src="explorer.profile_image"
-                  class="explorer-avatar"
-                  :alt="`${explorer.username || 'Explorer'} profile photo`"
-                />
-
-                <div v-else class="explorer-avatar avatar-fallback">
-                  {{ getInitial(explorer.username) }}
-                </div>
-
-                <div>
-                  <strong>{{ explorer.username }}</strong>
-                  <small>{{ t('community.publicDiaries', { count: explorer.diary_count }) }}</small>
-                </div>
-              </div>
-
-              <p v-if="!topExplorers.length" class="sidebar-empty">
-                {{ t('community.noExplorers') }}
-              </p>
-            </section>
-          </div>
-        </aside>
-      </div>
-    </section>
+          </aside>
+        </div>
+      </section>
+    </main>
   </MainLayout>
 </template>
 
 <style scoped>
+.community-page {
+  min-height: calc(100vh - 80px);
+  padding: 18px 0 46px;
+  background:
+    radial-gradient(circle at top left, rgba(169,216,214,0.28), transparent 32%),
+    linear-gradient(180deg, #fffdf8 0%, #f7efe2 100%);
+}
+
 .community-hero {
   position: relative;
   display: grid;
@@ -236,7 +246,7 @@ watch(
       transparent 1px,
       transparent 32px
     );
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   box-shadow: 0 16px 34px rgba(47,72,88,0.10);
   overflow: hidden;
 }
@@ -248,7 +258,7 @@ watch(
 }
 
 .eyebrow {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -257,7 +267,7 @@ watch(
 
 .community-hero h1 {
   margin: 6px 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   font-size: clamp(2rem, 4vw, 3.35rem);
   line-height: 1;
@@ -265,7 +275,7 @@ watch(
 
 .community-hero p {
   max-width: 560px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0 0 18px;
   line-height: 1.65;
 }
@@ -277,21 +287,21 @@ watch(
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  border: 1px solid #d8cdbb;
+  border: 1px solid var(--border);
   border-radius: 999px;
   background: #ffffff;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
 }
 
 .community-search i {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .community-search input {
   min-width: 0;
   border: none;
   background: transparent;
-  color: #2f4858;
+  color: var(--text-primary);
   outline: none;
 }
 
@@ -318,14 +328,14 @@ watch(
   border: 1px dashed rgba(24,151,160,0.35);
   border-radius: 14px;
   background: rgba(255,255,255,0.58);
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 800;
 }
 
 .hero-stats strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.4rem;
   line-height: 1;
 }
@@ -338,7 +348,7 @@ watch(
   min-height: 44px;
   padding: 0 18px;
   border-radius: 999px;
-  background: #1897a0;
+  background: var(--accent);
   color: #ffffff;
   font-weight: 900;
   text-decoration: none;
@@ -353,7 +363,7 @@ watch(
 
 .create-journal-btn:hover,
 .create-journal-btn:focus-visible {
-  background: #147d84;
+  background: var(--accent-strong);
   color: #ffffff;
   transform: translateY(-2px);
   box-shadow:
@@ -378,8 +388,8 @@ watch(
   padding: 22px;
   padding-bottom: 8px;
   border-radius: 18px;
-  background: #fbf9f1;
-  border: 1px dashed #d8cdbb;
+  background: var(--surface-soft);
+  border: 1px dashed var(--border);
   box-shadow: 0 12px 26px rgba(47,72,88,0.08);
 }
 
@@ -399,7 +409,7 @@ watch(
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -423,8 +433,8 @@ watch(
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 0.9rem;
   font-weight: 900;
   flex: 0 0 auto;
@@ -439,13 +449,13 @@ watch(
 
 .trend-row strong,
 .explorer-row strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .trend-row small,
 .explorer-row small,
 .sidebar-empty {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
@@ -467,8 +477,8 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 800;
 }
 
@@ -481,7 +491,7 @@ watch(
 }
 
 .journal-toolbar > span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
   font-weight: 800;
 }
@@ -493,19 +503,19 @@ watch(
 }
 
 .journal-sort button {
-  border: 1px solid #d8cdbb;
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 8px 12px;
-  background: #fffdf8;
-  color: #64748b;
+  background: var(--surface);
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: 900;
 }
 
 .journal-sort button.active {
-  border-color: #1897a0;
-  background: #deefec;
-  color: #1897a0;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 @media (max-width: 991px) {
@@ -529,3 +539,4 @@ watch(
   }
 }
 </style>
+

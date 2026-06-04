@@ -216,7 +216,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .ai-identify-card {
   padding: 12px;
-  background: #deefec;
+  background: var(--accent-soft);
   transform: rotate(0.4deg);
 
   --r: 5px;
@@ -288,7 +288,7 @@ onBeforeUnmount(() => {
 .subtitle {
   text-align: center;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .lookup-form {
@@ -321,7 +321,7 @@ onBeforeUnmount(() => {
 
 .ai-result small {
   margin-top: 4px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .lookup-message {
@@ -363,14 +363,14 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
   gap: 6px;
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .status-text {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 800;
   line-height: 1.4;
 }
@@ -393,7 +393,7 @@ onBeforeUnmount(() => {
 .ai-reason {
   margin: 8px 0 0;
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .ai-steps {
@@ -401,7 +401,7 @@ onBeforeUnmount(() => {
   display: grid;
   gap: 8px;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .ai-steps div {
@@ -414,6 +414,6 @@ onBeforeUnmount(() => {
 }
 
 .ai-steps i {
-  color: #1897a0;
+  color: var(--accent);
 }
 </style>

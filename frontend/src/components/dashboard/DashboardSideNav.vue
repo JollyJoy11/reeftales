@@ -114,7 +114,7 @@ function selectPanel(panelId) {
   align-items: center;
   padding: 6px 4px 14px;
   margin-bottom: 4px;
-  border-bottom: 1px dashed #d8cdbb;
+  border-bottom: 1px dashed var(--border);
 }
 
 .profile-mini > span {
@@ -123,8 +123,8 @@ function selectPanel(panelId) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 900;
 }
 
@@ -134,11 +134,11 @@ function selectPanel(panelId) {
 }
 
 .profile-mini strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .profile-mini small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
   font-weight: 700;
 }
@@ -159,9 +159,9 @@ function selectPanel(panelId) {
 
 .logbook-tab:hover,
 .logbook-tab.active {
-  background: #deefec;
+  background: var(--accent-soft);
   border-color: rgba(24, 151, 160, 0.24);
-  color: #147d84;
+  color: var(--accent-strong);
 }
 
 @media (max-width: 991px) {
@@ -179,7 +179,7 @@ function selectPanel(panelId) {
     gap: 12px;
     border: none;
     background: rgba(255, 253, 248, 0.96);
-    color: #2f4858;
+    color: var(--text-primary);
     padding: 12px 16px;
     font-weight: 900;
   }

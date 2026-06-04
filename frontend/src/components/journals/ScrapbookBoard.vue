@@ -89,7 +89,7 @@ defineExpose({ rootEl })
 
 .scrapbook-empty-state i {
   font-size: 2rem;
-  color: #1897a0;
+  color: var(--accent);
 }
 
 @media (max-width: 768px) {
@@ -100,3 +100,4 @@ defineExpose({ rootEl })
   }
 }
 </style>
+

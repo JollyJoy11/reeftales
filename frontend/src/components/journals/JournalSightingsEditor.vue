@@ -124,7 +124,7 @@ function removeEntry(index) {
 
 <style scoped>
 .section-title {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   margin-bottom: 14px;
 }
@@ -150,7 +150,7 @@ function removeEntry(index) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #1897a0;
+  color: var(--accent);
   font-family: 'Spectral', serif;
   font-size: 1rem;
   font-style: italic;
@@ -172,7 +172,7 @@ function removeEntry(index) {
   top: 16px;
   right: 16px;
   border: none;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   color: #94a3b8;
   width: 34px;
   height: 34px;
@@ -181,7 +181,7 @@ function removeEntry(index) {
 
 .remove-icon-btn:hover {
   color: #dc3545;
-  background: #fff1f2;
+  background: var(--surface-soft);
 }
 
 .sighting-fields {
@@ -205,7 +205,7 @@ function removeEntry(index) {
 }
 
 .form-label {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.82rem;
   font-weight: 700;
 }

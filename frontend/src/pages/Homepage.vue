@@ -45,7 +45,8 @@ onBeforeUnmount(() => {
   position: relative;
   overflow-x: hidden;
   background:
-    linear-gradient(180deg, #fffdf8 0%, #f6fbf8 44%, #fffdf8 100%);
-  color: #2f4858;
+    radial-gradient(circle at top left, rgba(169,216,214,0.32), transparent 34%),
+    linear-gradient(180deg, var(--surface-soft) 0%, var(--page-bg) 100%);
+  color: var(--text-primary);
 }
 </style>

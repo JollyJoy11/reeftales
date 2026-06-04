@@ -188,7 +188,7 @@ watch(
   height: 30px;
   border: none;
   border-radius: 50%;
-  background: #1897a0;
+  background: var(--accent);
   color: #ffffff;
   display: grid;
   place-items: center;
@@ -380,3 +380,4 @@ watch(
   }
 }
 </style>
+

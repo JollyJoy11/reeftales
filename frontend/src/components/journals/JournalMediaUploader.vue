@@ -521,7 +521,7 @@ function setCoverImage(item) {
 
 <style scoped>
 .drag-drop-zone {
-  border: 2px dashed #1897a0;
+  border: 2px dashed var(--accent);
   background: rgba(24,151,160,0.04);
   padding: 34px 18px;
   border-radius: 20px;
@@ -529,7 +529,7 @@ function setCoverImage(item) {
   cursor: pointer;
   display: grid;
   gap: 4px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .section-heading {
@@ -541,14 +541,14 @@ function setCoverImage(item) {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   margin: 0 0 4px;
 }
 
 .section-heading p {
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.86rem;
 }
 
@@ -572,11 +572,11 @@ function setCoverImage(item) {
 
 .drag-drop-zone i {
   font-size: 2.4rem;
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .drag-drop-zone strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .drag-drop-zone.drag-over {
@@ -585,7 +585,7 @@ function setCoverImage(item) {
 
 .reorder-hint {
   margin: 14px 0 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.86rem;
 }
 
@@ -662,11 +662,11 @@ function setCoverImage(item) {
   width: 100%;
   min-height: 54px;
   border: 1px dashed transparent;
-  background: #fffdf8;
+  background: var(--surface);
   border-bottom: 1px dashed #c4a484;
   border-radius: 8px;
   font-size: 0.85rem;
-  color: #2f4858;
+  color: var(--text-primary);
   padding: 8px;
   resize: vertical;
   cursor: text;
@@ -678,7 +678,7 @@ function setCoverImage(item) {
 
 .caption-textarea:focus {
   outline: none;
-  border-color: #1897a0;
+  border-color: var(--accent);
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(24,151,160,0.12);
 }
@@ -690,7 +690,7 @@ function setCoverImage(item) {
   z-index: 2;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #1897a0;
+  background: var(--accent);
   color: white;
   font-size: 0.74rem;
   font-weight: 800;
@@ -704,7 +704,7 @@ function setCoverImage(item) {
 }
 
 .uploaded-fields .form-label {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 0.82rem;
   margin-bottom: 4px;
@@ -717,7 +717,7 @@ function setCoverImage(item) {
 
 .remove-media-btn {
   border: none;
-  background: #fff1f2;
+  background: var(--surface-soft);
   color: #dc3545;
   border-radius: 999px;
   padding: 6px 10px;
@@ -725,8 +725,8 @@ function setCoverImage(item) {
 }
 
 .drag-chosen {
-  border-color: #1897a0 !important;
-  background: #deefec !important;
+  border-color: var(--accent) !important;
+  background: var(--accent-soft) !important;
   box-shadow: 0 14px 32px rgba(24,151,160,0.22) !important;
 }
 
@@ -738,7 +738,7 @@ function setCoverImage(item) {
 .drag-ghost {
   opacity: 0.35;
   background: rgba(24,151,160,0.12) !important;
-  border: 2px dashed #1897a0 !important;
+  border: 2px dashed var(--accent) !important;
 }
 
 .polaroid-controls {
@@ -750,9 +750,9 @@ function setCoverImage(item) {
 }
 
 .cover-select-btn {
-  border: 1px solid #1897a0;
-  background: #fffdf8;
-  color: #1897a0;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
   border-radius: 999px;
   padding: 7px 12px;
   font-size: 0.82rem;
@@ -761,7 +761,7 @@ function setCoverImage(item) {
 }
 
 .cover-select-btn.selected {
-  background: #1897a0;
+  background: var(--accent);
   color: white;
 }
 </style>

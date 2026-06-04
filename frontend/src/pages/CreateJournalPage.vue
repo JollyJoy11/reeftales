@@ -460,7 +460,7 @@ onMounted(loadData)
 }
 
 .journal-shell-inner {
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border-radius: 12px;
   padding: 32px;
   min-height: 100%;
@@ -475,7 +475,7 @@ onMounted(loadData)
 }
 
 .journal-header span {
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -483,14 +483,14 @@ onMounted(loadData)
 }
 
 .journal-header h1 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   margin: 6px 0;
 }
 
 .journal-header p {
   max-width: 760px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -527,7 +527,7 @@ onMounted(loadData)
 }
 
 .step-card {
-  background: #fffdf8;
+  background: var(--surface);
   border: 1px solid #eadfca;
   border-radius: 24px;
   padding: 26px;
@@ -542,14 +542,14 @@ onMounted(loadData)
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   margin: 0 0 4px;
 }
 
 .section-heading p {
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -575,7 +575,7 @@ onMounted(loadData)
 }
 
 .requirement-badge.required {
-  background: #fff1f2;
+  background: var(--surface-soft);
   color: #b42334;
   border: 1px solid rgba(180,35,52,0.24);
 }

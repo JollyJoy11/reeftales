@@ -132,7 +132,7 @@ const itemStyle = computed(() => {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 10px 22px rgba(0,0,0,0.14);
   transform: rotate(var(--item-rotation));
   transform-origin: center;
@@ -190,7 +190,7 @@ const itemStyle = computed(() => {
   height: 26px;
   border: none;
   border-radius: 50%;
-  background: #fff1f2;
+  background: var(--surface-soft);
   color: #dc3545;
   display: grid;
   place-items: center;

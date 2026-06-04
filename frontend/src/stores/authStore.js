@@ -10,6 +10,8 @@ import { setI18nLanguage } from '@/i18n'
 
 function applyUserPreferences(user) {
   const theme = user?.appearance_theme || localStorage.getItem('theme') || 'light'
+  const colorScheme = user?.color_scheme || localStorage.getItem('color_scheme') || 'teal'
+  const colorSchemes = ['teal', 'sunset']
 
   localStorage.setItem('theme', theme)
   localStorage.setItem('language', user?.language || localStorage.getItem('language') || 'English')
@@ -20,6 +22,9 @@ function applyUserPreferences(user) {
   document.body.classList.toggle('small-text-mode', user?.font_size === 'small')
   document.body.classList.toggle('reduced-motion-mode', Boolean(user?.reduced_motion))
   document.body.classList.toggle('high-contrast-mode', Boolean(user?.high_contrast))
+  colorSchemes.forEach((scheme) =>
+    document.body.classList.toggle(`color-scheme-${scheme}`, scheme === colorScheme)
+  )
 }
 
 export const useAuthStore = defineStore('auth', {

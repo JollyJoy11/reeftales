@@ -269,8 +269,8 @@ function toggleArrayValue(array, value, eventName) {
   overflow: visible;
   padding: 22px;
   border-radius: 18px;
-  background: #fbf9f1;
-  border: 1px dashed #d8cdbb;
+  background: var(--surface-soft);
+  border: 1px dashed var(--border);
   box-shadow: 0 12px 26px rgba(47,72,88,0.08);
 }
 
@@ -309,29 +309,29 @@ function toggleArrayValue(array, value, eventName) {
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 14px;
   padding: 10px 14px;
   background: rgba(255,255,255,0.68);
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   text-align: left;
   transition: 0.2s ease;
 }
 
 .mode-card i {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .mode-card:hover {
   transform: translateY(-1px);
-  border-color: #1897a0;
+  border-color: var(--accent);
   box-shadow: 0 8px 18px rgba(47,72,88,0.08);
 }
 
 .mode-card.active {
-  background: #1897a0;
-  border-color: #1897a0;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
@@ -340,7 +340,7 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .form-control {
-  border-color: #d8cdbb;
+  border-color: var(--border);
   border-radius: 12px;
   background: rgba(255,255,255,0.72);
 }
@@ -353,11 +353,6 @@ function toggleArrayValue(array, value, eventName) {
   border-color: #c4a484;
 }
 
-.form-check-input:checked {
-  background-color: #1897a0;
-  border-color: #1897a0;
-}
-
 .depth-label-row {
   display: flex;
   justify-content: space-between;
@@ -368,7 +363,7 @@ function toggleArrayValue(array, value, eventName) {
 
 .depth-label-row span {
   font-size: 0.82rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .dual-range-slider {
@@ -378,14 +373,14 @@ function toggleArrayValue(array, value, eventName) {
 .slider-track {
   height: 4px;
   border-radius: 999px;
-  background: #d8cdbb;
+  background: var(--border);
 }
 
 .slider-range {
   position: absolute;
   height: 4px;
   border-radius: 999px;
-  background: #1897a0;
+  background: var(--accent);
 }
 
 .thumb {
@@ -401,8 +396,8 @@ function toggleArrayValue(array, value, eventName) {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fbf9f1;
-  border: 3px solid #2f4858;
+  background: var(--surface-soft);
+  border: 3px solid var(--text-primary);
   cursor: pointer;
   pointer-events: auto;
   box-shadow: 0 2px 6px rgba(0,0,0,0.18);
@@ -412,8 +407,8 @@ function toggleArrayValue(array, value, eventName) {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fbf9f1;
-  border: 3px solid #2f4858;
+  background: var(--surface-soft);
+  border: 3px solid var(--text-primary);
   cursor: pointer;
   pointer-events: auto;
 }
@@ -428,7 +423,7 @@ function toggleArrayValue(array, value, eventName) {
 
 .filter-header h5 {
   gap: 8px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.9rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -436,7 +431,7 @@ function toggleArrayValue(array, value, eventName) {
 
 .filter-arrow {
   display: none;
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .filter-content {
@@ -457,7 +452,7 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .filter-content::-webkit-scrollbar-thumb:hover {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 @media (max-width: 991px) {
@@ -503,9 +498,10 @@ function toggleArrayValue(array, value, eventName) {
       linear-gradient(
         180deg,
         rgba(251,249,241,0),
-        #fbf9f1 34%
+        var(--surface-soft) 34%
       );
     padding-top: 12px;
   }
 }
 </style>
+

@@ -277,9 +277,14 @@ function renderRecentSightingMarkers() {
   })
 }
 
+function getAccentColor() {
+  return getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#1897a0'
+}
+
 function initMap() {
   if (!island.value) return
 
+  const accentColor = getAccentColor()
   const lat = Number(island.value.latitude) || 4.2
   const lng = Number(island.value.longitude) || 118.6
 
@@ -312,8 +317,8 @@ function initMap() {
 
   L.circle([lat, lng], {
     radius: 2500,
-    color: '#1897a0',
-    fillColor: '#1897a0',
+    color: accentColor,
+    fillColor: accentColor,
     fillOpacity: 0.06,
     weight: 1
   }).addTo(islandMarkerLayer)
@@ -350,11 +355,13 @@ function showSpeciesPreview(species) {
 
   const points = getEstimatedObservationPoints(species)
 
+  const accentColor = getAccentColor()
+
   points.forEach((point, index) => {
     L.circle(point, {
       radius: 900 + index * 220,
-      color: '#1897a0',
-      fillColor: '#1897a0',
+      color: accentColor,
+      fillColor: accentColor,
       fillOpacity: 0.16,
       weight: 2,
       dashArray: '6 6'
@@ -617,6 +624,7 @@ onMounted(async () => {
             <IslandResidentSpecies
               :species="residentSpecies"
               :island-name="island.name"
+              :selected-species-id="selectedSpecies?.id"
               @preview="showSpeciesPreview"
             />
 
@@ -633,7 +641,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #1897a0;
+  color: var(--accent);
   text-decoration: none;
   font-weight: 600;
 }
@@ -647,27 +655,27 @@ onMounted(async () => {
   border-radius: 30px;
   background:
     radial-gradient(circle at top right, rgba(24,151,160,0.12), transparent 34%),
-    #fbf9f1;
+    var(--surface-soft);
   border: 1px solid #eadfca;
   box-shadow: 0 18px 40px rgba(0,0,0,0.10);
   overflow: hidden;
 }
 
 .hero-copy h1 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: clamp(2.2rem, 5vw, 4.4rem);
   font-weight: 900;
   margin: 8px 0;
 }
 
 .hero-location {
-  color: #1f4e5f;
+  color: var(--accent-strong);
   font-weight: 800;
   margin-bottom: 12px;
 }
 
 .hero-description {
-  color: #64748b;
+  color: var(--text-secondary);
   line-height: 1.7;
   max-width: 620px;
 }
@@ -679,7 +687,7 @@ onMounted(async () => {
 
 .hero-polaroid {
   position: absolute;
-  background: white;
+  background: var(--surface);
   padding: 12px 12px 32px;
   box-shadow: 0 14px 32px rgba(0,0,0,0.16);
   border: 1px solid rgba(47,72,88,0.1);
@@ -689,7 +697,7 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 1px solid rgba(47,72,88,0.16);
+  border: 1px solid var(--border);
 }
 
 .main-photo {
@@ -726,7 +734,7 @@ onMounted(async () => {
   display: grid;
   place-items: center;
   background: #cdece7;
-  color: #1897a0;
+  color: var(--accent);
   box-shadow: 0 10px 24px rgba(0,0,0,0.12);
   font-size: 1.5rem;
 }
@@ -735,7 +743,7 @@ onMounted(async () => {
   border: none;
   border-radius: 999px;
   padding: 10px 16px;
-  background: #1897a0;
+  background: var(--accent);
   color: white;
   font-weight: 800;
   box-shadow: 0 10px 20px rgba(24,151,160,0.18);
@@ -748,7 +756,7 @@ onMounted(async () => {
 
 .save-detail-btn:hover,
 .save-detail-btn:focus-visible {
-  background: #147d84;
+  background: var(--accent-strong);
   color: #fff;
   transform: translateY(-2px);
   box-shadow:
@@ -766,13 +774,13 @@ onMounted(async () => {
   top: 24px;
   padding: 20px;
   border-radius: 22px;
-  background: #fbf9f1;
-  border: 1px solid #eadfca;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .section-title {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
   margin-bottom: 12px;
 }
@@ -787,18 +795,18 @@ onMounted(async () => {
 .info-card {
   padding: 14px;
   border-radius: 16px;
-  background: #fffdf8;
-  border: 1px solid #eadfca;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 .info-card span {
   display: block;
   font-size: 0.72rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .info-card strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .activity-section,
@@ -814,17 +822,17 @@ onMounted(async () => {
 }
 
 .activity-badges .badge {
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .activity-empty {
   margin-top: 10px;
   padding: 14px;
   border-radius: 14px;
-  border: 1px dashed #d8cdbb;
-  background: rgba(251, 249, 241, 0.76);
-  color: #64748b;
+  border: 1px dashed var(--border);
+  background: rgba(255,255,255,0.08);
+  color: var(--text-secondary);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -836,11 +844,9 @@ onMounted(async () => {
   margin-top: 10px;
   padding: 16px;
   border-radius: 18px;
-  border: 1px dashed #d8cdbb;
-  color: #64748b;
-  background:
-    linear-gradient(180deg, rgba(255,253,248,0.94), rgba(251,247,239,0.94)),
-    repeating-linear-gradient(0deg, transparent 0 26px, rgba(216,205,187,0.28) 27px);
+  border: 1px dashed var(--border);
+  color: var(--text-secondary);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
 }
 
 .journal-placeholder i {
@@ -849,12 +855,12 @@ onMounted(async () => {
   display: inline-grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .journal-placeholder strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .journal-placeholder span {
@@ -865,7 +871,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   margin-top: 4px;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.82rem;
   font-weight: 900;
   text-decoration: none;
@@ -875,7 +881,7 @@ onMounted(async () => {
   position: relative;
   overflow: hidden;
   border-radius: 22px;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
@@ -885,7 +891,7 @@ onMounted(async () => {
 }
 
 .section-heading h3 {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .island-journal-list {
@@ -902,7 +908,7 @@ onMounted(async () => {
 }
 
 .community-diary-heading span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -911,12 +917,12 @@ onMounted(async () => {
 
 .community-diary-heading h6 {
   margin: 2px 0 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .view-all-diaries {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.78rem;
   font-weight: 900;
   text-decoration: none;
@@ -937,10 +943,9 @@ onMounted(async () => {
   align-items: start;
   padding: 12px;
   border-radius: 18px;
-  background:
-    linear-gradient(180deg, #fffdf8 0%, #fbf7ef 100%);
-  border: 1px dashed #d8cdbb;
-  box-shadow: 0 10px 22px rgba(47,72,88,0.08);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
   text-decoration: none;
   transition:
     transform 0.18s ease,
@@ -955,15 +960,15 @@ onMounted(async () => {
   right: 22px;
   width: 64px;
   height: 18px;
-  background: rgba(169,216,214,0.48);
-  border-left: 1px dashed rgba(47,72,88,0.12);
-  border-right: 1px dashed rgba(47,72,88,0.12);
+  background: rgba(24,151,160,0.18);
+  border-left: 1px dashed rgba(255,255,255,0.08);
+  border-right: 1px dashed rgba(255,255,255,0.08);
   transform: rotate(4deg);
 }
 
 .island-journal-card:hover {
   transform: translateY(-2px);
-  border-color: #1897a0;
+  border-color: var(--accent);
   box-shadow: 0 14px 26px rgba(47,72,88,0.13);
 }
 
@@ -981,7 +986,7 @@ onMounted(async () => {
 
 .journal-date {
   display: block;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.68rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -989,7 +994,7 @@ onMounted(async () => {
 
 .island-journal-card strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.9rem;
   line-height: 1.25;
   margin: 3px 0;
@@ -998,7 +1003,7 @@ onMounted(async () => {
 .island-journal-card p {
   display: -webkit-box;
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
   line-height: 1.45;
   overflow: hidden;
@@ -1012,7 +1017,7 @@ onMounted(async () => {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -1041,7 +1046,7 @@ onMounted(async () => {
 }
 
 .map-panel-header span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -1050,12 +1055,12 @@ onMounted(async () => {
 
 .map-panel-header h5 {
   margin: 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
 }
 
 .map-panel-header small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -1079,7 +1084,7 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.72rem;
   font-weight: 900;
 }
@@ -1091,7 +1096,7 @@ onMounted(async () => {
 }
 
 .island-dot {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 .sighting-dot {
@@ -1099,7 +1104,7 @@ onMounted(async () => {
 }
 
 .species-dot {
-  background: #2f4858;
+  background: var(--text-primary);
 }
 
 :global(.reef-map-marker) {
@@ -1113,12 +1118,17 @@ onMounted(async () => {
   border: 3px solid rgba(255,255,255,0.95);
 }
 
+:global(body.dark-mode .reef-map-marker) {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.12);
+}
+
 :global(.reef-map-marker i) {
   font-size: 1rem;
 }
 
 :global(.island-marker) {
-  background: #1897a0;
+  background: var(--accent);
 }
 
 :global(.sighting-marker) {
@@ -1126,14 +1136,14 @@ onMounted(async () => {
 }
 
 :global(.species-marker) {
-  background: #2f4858;
+  background: var(--text-primary);
 }
 
 .map-card-panel {
   position: relative;
   overflow: hidden;
   border-radius: 22px;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
@@ -1152,7 +1162,7 @@ onMounted(async () => {
   background: rgba(255,253,248,0.95);
   padding: 10px 14px;
   border-radius: 14px;
-  color: #2f4858;
+  color: var(--text-primary);
   border: 1px solid rgba(234,223,202,0.9);
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
@@ -1186,4 +1196,54 @@ onMounted(async () => {
     width: 72px;
   }
 }
+
+:global(body.dark-mode .reef-map-marker) {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.12);
+}
+
+:global(body.dark-mode .island-marker) {
+  background: var(--accent);
+}
+
+:global(body.dark-mode .sighting-marker) {
+  background: rgba(217,119,6,0.92);
+}
+
+:global(body.dark-mode .species-marker) {
+  background: #67e8f9;
+  color: #071e26;
+}
+
+:global(body.dark-mode .leaflet-popup-content-wrapper),
+:global(body.dark-mode .leaflet-popup-tip) {
+  background: #111827;
+  color: #f8fafc;
+  border: 1px solid rgba(226,232,240,0.18);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.42);
+}
+
+:global(body.dark-mode .leaflet-popup-content) {
+  color: #d8e2ef;
+}
+
+:global(body.dark-mode .leaflet-popup-content strong) {
+  color: #67e8f9;
+}
+
+:global(body.dark-mode .leaflet-container a.leaflet-popup-close-button) {
+  color: #f8fafc;
+}
+
+:global(body.dark-mode .leaflet-control-zoom a) {
+  background: #111827;
+  color: #f8fafc;
+  border-color: rgba(226,232,240,0.18);
+}
+
+:global(body.dark-mode .leaflet-control-attribution) {
+  background: rgba(17,24,39,0.82);
+  color: #d8e2ef;
+}
 </style>
+

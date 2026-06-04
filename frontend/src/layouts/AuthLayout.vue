@@ -112,7 +112,7 @@ onMounted(() => {
   height: 42px;
   border: none;
   border-radius: 50%;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   color: #5b4636;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
   display: flex;
@@ -122,7 +122,7 @@ onMounted(() => {
 
 .auth-tool-btn:hover {
   background: #efe7dc;
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .auth-back-btn {
@@ -136,14 +136,14 @@ onMounted(() => {
   border: none;
   border-radius: 999px;
   padding: 10px 16px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   color: #5b4636;
   box-shadow: 0 8px 24px rgba(0,0,0,0.16);
 }
 
 .auth-back-btn:hover {
   background: #efe7dc;
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .auth-card-enter-active,

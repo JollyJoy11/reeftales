@@ -46,7 +46,7 @@ onMounted(async () => {
   await nextTick()
 
   ctx = gsap.context(() => {
-    gsap.to('.bubble-node, .panel-bubble', {
+    gsap.to('.panel-bubble', {
       x: (index) => [22, -18, 16][index] ?? 12,
       y: (index) => [-28, 22, -18][index] ?? -18,
       duration: (index) => [6.4, 7.6, 6.8][index] ?? 6,
@@ -105,10 +105,6 @@ onBeforeUnmount(() => {
 
 <template>
   <section ref="sectionRef" class="marine-section">
-    <div class="bubble-node b1"></div>
-    <div class="bubble-node b2"></div>
-    <div class="bubble-node b3"></div>
-
     <div class="container">
       <div class="marine-postcard-panel">
         <div class="marine-inner">
@@ -169,7 +165,7 @@ onBeforeUnmount(() => {
   padding: clamp(72px, 9vw, 112px) 0;
   background:
     radial-gradient(circle at 86% 18%, rgba(169,216,214,0.35), transparent 28%),
-    linear-gradient(180deg, #fbf9f1 0%, #f6ecdc 100%);
+    linear-gradient(180deg, var(--surface-soft) 0%, #f6ecdc 100%);
 }
 
 .marine-postcard-panel {
@@ -194,7 +190,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   padding: clamp(26px, 5vw, 46px);
   border-radius: 8px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
 }
 
 .marine-copy,
@@ -206,19 +202,18 @@ onBeforeUnmount(() => {
 
 .panel-bubble {
   position: absolute;
-  z-index: 0;
+  z-index: 2;
   border-radius: 50%;
-  border: 1px solid rgba(24,151,160,0.13);
-  background:
-    radial-gradient(circle at 30% 28%, rgba(255,255,255,0.95), rgba(169,216,214,0.22) 48%, rgba(24,151,160,0.04) 72%);
-  box-shadow: inset 0 0 26px rgba(255,255,255,0.62);
   pointer-events: none;
+  background: radial-gradient(circle at 36% 36%, rgba(24,151,160,0.24), rgba(255,255,255,0.86) 40%, rgba(24,151,160,0.08) 64%, transparent 72%);
+  border: 1px solid rgba(24,151,160,0.18);
+  box-shadow: 0 0 24px rgba(24,151,160,0.12);
 }
 
 .bubble-a {
   width: 128px;
   height: 128px;
-  top: 16%;
+  top: 12%;
   left: 42%;
 }
 
@@ -236,9 +231,10 @@ onBeforeUnmount(() => {
   bottom: 12%;
 }
 
+
 .sub-badge {
   display: block;
-  color: #0f8f98;
+  color: var(--accent);
   font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.15em;
@@ -247,14 +243,14 @@ onBeforeUnmount(() => {
 
 .marine-copy h2 {
   margin: 12px 0 20px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: clamp(2.05rem, 4.4vw, 3.7rem);
   line-height: 1.04;
 }
 
 .marine-copy p {
   margin: 0 0 28px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 1.02rem;
   line-height: 1.76;
 }
@@ -281,9 +277,9 @@ onBeforeUnmount(() => {
 .species-postcard {
   position: relative;
   padding: 12px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 12px 26px rgba(47,72,88,0.08);
   transition:
     border-color 0.18s ease,
@@ -336,7 +332,7 @@ onBeforeUnmount(() => {
 .species-body small {
   display: block;
   margin-bottom: 4px;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -345,14 +341,14 @@ onBeforeUnmount(() => {
 
 .species-body strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1.18rem;
   line-height: 1.2;
 }
 
 .species-body p {
   margin: 8px 0 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.84rem;
   line-height: 1.55;
   display: -webkit-box;
@@ -365,41 +361,11 @@ onBeforeUnmount(() => {
   min-height: 260px;
   display: grid;
   place-items: center;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fffdf8;
-  color: #64748b;
+  background: var(--surface);
+  color: var(--text-secondary);
   font-weight: 800;
-}
-
-.bubble-node {
-  position: absolute;
-  border: 1px solid rgba(255,255,255,0.62);
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.72), rgba(15,143,152,0.06) 58%, transparent 72%);
-  pointer-events: none;
-  will-change: transform;
-}
-
-.b1 {
-  width: 118px;
-  height: 118px;
-  top: 12%;
-  right: 42%;
-}
-
-.b2 {
-  width: 72px;
-  height: 72px;
-  bottom: 13%;
-  left: 9%;
-}
-
-.b3 {
-  width: 150px;
-  height: 150px;
-  right: 4%;
-  top: 30%;
 }
 
 @media (max-width: 991px) {

@@ -450,7 +450,7 @@ onMounted(loadJournal)
 
 <style scoped>
 .journal-loading {
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 800;
 }
 
@@ -461,25 +461,22 @@ onMounted(loadJournal)
   align-items: stretch;
   padding: 10px;
   border-radius: 24px;
-  background: repeating-linear-gradient(
-    135deg,
-    #e85d5d 0 12px,
-    #ffffff 12px 24px,
-    #2c9ab7 24px 36px,
-    #ffffff 36px 48px
-  );
+  background: var(--surface);
+  border: 1px solid var(--border);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
 }
 
 .journal-page {
-  background: #fffdf8;
   padding: 24px;
   min-height: 760px;
+  background:
+    radial-gradient(circle at top left, rgba(169,216,214,0.28), transparent 34%),
+    linear-gradient(180deg, var(--surface-soft) 0%, var(--page-bg) 100%);
 }
 
 .journal-left-page {
   border-radius: 16px 0 0 16px;
-  border-right: 1px dashed #d8cdbb;
+  border-right: 1px dashed var(--border);
   box-shadow: inset -18px 0 28px rgba(196,164,132,0.08);
 }
 
@@ -500,7 +497,7 @@ onMounted(loadJournal)
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 800;
   text-decoration: none;
 }
@@ -509,7 +506,7 @@ onMounted(loadJournal)
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #1f4e5f;
+  color: var(--accent);
   border: 1px dashed rgba(24,151,160,0.4);
   border-radius: 999px;
   padding: 6px 10px;
@@ -517,9 +514,8 @@ onMounted(loadJournal)
   font-weight: 900;
 }
 
-
 .journal-kicker {
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -527,7 +523,7 @@ onMounted(loadJournal)
 }
 
 .journal-left-page h1 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   margin: 8px 0 12px;
 }
@@ -582,7 +578,7 @@ onMounted(loadJournal)
 }
 
 .board-title-row span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: 800;
 }
@@ -603,7 +599,7 @@ onMounted(loadJournal)
 
   .journal-left-page {
     border-radius: 16px 16px 0 0;
-    border-bottom: 1px dashed #d8cdbb;
+    border-bottom: 1px dashed var(--border);
   }
 
   .journal-right-page {

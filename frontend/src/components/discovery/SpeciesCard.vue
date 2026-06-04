@@ -97,7 +97,7 @@ const speciesImageAlt = computed(() => {
 <style scoped>
 .species-label-card {
   padding: 12px;
-  background: #deefec;
+  background: var(--accent-soft);
   transition: transform 0.2s ease;
   transform: rotate(0.4deg);
 
@@ -160,7 +160,7 @@ const speciesImageAlt = computed(() => {
 .subtitle {
   text-align: center;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .info-grid {
@@ -182,7 +182,7 @@ const speciesImageAlt = computed(() => {
 .info-grid span {
   display: block;
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .info-grid strong {

@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
   min-height: clamp(520px, calc(100vh - 210px), 660px);
   padding: clamp(24px, 5vw, 42px);
   overflow: hidden;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 24px;
   background:
     linear-gradient(180deg, rgba(255,253,248,0.97), rgba(251,247,239,0.97)),
@@ -211,7 +211,7 @@ onBeforeUnmount(() => {
 .eyebrow,
 .stop-number,
 .route-note span {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -221,7 +221,7 @@ onBeforeUnmount(() => {
 .journey-copy h1 {
   max-width: 760px;
   margin: 8px 0 16px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: clamp(2.25rem, 5vw, 4.25rem);
   font-weight: 900;
   line-height: 1.04;
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
 .journey-copy p {
   max-width: 630px;
   margin: 0;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 1.04rem;
   line-height: 1.7;
 }
@@ -261,29 +261,29 @@ onBeforeUnmount(() => {
 }
 
 .primary-action {
-  border: 1px solid #1897a0;
-  background: #1897a0;
+  border: 1px solid var(--accent);
+  background: var(--accent);
   color: #ffffff;
   box-shadow: 0 12px 24px rgba(24,151,160,0.22);
 }
 
 .secondary-action {
-  border: 1px solid #1897a0;
-  background: #fffdf8;
-  color: #1897a0;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
 }
 
 .primary-action:hover,
 .primary-action:focus-visible {
-  background: #147d84;
+  background: var(--accent-strong);
   color: #ffffff;
   box-shadow: 0 14px 26px rgba(24,151,160,0.24);
 }
 
 .secondary-action:hover,
 .secondary-action:focus-visible {
-  background: #deefec;
-  color: #147d84;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .journey-visual {
@@ -349,7 +349,7 @@ onBeforeUnmount(() => {
   z-index: 6;
   width: min(330px, 78%);
   padding: 18px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
   background: rgba(255,253,248,0.95);
   box-shadow: 0 14px 28px rgba(47,72,88,0.1);
@@ -358,13 +358,13 @@ onBeforeUnmount(() => {
 .route-note strong {
   display: block;
   margin: 5px 0 3px;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .route-note small,
 .journey-stop-card small,
 .journey-stop-card p {
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .journey-route {
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
   right: 18px;
   z-index: 0;
   height: 2px;
-  background: linear-gradient(90deg, #1897a0, #d56a3c);
+  background: linear-gradient(90deg, var(--accent), #d56a3c);
   transform: scaleX(0.08);
   opacity: 0.28;
   pointer-events: none;
@@ -397,9 +397,9 @@ onBeforeUnmount(() => {
   align-items: start;
   min-height: 150px;
   padding: 18px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 12px 26px rgba(47,72,88,0.08);
   transition:
     box-shadow 0.18s ease,
@@ -420,8 +420,8 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 1.1rem;
 }
 
@@ -437,7 +437,7 @@ onBeforeUnmount(() => {
 
 .journey-stop-card strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .journey-stop-card p {

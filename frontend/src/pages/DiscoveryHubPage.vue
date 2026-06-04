@@ -144,91 +144,101 @@ watch(
       v-if="errorMessage" :message="errorMessage" variant="danger" @close="errorMessage = ''"
     />
 
-    <section class="container py-3">
-      <div class="explore-header mb-4">
-        <div>
-          <h1 class="fw-bold">{{ t('discovery.title') }}</h1>
-          <p class="text-muted mb-0">
-            {{ t('discovery.intro') }}
-          </p>
-        </div>
-      </div>
-
-      <DiscoveryMap
-        class="mb-4"
-        :discovery-mode="discoveryMode"
-        :islands="islands"
-        :species-list="speciesList"
-      />
-
-      <div class="row g-4">
-        <aside class="col-12 col-lg-3">
-          <DiscoveryFilters
-            v-model:discoveryMode="discoveryMode"
-            v-model:search="search"
-            v-model:selectedContinents="selectedContinents"
-            v-model:selectedActivities="selectedActivities"
-            v-model:selectedSpeciesTypes="selectedSpeciesTypes"
-            v-model:minDepth="minDepth"
-            v-model:maxDepth="maxDepth"
-            @reset="resetFilters"
-          />
-        </aside>
-
-        <main class="col-12 col-lg-9">
-          <LoadingState
-            v-if="loading"
-            :message="discoveryMode === 'islands' ? t('discovery.loadingIslands') : t('discovery.loadingSpecies')"
-          />
-
-          <div class="row g-4">
-            <template v-if="discoveryMode === 'islands'">
-              <div
-                v-for="(island, index) in islands"
-                :key="island.id"
-                class="col-12 col-md-6 col-xl-4"
-              >
-                <IslandCard :island="island" :tilt-variant="index" />
-              </div>
-
-              <div v-if="!loading && islands.length === 0" class="col-12 d-flex">
-                <EmptyState
-                  icon="bi bi-compass"
-                  :title="t('discovery.noIslandsTitle')"
-                  :message="t('discovery.noIslandsMessage')"
-                />
-              </div>
-            </template>
-
-            <template v-else>
-              <div class="col-12 col-md-6 col-xl-4 d-flex">
-                <AIIdentifyCard class="h-100 w-100" />
-              </div>
-
-              <div
-                v-for="(species, index) in speciesList"
-                :key="species.id"
-                class="col-12 col-md-6 col-xl-4"
-              >
-                <SpeciesCard :species="species" :tilt-variant="index + 1" />
-              </div>
-
-              <div v-if="!loading && speciesList.length === 0" class="col-12 col-md-6 col-xl-8 d-flex">
-                <EmptyState
-                  icon="bi bi-water"
-                  :title="t('discovery.noSpeciesTitle')"
-                  :message="t('discovery.noSpeciesMessage')"
-                />
-              </div>
-            </template>
+    <main class="discovery-page">
+      <section class="container py-3">
+        <div class="explore-header mb-4">
+          <div>
+            <h1 class="fw-bold">{{ t('discovery.title') }}</h1>
+            <p class="text-muted mb-0">
+              {{ t('discovery.intro') }}
+            </p>
           </div>
-        </main>
-      </div>
-    </section>
+        </div>
+
+        <DiscoveryMap
+          class="mb-4"
+          :discovery-mode="discoveryMode"
+          :islands="islands"
+          :species-list="speciesList"
+        />
+
+        <div class="row g-4">
+          <aside class="col-12 col-lg-3">
+            <DiscoveryFilters
+              v-model:discoveryMode="discoveryMode"
+              v-model:search="search"
+              v-model:selectedContinents="selectedContinents"
+              v-model:selectedActivities="selectedActivities"
+              v-model:selectedSpeciesTypes="selectedSpeciesTypes"
+              v-model:minDepth="minDepth"
+              v-model:maxDepth="maxDepth"
+              @reset="resetFilters"
+            />
+          </aside>
+
+          <main class="col-12 col-lg-9">
+            <LoadingState
+              v-if="loading"
+              :message="discoveryMode === 'islands' ? t('discovery.loadingIslands') : t('discovery.loadingSpecies')"
+            />
+
+            <div class="row g-4">
+              <template v-if="discoveryMode === 'islands'">
+                <div
+                  v-for="(island, index) in islands"
+                  :key="island.id"
+                  class="col-12 col-md-6 col-xl-4"
+                >
+                  <IslandCard :island="island" :tilt-variant="index" />
+                </div>
+
+                <div v-if="!loading && islands.length === 0" class="col-12 d-flex">
+                  <EmptyState
+                    icon="bi bi-compass"
+                    :title="t('discovery.noIslandsTitle')"
+                    :message="t('discovery.noIslandsMessage')"
+                  />
+                </div>
+              </template>
+
+              <template v-else>
+                <div class="col-12 col-md-6 col-xl-4 d-flex">
+                  <AIIdentifyCard class="h-100 w-100" />
+                </div>
+
+                <div
+                  v-for="(species, index) in speciesList"
+                  :key="species.id"
+                  class="col-12 col-md-6 col-xl-4"
+                >
+                  <SpeciesCard :species="species" :tilt-variant="index + 1" />
+                </div>
+
+                <div v-if="!loading && speciesList.length === 0" class="col-12 col-md-6 col-xl-8 d-flex">
+                  <EmptyState
+                    icon="bi bi-water"
+                    :title="t('discovery.noSpeciesTitle')"
+                    :message="t('discovery.noSpeciesMessage')"
+                  />
+                </div>
+              </template>
+            </div>
+          </main>
+        </div>
+      </section>
+    </main>
   </MainLayout>
 </template>
 
 <style scoped>
+.discovery-page {
+  min-height: calc(100vh - 80px);
+  padding: 18px 0 46px;
+  background:
+    radial-gradient(circle at top left, rgba(169,216,214,0.28), transparent 32%),
+    linear-gradient(180deg, #fffdf8 0%, #f7efe2 100%);
+}
+
 .explore-header {
   display: flex;
   justify-content: space-between;

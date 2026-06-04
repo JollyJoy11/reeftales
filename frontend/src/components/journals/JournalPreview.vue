@@ -168,7 +168,7 @@ const coverPreviewAlt = computed(() => {
 
 <style scoped>
 .journal-preview-card {
-  background: #fbf9f1;
+  background: var(--surface-soft);
   border: 1px dashed #eadfca;
   border-radius: 24px;
   padding: 28px;
@@ -176,7 +176,7 @@ const coverPreviewAlt = computed(() => {
 }
 
 .preview-kicker {
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 1px;
@@ -220,13 +220,13 @@ const coverPreviewAlt = computed(() => {
 .polaroid-caption {
   margin-top: 12px;
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
   font-weight: 700;
 }
 
 .preview-narrative {
-  background: #fffdf8;
+  background: var(--surface);
   border-radius: 22px;
   padding: 24px;
   border: 1px solid #eadfca;
@@ -241,7 +241,7 @@ const coverPreviewAlt = computed(() => {
 }
 
 .island-name {
-  color: #1897a0;
+  color: var(--accent);
   font-weight: 800;
 }
 
@@ -255,7 +255,7 @@ const coverPreviewAlt = computed(() => {
 }
 
 .preview-narrative h2 {
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   margin-bottom: 10px;
 }
@@ -267,7 +267,7 @@ const coverPreviewAlt = computed(() => {
 .story-block > span {
   display: block;
   margin-bottom: 6px;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -327,14 +327,14 @@ const coverPreviewAlt = computed(() => {
   gap: 6px;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   color: #94a3b8;
   font-size: 0.78rem;
   font-weight: 700;
 }
 
 .included-item.active {
-  background: #deefec;
+  background: var(--accent-soft);
   color: #0f766e;
 }
 

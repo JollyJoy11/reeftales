@@ -233,7 +233,7 @@ function handleCoverError(event) {
   padding: 14px;
   background:
     linear-gradient(180deg, #fffdf8 0%, #fbf7ef 100%);
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
   box-shadow: 0 14px 30px rgba(47,72,88,0.09);
   transition:
@@ -273,12 +273,12 @@ function handleCoverError(event) {
 }
 
 .journal-header strong {
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 0.92rem;
 }
 
 .journal-header span {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.76rem;
 }
 
@@ -293,8 +293,8 @@ function handleCoverError(event) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-weight: 800;
 }
 
@@ -334,13 +334,13 @@ function handleCoverError(event) {
 
 .journal-body h4 {
   margin: 8px 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 900;
   line-height: 1.2;
 }
 
 .journal-body p {
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   display: -webkit-box;
   line-clamp: 3;
@@ -352,8 +352,8 @@ function handleCoverError(event) {
   display: inline-block;
   padding: 5px 10px;
   border-radius: 999px;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -388,8 +388,8 @@ function handleCoverError(event) {
 }
 
 .species-tag {
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .journal-actions {
@@ -400,7 +400,7 @@ function handleCoverError(event) {
   margin-top: auto;
   padding-top: 12px;
   border-top: 1px dashed #eadfca;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
@@ -423,7 +423,7 @@ function handleCoverError(event) {
 
 .journal-action-btn:hover:not(:disabled),
 .journal-action-btn.active {
-  color: #1897a0;
+  color: var(--accent);
 }
 
 .journal-action-btn:disabled {

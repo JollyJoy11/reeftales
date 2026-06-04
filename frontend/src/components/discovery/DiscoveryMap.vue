@@ -202,8 +202,8 @@ watch(
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .marine-icon i {
@@ -212,14 +212,14 @@ watch(
 
 .marine-content strong {
   display: block;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 900;
 }
 
 .marine-content p {
   margin: 4px 0 8px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   line-height: 1.4;
 }
@@ -229,8 +229,8 @@ watch(
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 900;
 }
@@ -241,7 +241,7 @@ watch(
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #1897a0;
+  background: var(--accent);
   color: white;
   border: 3px solid rgba(255,255,255,0.95);
   box-shadow: 0 8px 18px rgba(47,72,88,0.22);
@@ -255,7 +255,7 @@ watch(
   padding: 0;
   border-radius: 18px;
   overflow: hidden;
-  background: #fffdf8;
+  background: var(--surface);
   box-shadow: 0 14px 30px rgba(47,72,88,0.18);
 }
 
@@ -267,7 +267,7 @@ watch(
 :global(.reef-popup-card) {
   display: block;
   text-decoration: none;
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 :global(.reef-popup-card img) {
@@ -283,7 +283,7 @@ watch(
 
 :global(.reef-popup-content span) {
   display: block;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.66rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -293,7 +293,7 @@ watch(
 :global(.reef-popup-content strong) {
   display: block;
   margin-top: 3px;
-  color: #2f4858;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 900;
 }
@@ -301,7 +301,7 @@ watch(
 :global(.reef-popup-content small) {
   display: block;
   margin-top: 2px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -311,7 +311,7 @@ watch(
   align-items: center;
   gap: 6px;
   margin-top: 10px;
-  color: #1897a0;
+  color: var(--accent);
   font-size: 0.78rem;
   font-weight: 900;
 }

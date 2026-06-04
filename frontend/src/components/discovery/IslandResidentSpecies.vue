@@ -9,6 +9,10 @@ const props = defineProps({
   islandName: {
     type: String,
     default: 'this island'
+  },
+  selectedSpeciesId: {
+    type: [String, Number],
+    default: null
   }
 })
 
@@ -58,14 +62,24 @@ function speciesImageAlt(item) {
       >
         <button
           class="species-mini-card"
+          :class="{ active: selectedSpeciesId === item.id }"
           @click="emit('preview', item)"
+          :aria-pressed="selectedSpeciesId === item.id"
         >
           <img
             :src="item.image || '/images/species-placeholder.jpg'"
             :alt="speciesImageAlt(item)"
           />
 
-          <h6>{{ item.name }}</h6>
+          <div class="species-head">
+            <h6>{{ item.name }}</h6>
+            <span
+              v-if="selectedSpeciesId === item.id"
+              class="species-status"
+            >
+              Selected
+            </span>
+          </div>
 
           <small>{{ item.scientificName }}</small>
 
@@ -113,15 +127,15 @@ function speciesImageAlt(item) {
 
 <style scoped>
 .section-heading h3 {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .species-mini-card {
   width: 100%;
   height: 100%;
-  border: 1px solid #eadfca;
+  border: 1px solid var(--border);
   border-radius: 18px;
-  background: #fbf9f1;
+  background: var(--surface-soft);
   padding: 12px;
   text-align: left;
   transition: 0.2s ease;
@@ -132,7 +146,29 @@ function speciesImageAlt(item) {
 .species-mini-card:hover,
 .species-mini-card:focus {
   transform: translateY(-3px);
-  border-color: #1897a0;
+  border-color: var(--accent);
+}
+
+.species-mini-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 16px 32px rgba(38,210,222,0.16);
+}
+
+.species-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.species-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .species-mini-card img {
@@ -145,25 +181,25 @@ function speciesImageAlt(item) {
 
 .species-mini-card h6 {
   margin: 0;
-  color: #2f4858;
+  color: var(--text-primary);
   font-weight: 800;
 }
 
 .species-mini-card small {
-  color: #64748b;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .species-mini-card p {
   margin: 8px 0 0;
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .habitat-inline {
   margin-top: 6px;
   margin-bottom: 10px;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.78rem;
 }
 
@@ -178,23 +214,23 @@ function speciesImageAlt(item) {
 }
 
 .species-card-footer span {
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .view-species-link {
-  color: #1897a0;
+  color: var(--accent);
   text-decoration: none;
 }
 
 .view-species-link:hover,
 .view-species-link:focus-visible {
-  color: #147d84;
+  color: var(--accent-strong);
 }
 
 .species-last-seen {
   display: block;
   margin-top: 5px;
-  color: #8a6f56;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   font-weight: 800;
 }
@@ -204,10 +240,10 @@ function speciesImageAlt(item) {
   justify-items: center;
   gap: 6px;
   padding: 28px 18px;
-  border: 1px dashed #d8cdbb;
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  background: #fbf9f1;
-  color: #64748b;
+  background: var(--surface-soft);
+  color: var(--text-secondary);
   text-align: center;
 }
 
@@ -217,13 +253,13 @@ function speciesImageAlt(item) {
   display: inline-grid;
   place-items: center;
   border-radius: 50%;
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
   font-size: 1.2rem;
 }
 
 .resident-empty-state strong {
-  color: #2f4858;
+  color: var(--text-primary);
 }
 
 .resident-empty-state span {

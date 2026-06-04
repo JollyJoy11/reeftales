@@ -70,7 +70,7 @@ function goToStep(item) {
   padding: 10px 18px;
   border-radius: 999px;
   background: #f6f3eb;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 700;
   transition: 0.2s ease;
   display: inline-flex;
@@ -79,13 +79,13 @@ function goToStep(item) {
 }
 
 .step-pill.active {
-  background: #1897a0;
+  background: var(--accent);
   color: white;
 }
 
 .step-pill.completed {
-  background: #deefec;
-  color: #1897a0;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .step-pill.disabled {
