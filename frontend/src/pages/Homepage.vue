@@ -11,18 +11,31 @@ import CommunityPreviewSection from '@/components/home/CommunityPreviewSection.v
 gsap.registerPlugin(ScrollTrigger)
 
 let refreshTimer
+let loadRefreshHandler
 
 onMounted(async () => {
   await nextTick()
 
+  // Delay long enough for async data sections (marine, community) to resolve
+  // and render their real content before we refresh all scroll positions.
   refreshTimer = window.setTimeout(() => {
     ScrollTrigger.sort()
     ScrollTrigger.refresh()
-  }, 300)
+  }, 800)
+
+  loadRefreshHandler = () => {
+    ScrollTrigger.sort()
+    ScrollTrigger.refresh()
+  }
+
+  window.addEventListener('load', loadRefreshHandler, { once: true })
 })
 
 onBeforeUnmount(() => {
   window.clearTimeout(refreshTimer)
+  if (loadRefreshHandler) {
+    window.removeEventListener('load', loadRefreshHandler)
+  }
 })
 </script>
 

@@ -34,36 +34,50 @@ let ctx
 
 onMounted(() => {
   ctx = gsap.context(() => {
-    gsap.from('.feature-heading > *', {
-      scrollTrigger: {
-        trigger: sectionRef.value,
-        start: 'top 78%',
-        toggleActions: 'play none none reverse'
+    gsap.fromTo(
+      '.feature-heading > *',
+      {
+        y: 34,
+        autoAlpha: 0
       },
-      y: 34,
-      autoAlpha: 0,
-      duration: 0.85,
-      stagger: 0.08,
-      immediateRender: false,
-      ease: 'power3.out'
-    })
+      {
+        scrollTrigger: {
+          trigger: sectionRef.value,
+          start: 'top 78%',
+          toggleActions: 'play none none none',
+          invalidateOnRefresh: true
+        },
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.85,
+        stagger: 0.08,
+        ease: 'power3.out'
+      }
+    )
 
-    gsap.from('.feature-card', {
-      scrollTrigger: {
-        trigger: '.feature-grid',
-        start: 'top 82%',
-        toggleActions: 'play none none reverse',
-        invalidateOnRefresh: true
+    gsap.fromTo(
+      '.feature-card',
+      {
+        autoAlpha: 0,
+        y: 92,
+        rotation: (index) => [-2.2, 1.4, -1][index] ?? 1
       },
-      autoAlpha: 0,
-      y: 92,
-      rotation: (index) => [-2.2, 1.4, -1][index] ?? 1,
-      transformOrigin: '50% 80%',
-      stagger: 0.2,
-      duration: 1.05,
-      immediateRender: false,
-      ease: 'power4.out'
-    })
+      {
+        scrollTrigger: {
+          trigger: '.feature-grid',
+          start: 'top 82%',
+          toggleActions: 'play none none none',
+          invalidateOnRefresh: true
+        },
+        autoAlpha: 1,
+        y: 0,
+        rotation: 0,
+        transformOrigin: '50% 80%',
+        stagger: 0.2,
+        duration: 1.05,
+        ease: 'power4.out'
+      }
+    )
   }, sectionRef.value)
 })
 
@@ -108,6 +122,12 @@ onBeforeUnmount(() => {
 .feature-heading {
   max-width: 780px;
   margin-bottom: clamp(44px, 7vw, 72px);
+}
+
+.feature-heading > *,
+.feature-card {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .sub-badge {
@@ -216,5 +236,19 @@ onBeforeUnmount(() => {
     margin-top: 0;
     min-height: auto;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-heading > *,
+  .feature-card {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+:global(body.reduced-motion-mode) .feature-heading > *,
+:global(body.reduced-motion-mode) .feature-card {
+  opacity: 1;
+  visibility: visible;
 }
 </style>

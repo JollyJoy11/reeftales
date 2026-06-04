@@ -45,17 +45,28 @@ onMounted(async () => {
     })
 
     heroTimeline
-      .from('.journey-copy > *', {
-        y: 24,
-        autoAlpha: 0,
-        duration: 0.72,
-        stagger: 0.08
-      })
-      .from(
+      .fromTo(
+        '.journey-copy > *',
+        {
+          y: 24,
+          autoAlpha: 0
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.72,
+          stagger: 0.08
+        }
+      )
+      .fromTo(
         '.visual-layer',
         {
           y: 34,
-          autoAlpha: 0,
+          autoAlpha: 0
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
           duration: 0.78,
           stagger: 0.12
         },
@@ -67,7 +78,8 @@ onMounted(async () => {
         trigger: sectionRef.value,
         start: 'top top+=80',
         end: 'bottom top',
-        scrub: 0.7
+        scrub: 0.7,
+        invalidateOnRefresh: true
       },
       scaleX: 1,
       transformOrigin: 'left center',
@@ -79,30 +91,35 @@ onMounted(async () => {
         trigger: sectionRef.value,
         start: 'top top+=80',
         end: 'bottom top',
-        scrub: 0.8
+        scrub: 0.8,
+        invalidateOnRefresh: true
       },
       y: -28,
       ease: 'none'
     })
 
-    gsap.from('.journey-stop-card', {
-      scrollTrigger: {
-        trigger: '.journey-route',
-        start: 'top 82%',
-        toggleActions: 'play none none reverse'
+    gsap.fromTo(
+      '.journey-stop-card',
+      {
+        y: 42,
+        autoAlpha: 0
       },
-      y: 42,
-      autoAlpha: 0,
-      stagger: 0.16,
-      duration: 0.78,
-      immediateRender: false,
-      ease: 'power3.out'
-    })
+      {
+        scrollTrigger: {
+          trigger: '.journey-route',
+          start: 'top 82%',
+          toggleActions: 'play none none none',
+          invalidateOnRefresh: true
+        },
+        y: 0,
+        autoAlpha: 1,
+        stagger: 0.16,
+        duration: 0.78,
+        ease: 'power3.out'
+      }
+    )
   }, sectionRef.value)
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => ScrollTrigger.refresh())
-  })
 })
 
 onBeforeUnmount(() => {
@@ -206,6 +223,13 @@ onBeforeUnmount(() => {
 .journey-visual {
   position: relative;
   z-index: 1;
+}
+
+.journey-copy > *,
+.visual-layer,
+.journey-stop-card {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .eyebrow,
@@ -492,5 +516,21 @@ onBeforeUnmount(() => {
   .route-note {
     width: 84%;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-copy > *,
+  .visual-layer,
+  .journey-stop-card {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+:global(body.reduced-motion-mode) .journey-copy > *,
+:global(body.reduced-motion-mode) .visual-layer,
+:global(body.reduced-motion-mode) .journey-stop-card {
+  opacity: 1;
+  visibility: visible;
 }
 </style>

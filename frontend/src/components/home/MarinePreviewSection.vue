@@ -60,42 +60,46 @@ onMounted(async () => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top 74%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
         invalidateOnRefresh: true
       }
     })
 
     timeline
-      .from('.marine-copy > *', {
-        y: 30,
-        autoAlpha: 0,
-        duration: 0.78,
-        stagger: 0.08,
-        immediateRender: false,
-        ease: 'power3.out'
-      })
-      .from(
+      .fromTo(
+        '.marine-copy > *',
+        {
+          y: 30,
+          autoAlpha: 0
+        },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.78,
+          stagger: 0.08,
+          ease: 'power3.out'
+        }
+      )
+      .fromTo(
         '.species-postcard',
         {
           y: 58,
           rotation: (index) => [-1.4, 1, -0.8, 1.2][index] ?? 0,
-          autoAlpha: 0,
+          autoAlpha: 0
+        },
+        {
+          y: 0,
+          rotation: 0,
+          autoAlpha: 1,
           transformOrigin: '50% 85%',
           duration: 0.86,
           stagger: 0.14,
-          immediateRender: false,
           ease: 'power3.out'
         },
         '-=0.38'
       )
   }, sectionRef.value)
 
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      ScrollTrigger.sort()
-      ScrollTrigger.refresh()
-    })
-  })
 })
 
 onBeforeUnmount(() => {
@@ -198,6 +202,12 @@ onBeforeUnmount(() => {
 .species-empty {
   position: relative;
   z-index: 1;
+}
+
+.marine-copy > *,
+.species-postcard {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .panel-bubble {
@@ -377,5 +387,19 @@ onBeforeUnmount(() => {
   .species-postcard:nth-child(n) {
     margin-top: 0;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marine-copy > *,
+  .species-postcard {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+:global(body.reduced-motion-mode) .marine-copy > *,
+:global(body.reduced-motion-mode) .species-postcard {
+  opacity: 1;
+  visibility: visible;
 }
 </style>

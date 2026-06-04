@@ -62,4 +62,29 @@ defineProps({
   font-size: 0.58rem;
   letter-spacing: 0.12em;
 }
+
+@media (max-width: 576px) {
+  .scrapbook-sticker {
+    gap: 2px;
+    border-width: 1.5px;
+    border-radius: 10px;
+    font-size: clamp(0.56rem, 2.5vw, 0.72rem);
+    letter-spacing: 0.06em;
+  }
+
+  .scrapbook-sticker.shape-ticket {
+    border-radius: 14px 5px 14px 5px;
+  }
+
+  .scrapbook-sticker span {
+    max-width: calc(100% - 8px);
+    padding: 1px 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .scrapbook-sticker small {
+    font-size: clamp(0.42rem, 2vw, 0.52rem);
+  }
+}
 </style>

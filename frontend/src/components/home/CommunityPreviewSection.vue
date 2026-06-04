@@ -67,40 +67,47 @@ onMounted(async () => {
   await nextTick()
 
   ctx = gsap.context(() => {
-    gsap.from('.community-heading > *', {
-      scrollTrigger: {
-        trigger: sectionRef.value,
-        start: 'top 78%',
-        toggleActions: 'play none none reverse'
+    gsap.fromTo(
+      '.community-heading > *',
+      {
+        y: 34,
+        autoAlpha: 0
       },
-      y: 34,
-      autoAlpha: 0,
-      duration: 0.8,
-      stagger: 0.08,
-      immediateRender: false,
-      ease: 'power3.out'
-    })
+      {
+        scrollTrigger: {
+          trigger: sectionRef.value,
+          start: 'top 78%',
+          toggleActions: 'play none none none',
+          invalidateOnRefresh: true
+        },
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: 'power3.out'
+      }
+    )
 
-    gsap.from('.journal-strip-shell', {
-      scrollTrigger: {
-        trigger: '.journal-strip-shell',
-        start: 'top 82%',
-        toggleActions: 'play none none reverse'
+    gsap.fromTo(
+      '.journal-strip-shell',
+      {
+        y: 54,
+        autoAlpha: 0
       },
-      y: 54,
-      autoAlpha: 0,
-      duration: 0.9,
-      immediateRender: false,
-      ease: 'power3.out'
-    })
+      {
+        scrollTrigger: {
+          trigger: '.journal-strip-shell',
+          start: 'top 82%',
+          toggleActions: 'play none none none',
+          invalidateOnRefresh: true
+        },
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.9,
+        ease: 'power3.out'
+      }
+    )
   }, sectionRef.value)
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      ScrollTrigger.sort()
-      ScrollTrigger.refresh()
-    })
-  })
 })
 
 onBeforeUnmount(() => {
@@ -185,6 +192,12 @@ onBeforeUnmount(() => {
   margin-bottom: clamp(34px, 6vw, 56px);
 }
 
+.community-heading > *,
+.journal-strip-shell {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .sub-badge {
   display: block;
   margin-bottom: 12px;
@@ -216,7 +229,22 @@ onBeforeUnmount(() => {
 }
 
 .journal-strip-mask {
+  position: relative;
   overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 min(70px, 8vw),
+    #000 calc(100% - min(70px, 8vw)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 min(70px, 8vw),
+    #000 calc(100% - min(70px, 8vw)),
+    transparent 100%
+  );
 }
 
 .journal-track {
@@ -241,12 +269,14 @@ onBeforeUnmount(() => {
   min-height: 326px;
   flex: 0 0 auto;
   padding: 22px;
-  border: 1px dashed var(--border);
+  border: 1px solid rgba(107,83,59,0.24);
   border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 242, 231, 0.92)),
-    repeating-linear-gradient(0deg, transparent 0 28px, rgba(36, 63, 78, 0.04) 29px);
-  box-shadow: 0 12px 26px rgba(47,72,88,0.08);
+    linear-gradient(180deg, #fffefb 0%, #f1e4d2 100%),
+    repeating-linear-gradient(0deg, transparent 0 28px, rgba(36, 63, 78, 0.07) 29px);
+  box-shadow:
+    0 16px 34px rgba(47,72,88,0.16),
+    inset 0 0 0 1px rgba(255,255,255,0.68);
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
@@ -292,9 +322,12 @@ onBeforeUnmount(() => {
 }
 
 .journal-preview-card:hover {
-  border-color: rgba(24,151,160,0.48);
-  background: #ffffff;
-  box-shadow: 0 18px 36px rgba(15,143,152,0.13);
+  border-color: rgba(15,127,135,0.58);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #f5eadb 100%);
+  box-shadow:
+    0 20px 42px rgba(15,143,152,0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.78);
 }
 
 .save-journal-pin {
@@ -335,8 +368,8 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: #d9f0ee;
+  color: #075f66;
   font-weight: 900;
 }
 
@@ -354,7 +387,7 @@ onBeforeUnmount(() => {
 }
 
 .journal-author-row small {
-  color: #7c6f63;
+  color: #5f5043;
   font-size: 0.74rem;
   font-weight: 800;
 }
@@ -366,10 +399,10 @@ onBeforeUnmount(() => {
   gap: 5px;
   max-width: 100%;
   padding: 6px 10px;
-  border: 1px dashed rgba(24,151,160,0.24);
+  border: 1px solid rgba(15,127,135,0.32);
   border-radius: 999px;
-  background: rgba(222,239,236,0.58);
-  color: var(--accent);
+  background: #dff2ef;
+  color: #075f66;
   font-size: 0.75rem;
   font-weight: 900;
   white-space: nowrap;
@@ -388,10 +421,10 @@ onBeforeUnmount(() => {
   flex: 1;
   margin: 0;
   padding: 14px;
-  border-left: 3px solid rgba(24,151,160,0.28);
+  border-left: 3px solid rgba(15,127,135,0.55);
   border-radius: 12px;
-  background: rgba(255,255,255,0.48);
-  color: var(--text-secondary);
+  background: rgba(255,255,255,0.82);
+  color: #405261;
   font-size: 0.92rem;
   line-height: 1.62;
   display: -webkit-box;
@@ -420,8 +453,8 @@ onBeforeUnmount(() => {
   max-width: 118px;
   padding: 5px 8px;
   border-radius: 999px;
-  background: #fff3cd;
-  color: #8a5a00;
+  background: #ffe8a6;
+  color: #684300;
   font-size: 0.7rem;
   font-weight: 800;
   white-space: nowrap;
@@ -434,7 +467,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 7px;
   flex: 0 0 auto;
-  color: #0d7f87;
+  color: #075f66;
   font-size: 0.86rem;
   font-weight: 900;
 }
@@ -467,6 +500,12 @@ onBeforeUnmount(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .community-heading > *,
+  .journal-strip-shell {
+    opacity: 1;
+    visibility: visible;
+  }
+
   .journal-track.scrolling {
     animation: none;
   }
@@ -474,5 +513,30 @@ onBeforeUnmount(() => {
   .journal-strip-mask {
     overflow-x: auto;
   }
+}
+
+@media (max-width: 575px) {
+  .journal-strip-mask {
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 28px,
+      #000 calc(100% - 28px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 28px,
+      #000 calc(100% - 28px),
+      transparent 100%
+    );
+  }
+}
+
+:global(body.reduced-motion-mode) .community-heading > *,
+:global(body.reduced-motion-mode) .journal-strip-shell {
+  opacity: 1;
+  visibility: visible;
 }
 </style>

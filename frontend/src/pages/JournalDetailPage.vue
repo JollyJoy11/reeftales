@@ -205,6 +205,15 @@ const coverImage = computed(() => {
     '/images/island-placeholder.jpg'
 })
 
+function normalizeMediaUrl(url) {
+  if (!url) return ''
+
+  return String(url)
+    .split('?')[0]
+    .replace(/^https?:/, '')
+    .replace(/\/+$/, '')
+}
+
 const timelineDays = computed(() => {
   const groups = new Map()
 
@@ -225,6 +234,16 @@ const timelineDays = computed(() => {
 })
 
 const mediaStripItems = computed(() => {
+  const normalizedCoverUrl = normalizeMediaUrl(coverImage.value)
+  const uploadedMedia = (journal.value?.media || [])
+    .filter(media => normalizeMediaUrl(media.media_url) !== normalizedCoverUrl)
+    .map((media, index) => ({
+      id: media.id,
+      url: media.media_url,
+      label: `Media ${index + 1}`,
+      type: media.media_type || 'photo'
+    }))
+
   const items = [
     {
       id: 'cover',
@@ -232,12 +251,7 @@ const mediaStripItems = computed(() => {
       label: 'Cover',
       type: 'photo'
     },
-    ...(journal.value?.media || []).map((media, index) => ({
-      id: media.id,
-      url: media.media_url,
-      label: `Media ${index + 1}`,
-      type: media.media_type || 'photo'
-    }))
+    ...uploadedMedia
   ]
 
   return items.filter(item => item.url)
@@ -653,6 +667,13 @@ onMounted(loadJournal)
     width: min(100%, 430px);
     max-width: 430px;
     aspect-ratio: 4 / 5.3;
+    overflow: hidden;
+  }
+
+  .detail-scrapbook-board :deep(.scrapbook-item.type-sticker.positioned),
+  .detail-scrapbook-board :deep(.scrapbook-item.type-mood.positioned) {
+    max-width: 96px;
+    max-height: 74px;
   }
 }
 
@@ -689,6 +710,19 @@ onMounted(loadJournal)
 
   .detail-scrapbook-board :deep(.scrapbook-item-card.type-media) {
     padding: 8px 8px 34px;
+  }
+
+  .detail-scrapbook-board :deep(.scrapbook-item.type-sticker.positioned),
+  .detail-scrapbook-board :deep(.scrapbook-item.type-mood.positioned) {
+    max-width: 82px;
+    max-height: 62px;
+  }
+
+  .detail-scrapbook-board :deep(.scrapbook-item-card.type-sticker),
+  .detail-scrapbook-board :deep(.scrapbook-item-card.type-mood) {
+    transform:
+      rotate(var(--item-rotation))
+      scale(0.92);
   }
 }
 

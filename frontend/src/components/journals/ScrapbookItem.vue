@@ -60,7 +60,7 @@ const itemStyle = computed(() => {
 <template>
   <div
     class="scrapbook-item"
-    :class="{ positioned }"
+    :class="[`type-${item.type}`, { positioned }]"
     :style="itemStyle"
   >
     <div

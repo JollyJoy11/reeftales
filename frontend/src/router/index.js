@@ -15,6 +15,7 @@ import CreateJournal from '../pages/CreateJournalPage.vue'
 import Planner from '../pages/TripPlannerPage.vue'
 import Settings from '../pages/SettingsPage.vue'
 import SpeciesDetail from '../pages/SpeciesDetailPage.vue'
+import { useToastStore } from '@/stores/toastStore'
 
 const routes = [
   { path: '/', component: Home, meta: { title: 'Home' } },
@@ -52,7 +53,13 @@ router.beforeEach((to) => {
   const token = localStorage.getItem('token')
 
   if (to.meta.requiresAuth && !token) {
-    return { path: '/' }
+    const toastStore = useToastStore()
+    toastStore.danger('Please log in to access this page.')
+
+    return {
+      path: '/login',
+      query: { redirect: to.fullPath }
+    }
   }
 })
 

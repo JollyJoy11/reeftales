@@ -199,6 +199,20 @@ onBeforeUnmount(() => {
   padding: 28px var(--media-strip-padding);
   scroll-padding-block: 28px;
   scrollbar-width: none;
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 26px,
+    #000 calc(100% - 26px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 26px,
+    #000 calc(100% - 26px),
+    transparent 100%
+  );
 }
 
 .media-side-strip::-webkit-scrollbar {
@@ -399,6 +413,20 @@ onBeforeUnmount(() => {
     width: 100%;
     min-width: 0;
     margin: 0;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 24px,
+      #000 calc(100% - 24px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 24px,
+      #000 calc(100% - 24px),
+      transparent 100%
+    );
   }
 
   .media-strip-shell {
