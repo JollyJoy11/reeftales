@@ -8,12 +8,16 @@ import { getPublicJournals } from '@/services/journalService'
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionRef = ref(null)
+const stripMaskRef = ref(null)
 const journals = ref([])
 const loading = ref(true)
+const reducedMotion = ref(false)
 const { t, locale } = useI18n()
 
 const visibleJournals = computed(() => journals.value.slice(0, 8))
-const canAutoScroll = computed(() => visibleJournals.value.length >= 4)
+const canBrowseJournals = computed(() => visibleJournals.value.length >= 4)
+const canAutoScroll = computed(() => canBrowseJournals.value && !reducedMotion.value)
+const showManualControls = computed(() => reducedMotion.value && visibleJournals.value.length > 1)
 const trackJournals = computed(() => {
   if (!canAutoScroll.value) return visibleJournals.value
   return [...visibleJournals.value, ...visibleJournals.value]
@@ -61,10 +65,58 @@ async function loadJournals() {
 }
 
 let ctx
+let reducedMotionMedia
+let bodyObserver
+
+function updateReducedMotion() {
+  const nextValue = Boolean(
+    reducedMotionMedia?.matches ||
+    document.body.classList.contains('reduced-motion-mode')
+  )
+
+  reducedMotion.value = nextValue
+
+  if (nextValue) {
+    ctx?.revert()
+    ctx = null
+    gsap.set('.community-heading > *, .journal-strip-shell', {
+      clearProps: 'transform',
+      autoAlpha: 1
+    })
+  }
+}
+
+function scrollJournalStrip(direction) {
+  const strip = stripMaskRef.value
+  if (!strip) return
+
+  const amount = Math.min(strip.clientWidth * 0.78, 420)
+  strip.scrollBy({
+    left: direction * amount,
+    behavior: reducedMotion.value ? 'auto' : 'smooth'
+  })
+}
 
 onMounted(async () => {
+  reducedMotionMedia = window.matchMedia('(prefers-reduced-motion: reduce)')
+  updateReducedMotion()
+  reducedMotionMedia.addEventListener?.('change', updateReducedMotion)
+  bodyObserver = new MutationObserver(updateReducedMotion)
+  bodyObserver.observe(document.body, {
+    attributes: true,
+    attributeFilter: ['class']
+  })
+
   await loadJournals()
   await nextTick()
+
+  if (reducedMotion.value) {
+    gsap.set('.community-heading > *, .journal-strip-shell', {
+      clearProps: 'transform',
+      autoAlpha: 1
+    })
+    return
+  }
 
   ctx = gsap.context(() => {
     gsap.fromTo(
@@ -112,6 +164,8 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   ctx?.revert()
+  reducedMotionMedia?.removeEventListener?.('change', updateReducedMotion)
+  bodyObserver?.disconnect()
 })
 </script>
 
@@ -127,7 +181,11 @@ onBeforeUnmount(() => {
       <div class="journal-strip-shell">
         <div v-if="loading" class="journal-empty">{{ t('home.community.loading') }}</div>
 
-        <div v-else-if="trackJournals.length" class="journal-strip-mask">
+        <div
+          v-else-if="trackJournals.length"
+          ref="stripMaskRef"
+          class="journal-strip-mask"
+        >
           <div class="journal-track" :class="{ scrolling: canAutoScroll }">
             <article
               v-for="(journal, index) in trackJournals"
@@ -165,6 +223,26 @@ onBeforeUnmount(() => {
               </RouterLink>
             </article>
           </div>
+        </div>
+
+        <div
+          v-if="showManualControls"
+          class="journal-strip-controls"
+        >
+          <button
+            type="button"
+            :aria-label="t('home.community.previousJournals')"
+            @click="scrollJournalStrip(-1)"
+          >
+            <i class="bi bi-arrow-left"></i>
+          </button>
+          <button
+            type="button"
+            :aria-label="t('home.community.nextJournals')"
+            @click="scrollJournalStrip(1)"
+          >
+            <i class="bi bi-arrow-right"></i>
+          </button>
         </div>
 
         <div v-else class="journal-empty">
@@ -263,6 +341,36 @@ onBeforeUnmount(() => {
   animation-play-state: paused;
 }
 
+.journal-strip-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 24px;
+}
+
+.journal-strip-controls button {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(15,127,135,0.34);
+  border-radius: 50%;
+  background: #fffefb;
+  color: #075f66;
+  box-shadow: 0 12px 24px rgba(47,72,88,0.12);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.journal-strip-controls button:hover,
+.journal-strip-controls button:focus-visible {
+  border-color: rgba(15,127,135,0.68);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
 .journal-preview-card {
   position: relative;
   width: min(340px, 82vw);
@@ -302,7 +410,7 @@ onBeforeUnmount(() => {
   position: absolute;
   right: 22px;
   bottom: 8px;
-  color: rgba(24,151,160,0.08);
+  color: rgba(var(--accent-rgb),0.08);
   font-family: 'Playfair Display', serif;
   font-size: 7rem;
   line-height: 1;
@@ -513,6 +621,7 @@ onBeforeUnmount(() => {
   .journal-strip-mask {
     overflow-x: auto;
   }
+
 }
 
 @media (max-width: 575px) {
@@ -532,6 +641,10 @@ onBeforeUnmount(() => {
     overflow: visible;
     mask-image: none;
     -webkit-mask-image: none;
+  }
+
+  .journal-strip-controls {
+    display: none;
   }
 
   .journal-track,
@@ -608,5 +721,23 @@ onBeforeUnmount(() => {
 :global(body.reduced-motion-mode) .journal-strip-shell {
   opacity: 1;
   visibility: visible;
+}
+
+:global(body.reduced-motion-mode) .journal-track.scrolling {
+  animation: none;
+}
+
+:global(body.reduced-motion-mode) .journal-strip-mask {
+  overflow-x: auto;
+}
+
+:global(body.reduced-motion-mode) .journal-strip-controls {
+  display: flex;
+}
+
+@media (max-width: 575px) {
+  :global(body.reduced-motion-mode) .journal-strip-controls {
+    display: none;
+  }
 }
 </style>

@@ -169,16 +169,16 @@ const itemStyle = computed(() => {
 
   box-shadow:
     0 18px 30px rgba(0,0,0,0.18),
-    0 0 0 4px rgba(24,151,160,0.16),
-    0 0 30px rgba(24,151,160,0.34),
-    0 0 54px rgba(24,151,160,0.18);
+    0 0 0 4px rgba(var(--accent-rgb),0.16),
+    0 0 30px rgba(var(--accent-rgb),0.34),
+    0 0 54px rgba(var(--accent-rgb),0.18);
 
   filter: saturate(1.08);
   z-index: 999 !important;
 }
 
 .scrapbook-item-card.type-media.selected {
-  border-color: rgba(24,151,160,0.52);
+  border-color: rgba(var(--accent-rgb),0.52);
 }
 
 .remove-layout-item {

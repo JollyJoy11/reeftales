@@ -524,7 +524,7 @@ function setCoverImage(item) {
 <style scoped>
 .drag-drop-zone {
   border: 2px dashed var(--accent);
-  background: rgba(24,151,160,0.04);
+  background: rgba(var(--accent-rgb),0.04);
   padding: 34px 18px;
   border-radius: 20px;
   text-align: center;
@@ -582,7 +582,7 @@ function setCoverImage(item) {
 }
 
 .drag-drop-zone.drag-over {
-  background: rgba(24,151,160,0.12);
+  background: rgba(var(--accent-rgb),0.12);
 }
 
 .reorder-hint {
@@ -631,7 +631,7 @@ function setCoverImage(item) {
   width: 120px;
   height: 28px;
   transform: translateX(-50%) rotate(2deg);
-  background: rgba(24,151,160,0.2);
+  background: rgba(var(--accent-rgb),0.2);
   border-left: 1px dashed rgba(0,0,0,0.12);
   border-right: 1px dashed rgba(0,0,0,0.12);
   z-index: 2;
@@ -675,14 +675,14 @@ function setCoverImage(item) {
 }
 
 .caption-textarea:hover {
-  border-color: rgba(24,151,160,0.25);
+  border-color: rgba(var(--accent-rgb),0.25);
 }
 
 .caption-textarea:focus {
   outline: none;
   border-color: var(--accent);
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(24,151,160,0.12);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.12);
 }
 
 .cover-badge {
@@ -729,7 +729,7 @@ function setCoverImage(item) {
 .drag-chosen {
   border-color: var(--accent) !important;
   background: var(--accent-soft) !important;
-  box-shadow: 0 14px 32px rgba(24,151,160,0.22) !important;
+  box-shadow: 0 14px 32px rgba(var(--accent-rgb),0.22) !important;
 }
 
 .drag-active {
@@ -739,7 +739,7 @@ function setCoverImage(item) {
 
 .drag-ghost {
   opacity: 0.35;
-  background: rgba(24,151,160,0.12) !important;
+  background: rgba(var(--accent-rgb),0.12) !important;
   border: 2px dashed var(--accent) !important;
 }
 

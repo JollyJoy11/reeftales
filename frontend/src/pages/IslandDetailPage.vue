@@ -666,7 +666,7 @@ onMounted(async () => {
   padding: 34px;
   border-radius: 30px;
   background:
-    radial-gradient(circle at top right, rgba(24,151,160,0.12), transparent 34%),
+    radial-gradient(circle at top right, rgba(var(--accent-rgb),0.12), transparent 34%),
     var(--surface-soft);
   border: 1px solid #eadfca;
   box-shadow: 0 18px 40px rgba(0,0,0,0.10);
@@ -758,7 +758,7 @@ onMounted(async () => {
   background: var(--accent);
   color: white;
   font-weight: 800;
-  box-shadow: 0 10px 20px rgba(24,151,160,0.18);
+  box-shadow: 0 10px 20px rgba(var(--accent-rgb),0.18);
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -772,13 +772,13 @@ onMounted(async () => {
   color: #fff;
   transform: translateY(-2px);
   box-shadow:
-    0 14px 26px rgba(24,151,160,0.24),
-    0 0 0 4px rgba(24,151,160,0.12);
+    0 14px 26px rgba(var(--accent-rgb),0.24),
+    0 0 0 4px rgba(var(--accent-rgb),0.12);
 }
 
 .save-detail-btn:active {
   transform: translateY(0);
-  box-shadow: 0 8px 16px rgba(24,151,160,0.18);
+  box-shadow: 0 8px 16px rgba(var(--accent-rgb),0.18);
 }
 
 .detail-panel {
@@ -972,7 +972,7 @@ onMounted(async () => {
   right: 22px;
   width: 64px;
   height: 18px;
-  background: rgba(24,151,160,0.18);
+  background: rgba(var(--accent-rgb),0.18);
   border-left: 1px dashed rgba(255,255,255,0.08);
   border-right: 1px dashed rgba(255,255,255,0.08);
   transform: rotate(4deg);

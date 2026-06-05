@@ -187,7 +187,7 @@ function formatActivityTime(time) {
   position: absolute;
   top: 50%;
   bottom: calc(-50% - 16px);
-  border-left: 2px dashed rgba(24,151,160,0.35);
+  border-left: 2px dashed rgba(var(--accent-rgb),0.35);
 }
 
 .timeline-entry.last .timeline-rail::before {

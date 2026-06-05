@@ -36,8 +36,24 @@ const stops = computed(() => [
 
 let ctx
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    document.body.classList.contains('reduced-motion-mode')
+}
+
 onMounted(async () => {
   await nextTick()
+
+  if (prefersReducedMotion()) {
+    gsap.set('.journey-copy > *, .visual-layer, .journey-stop-card, .visual-board', {
+      clearProps: 'transform',
+      autoAlpha: 1
+    })
+    gsap.set('.route-thread', {
+      scaleX: 1
+    })
+    return
+  }
 
   ctx = gsap.context(() => {
     const heroTimeline = gsap.timeline({
@@ -288,7 +304,7 @@ onBeforeUnmount(() => {
   border: 1px solid var(--accent);
   background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 12px 24px rgba(24,151,160,0.22);
+  box-shadow: 0 12px 24px rgba(var(--accent-rgb),0.22);
 }
 
 .secondary-action {
@@ -301,7 +317,7 @@ onBeforeUnmount(() => {
 .primary-action:focus-visible {
   background: var(--accent-strong);
   color: #ffffff;
-  box-shadow: 0 14px 26px rgba(24,151,160,0.24);
+  box-shadow: 0 14px 26px rgba(var(--accent-rgb),0.24);
 }
 
 .secondary-action:hover,
@@ -433,7 +449,7 @@ onBeforeUnmount(() => {
 
 .journey-stop-card:hover,
 .journey-stop-card:focus-within {
-  border-color: rgba(24,151,160,0.55);
+  border-color: rgba(var(--accent-rgb),0.55);
   background: #ffffff;
   box-shadow: 0 16px 30px rgba(47,72,88,0.12);
 }

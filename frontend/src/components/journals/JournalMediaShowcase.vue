@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(24,151,160,0.9);
+  background: rgba(var(--accent-rgb),0.9);
   color: #ffffff;
   font-size: 1rem;
   box-shadow: 0 6px 14px rgba(47,72,88,0.2);
@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
 
 .media-thumb:hover,
 .media-thumb.active {
-  filter: drop-shadow(0 0 10px rgba(24,151,160,0.2));
+  filter: drop-shadow(0 0 10px rgba(var(--accent-rgb),0.2));
   transform: rotate(0deg) translateY(-2px);
 }
 

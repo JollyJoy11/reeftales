@@ -151,7 +151,7 @@ function speciesImageAlt(item) {
 
 .species-mini-card.active {
   border-color: var(--accent);
-  box-shadow: 0 16px 32px rgba(38,210,222,0.16);
+  box-shadow: 0 16px 32px rgba(var(--accent-rgb),0.16);
 }
 
 .species-head {

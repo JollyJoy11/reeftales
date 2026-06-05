@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import NavbarSearch from '@/components/layout/NavbarSearch.vue'
@@ -174,9 +174,9 @@ function handleLanguageChange(language) {
             <li>
               <button
                 class="dropdown-item"
-                :class="{ active: currentLanguage === '中文' }"
+                :class="{ active: currentLanguage === '??' }"
                 type="button"
-                @click="handleLanguageChange('中文')"
+                @click="handleLanguageChange('??')"
               >
                 {{ t('common.chinese') }}
               </button>
@@ -443,7 +443,7 @@ function handleLanguageChange(language) {
 
 .reef-mobile-link.section-active .link-icon {
   background: var(--accent-soft);
-  border-color: rgba(24, 151, 160, 0.25);
+  border-color: rgba(var(--accent-rgb),0.25);
 }
 
 .preference-row small {

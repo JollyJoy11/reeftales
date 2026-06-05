@@ -26,6 +26,10 @@ function applyUserPreferences(user) {
   colorSchemes.forEach((scheme) =>
     document.body.classList.toggle(`color-scheme-${scheme}`, scheme === colorScheme)
   )
+
+  window.requestAnimationFrame?.(() => {
+    window.dispatchEvent(new CustomEvent('reef:layout-preferences-changed'))
+  })
 }
 
 export const useAuthStore = defineStore('auth', {

@@ -983,7 +983,7 @@ onMounted(async () => {
   border: 1px solid var(--accent);
   background: var(--accent);
   color: white;
-  box-shadow: 0 10px 20px rgba(24,151,160,0.18);
+  box-shadow: 0 10px 20px rgba(var(--accent-rgb),0.18);
 }
 
 .ghost-btn {
@@ -1079,7 +1079,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(24,151,160,0.12);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.12);
 }
 
 .trip-preview-card {
@@ -1160,7 +1160,7 @@ textarea:focus {
 }
 
 .suggestion-strip button {
-  border: 1px solid rgba(24,151,160,0.28);
+  border: 1px solid rgba(var(--accent-rgb),0.28);
   border-radius: 999px;
   padding: 7px 11px;
   background: var(--accent-soft);
@@ -1209,7 +1209,7 @@ textarea:focus {
 
 .timeline-chosen .drag-handle,
 .timeline-active .drag-handle {
-  background: rgba(24,151,160,0.16);
+  background: rgba(var(--accent-rgb),0.16);
   color: var(--accent);
 }
 
@@ -1220,7 +1220,7 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid rgba(24,151,160,0.2);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
   background: var(--accent-soft);
   color: var(--accent);
   font-weight: 900;

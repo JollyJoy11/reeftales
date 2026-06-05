@@ -218,13 +218,55 @@ const messages = {
       earnedCount: '{unlocked} / {total} earned',
       unlocked: 'Unlocked',
       keepExploring: 'Keep exploring',
+      achievementBadges: {
+        firstJourney: {
+          title: 'First Journey',
+          detail: 'Create your first journal entry'
+        },
+        marineSpotter: {
+          title: 'Marine Spotter',
+          detail: 'Log at least 3 marine species'
+        },
+        islandCollector: {
+          title: 'Island Collector',
+          detail: 'Save at least 3 islands'
+        },
+        memoryKeeper: {
+          title: 'Memory Keeper',
+          detail: 'Upload 5 photos or videos'
+        },
+        storySaver: {
+          title: 'Story Saver',
+          detail: 'Save at least 3 journals'
+        },
+        communityVoice: {
+          title: 'Community Voice',
+          detail: 'Publish at least 1 public journal'
+        },
+        tripPlanner: {
+          title: 'Trip Planner',
+          detail: 'Create your first planned trip'
+        },
+        reefArchivist: {
+          title: 'Reef Archivist',
+          detail: 'Create 5 journals'
+        },
+        speciesResearcher: {
+          title: 'Species Researcher',
+          detail: 'Save 3 AI species identifications'
+        },
+        islandHopper: {
+          title: 'Island Hopper',
+          detail: 'Journal trips in 2 countries'
+        }
+      },
       notDated: 'Not dated',
       undated: 'Undated',
       explorer: 'Explorer',
       unidentifiedSpecies: 'Unidentified species',
       completedPlansReady: '{count} completed plan(s) ready to become journal',
-      moreSpeciesToUnlock: '{count} more species to unlock Marine Spotter',
-      publishPublicJournal: 'Publish 1 public journal to unlock Community Voice',
+      moreSpeciesToUnlock: '{count} more species to unlock {badge}',
+      publishPublicJournal: 'Publish 1 public journal to unlock {badge}',
       journeys: 'Journeys',
       marineLife: 'Marine Life',
       plannedCount: '{count} planned',
@@ -497,7 +539,9 @@ const messages = {
         read: 'Read',
         empty: 'No public journals yet.',
         createFirst: 'Create the first diary',
-        recentJourney: 'Recent journey'
+        recentJourney: 'Recent journey',
+        previousJournals: 'Scroll to previous journals',
+        nextJournals: 'Scroll to next journals'
       }
     },
     footer: {
@@ -722,13 +766,55 @@ const messages = {
       earnedCount: '已获得 {unlocked} / {total}',
       unlocked: '已解锁',
       keepExploring: '继续探索',
+      achievementBadges: {
+        firstJourney: {
+          title: '首次旅程',
+          detail: '创建你的第一篇游记'
+        },
+        marineSpotter: {
+          title: '海洋观察员',
+          detail: '记录至少 3 种海洋生物'
+        },
+        islandCollector: {
+          title: '岛屿收藏家',
+          detail: '收藏至少 3 个岛屿'
+        },
+        memoryKeeper: {
+          title: '回忆收藏者',
+          detail: '上传 5 张照片或视频'
+        },
+        storySaver: {
+          title: '故事收藏者',
+          detail: '收藏至少 3 篇游记'
+        },
+        communityVoice: {
+          title: '社区声音',
+          detail: '发布至少 1 篇公开游记'
+        },
+        tripPlanner: {
+          title: '旅程规划者',
+          detail: '创建你的第一个旅行计划'
+        },
+        reefArchivist: {
+          title: '珊瑚礁档案员',
+          detail: '创建 5 篇游记'
+        },
+        speciesResearcher: {
+          title: '物种研究员',
+          detail: '保存 3 个 AI 物种识别记录'
+        },
+        islandHopper: {
+          title: '跳岛旅行者',
+          detail: '在 2 个国家记录旅程'
+        }
+      },
       notDated: '未标日期',
       undated: '未标日期',
       explorer: '探索者',
       unidentifiedSpecies: '未识别物种',
       completedPlansReady: '{count} 个完成的计划可以写成游记',
-      moreSpeciesToUnlock: '再记录 {count} 个物种即可解锁 Marine Spotter',
-      publishPublicJournal: '发布 1 篇公开游记即可解锁 Community Voice',
+      moreSpeciesToUnlock: '再记录 {count} 个物种即可解锁{badge}',
+      publishPublicJournal: '发布 1 篇公开游记即可解锁{badge}',
       journeys: '旅程',
       marineLife: '海洋生物',
       plannedCount: '已计划 {count} 个',
@@ -1001,7 +1087,9 @@ const messages = {
         read: '阅读',
         empty: '还没有公开日记。',
         createFirst: '创建第一篇日记',
-        recentJourney: '最近旅程'
+        recentJourney: '最近旅程',
+        previousJournals: '滚动到前面的游记',
+        nextJournals: '滚动到后面的游记'
       }
     },
     footer: {

@@ -161,7 +161,7 @@ function removeEntry(index) {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(24,151,160,0.12);
+  background: rgba(var(--accent-rgb),0.12);
   display: grid;
   place-items: center;
   font-size: 0.9rem;

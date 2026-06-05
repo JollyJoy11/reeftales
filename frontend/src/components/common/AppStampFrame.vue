@@ -68,7 +68,7 @@ defineProps({
 
 .app-stamp-frame.clickable:hover,
 .app-stamp-frame.active {
-  box-shadow: 0 0 0 3px rgba(24,151,160,0.14), 0 10px 20px rgba(47,72,88,0.18);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.14), 0 10px 20px rgba(47,72,88,0.18);
 }
 
 .app-stamp-frame.active {

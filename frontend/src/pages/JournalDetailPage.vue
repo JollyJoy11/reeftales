@@ -525,7 +525,7 @@ onMounted(loadJournal)
   align-items: center;
   gap: 6px;
   color: var(--accent);
-  border: 1px dashed rgba(24,151,160,0.4);
+  border: 1px dashed rgba(var(--accent-rgb),0.4);
   border-radius: 999px;
   padding: 6px 10px;
   font-size: 0.78rem;
@@ -556,7 +556,7 @@ onMounted(loadJournal)
 }
 
 .journal-meta span {
-  border: 1px dashed rgba(24,151,160,0.4);
+  border: 1px dashed rgba(var(--accent-rgb),0.4);
   border-radius: 999px;
   padding: 6px 10px;
   color: #1f4e5f;
@@ -589,8 +589,8 @@ onMounted(loadJournal)
     scale(1.03);
   box-shadow:
     0 18px 30px rgba(0,0,0,0.18),
-    0 0 0 4px rgba(24,151,160,0.12),
-    0 0 26px rgba(24,151,160,0.22);
+    0 0 0 4px rgba(var(--accent-rgb),0.12),
+    0 0 26px rgba(var(--accent-rgb),0.22);
 }
 
 

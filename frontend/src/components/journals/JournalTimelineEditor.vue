@@ -259,9 +259,9 @@ watch(
   height: 44px;
   padding: 0 12px;
   border-radius: 14px;
-  background: rgba(24,151,160,0.12);
+  background: rgba(var(--accent-rgb),0.12);
   color: var(--accent);
-  border: 1px dashed rgba(24,151,160,0.35);
+  border: 1px dashed rgba(var(--accent-rgb),0.35);
   display: grid;
   place-items: center;
   font-size: 0.78rem;
@@ -328,7 +328,7 @@ watch(
   width: 28px;
   border: none;
   border-radius: 8px;
-  background: rgba(24,151,160,0.08);
+  background: rgba(var(--accent-rgb),0.08);
   color: #94a3b8;
   display: grid;
   place-items: center;
@@ -336,7 +336,7 @@ watch(
 }
 
 .timeline-drag-handle:hover {
-  background: rgba(24,151,160,0.16);
+  background: rgba(var(--accent-rgb),0.16);
   color: var(--accent);
 }
 

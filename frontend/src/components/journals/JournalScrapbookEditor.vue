@@ -725,7 +725,7 @@ onBeforeUnmount(() => {
   display: none;
   align-items: center;
   gap: 8px;
-  border: 1px dashed rgba(24,151,160,0.35);
+  border: 1px dashed rgba(var(--accent-rgb),0.35);
   border-radius: 14px;
   background: var(--accent-soft);
   color: #0f766e;
@@ -735,7 +735,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.vdr) {
-  border: 1px dashed rgba(24,151,160,0.72);
+  border: 1px dashed rgba(var(--accent-rgb),0.72);
   overflow: visible;
 }
 

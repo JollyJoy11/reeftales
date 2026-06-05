@@ -165,7 +165,7 @@ function selectPanel(panelId) {
 .logbook-tab:hover,
 .logbook-tab.active {
   background: var(--accent-soft);
-  border-color: rgba(24, 151, 160, 0.24);
+  border-color: rgba(var(--accent-rgb),0.24);
   color: var(--accent-strong);
 }
 

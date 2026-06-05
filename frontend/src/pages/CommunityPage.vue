@@ -325,7 +325,7 @@ watch(
 
 .hero-stats span {
   padding: 12px;
-  border: 1px dashed rgba(24,151,160,0.35);
+  border: 1px dashed rgba(var(--accent-rgb),0.35);
   border-radius: 14px;
   background: rgba(255,255,255,0.58);
   color: var(--text-secondary);
@@ -353,7 +353,7 @@ watch(
   font-weight: 900;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 12px 24px rgba(24,151,160,0.22);
+  box-shadow: 0 12px 24px rgba(var(--accent-rgb),0.22);
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -367,13 +367,13 @@ watch(
   color: #ffffff;
   transform: translateY(-2px);
   box-shadow:
-    0 14px 26px rgba(24,151,160,0.24),
-    0 0 0 4px rgba(24,151,160,0.12);
+    0 14px 26px rgba(var(--accent-rgb),0.24),
+    0 0 0 4px rgba(var(--accent-rgb),0.12);
 }
 
 .create-journal-btn:active {
   transform: translateY(0);
-  box-shadow: 0 8px 16px rgba(24,151,160,0.18);
+  box-shadow: 0 8px 16px rgba(var(--accent-rgb),0.18);
 }
 
 .community-sidebar {

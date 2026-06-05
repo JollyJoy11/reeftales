@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -284,7 +284,7 @@ watch(
 
           <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown">
             <li><button class="dropdown-item" @click="changeLanguage('English')">{{ t('common.english') }}</button></li>
-            <li><button class="dropdown-item" @click="changeLanguage('中文')">{{ t('common.chinese') }}</button></li>
+            <li><button class="dropdown-item" @click="changeLanguage('??')">{{ t('common.chinese') }}</button></li>
           </ul>
         </li>
 
@@ -477,7 +477,7 @@ nav{
   display: inline-grid;
   place-items: center;
   flex: 0 0 auto;
-  border: 1px solid rgba(24,151,160,0.24);
+  border: 1px solid rgba(var(--accent-rgb),0.24);
   border-radius: 50%;
   background: var(--surface);
   color: var(--accent-strong);
@@ -494,7 +494,7 @@ nav{
 .mobile-menu-btn:focus-visible,
 .mobile-menu-btn[aria-expanded="true"] {
   background: var(--accent-soft);
-  border-color: rgba(24,151,160,0.34);
+  border-color: rgba(var(--accent-rgb),0.34);
   color: var(--accent-strong);
 }
 
@@ -644,7 +644,7 @@ nav{
   justify-content: center;
   border-radius: 50%;
   background: var(--surface);
-  border: 1px solid rgba(24,151,160,0.24);
+  border: 1px solid rgba(var(--accent-rgb),0.24);
   color: var(--accent);
   font-weight: 900;
   text-decoration: none;

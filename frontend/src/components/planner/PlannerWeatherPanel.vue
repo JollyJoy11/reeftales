@@ -238,7 +238,7 @@ function getDayLabel(rain) {
 
 .weather-day-card.good {
   background: var(--accent-soft);
-  border-color: rgba(24,151,160,0.22);
+  border-color: rgba(var(--accent-rgb),0.22);
 }
 
 .weather-day-card.okay {

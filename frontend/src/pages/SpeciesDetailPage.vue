@@ -567,7 +567,7 @@ onMounted(async () => {
   padding: 30px;
   border-radius: 30px;
   background:
-    radial-gradient(circle at top right, rgba(24,151,160,0.12), transparent 34%),
+    radial-gradient(circle at top right, rgba(var(--accent-rgb),0.12), transparent 34%),
     var(--surface-soft);
   border: 1px solid #eadfca;
   box-shadow: 0 16px 38px rgba(0,0,0,0.1);
@@ -948,7 +948,7 @@ onMounted(async () => {
 }
 
 .season-bar-item.active .season-bar-track {
-  box-shadow: 0 0 0 3px rgba(24,151,160,0.18);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.18);
 }
 
 .season-bar-item.active span {
@@ -1020,7 +1020,7 @@ onMounted(async () => {
   padding: 14px;
   border-radius: 18px;
   background: var(--accent-soft);
-  border: 1px solid rgba(24,151,160,0.18);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
 }
 
 .peak-summary-card span {

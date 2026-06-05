@@ -415,7 +415,7 @@ onBeforeUnmount(() => {
   color: white;
   transform: scale(1.2);
   box-shadow:
-    0 0 0 7px rgba(24,151,160,0.18),
+    0 0 0 7px rgba(var(--accent-rgb),0.18),
     0 10px 22px rgba(0,0,0,0.26);
 }
 

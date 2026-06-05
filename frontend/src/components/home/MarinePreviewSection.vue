@@ -41,9 +41,22 @@ async function loadMarineSpecies() {
 
 let ctx
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    document.body.classList.contains('reduced-motion-mode')
+}
+
 onMounted(async () => {
   await loadMarineSpecies()
   await nextTick()
+
+  if (prefersReducedMotion()) {
+    gsap.set('.panel-bubble, .marine-copy > *, .species-postcard', {
+      clearProps: 'transform',
+      autoAlpha: 1
+    })
+    return
+  }
 
   ctx = gsap.context(() => {
     gsap.to('.panel-bubble', {
@@ -215,9 +228,9 @@ onBeforeUnmount(() => {
   z-index: 2;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle at 36% 36%, rgba(24,151,160,0.24), rgba(255,255,255,0.86) 40%, rgba(24,151,160,0.08) 64%, transparent 72%);
-  border: 1px solid rgba(24,151,160,0.18);
-  box-shadow: 0 0 24px rgba(24,151,160,0.12);
+  background: radial-gradient(circle at 36% 36%, rgba(var(--accent-rgb),0.24), rgba(255,255,255,0.86) 40%, rgba(var(--accent-rgb),0.08) 64%, transparent 72%);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  box-shadow: 0 0 24px rgba(var(--accent-rgb),0.12);
 }
 
 .bubble-a {
@@ -309,7 +322,7 @@ onBeforeUnmount(() => {
 }
 
 .species-postcard:hover {
-  border-color: rgba(24,151,160,0.48);
+  border-color: rgba(var(--accent-rgb),0.48);
   background: #ffffff;
   box-shadow: 0 18px 36px rgba(15,143,152,0.13);
 }

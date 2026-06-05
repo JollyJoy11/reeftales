@@ -135,7 +135,7 @@ function handleGalleryWheel(event) {
   scroll-padding-inline: 18px;
   scroll-snap-type: inline mandatory;
   scrollbar-width: thin;
-  scrollbar-color: rgba(24,151,160,0.38) transparent;
+  scrollbar-color: rgba(var(--accent-rgb),0.38) transparent;
 }
 
 .traveler-image-card {
@@ -158,7 +158,7 @@ function handleGalleryWheel(event) {
 }
 
 .traveler-image-card:hover {
-  border-color: rgba(24,151,160,0.48);
+  border-color: rgba(var(--accent-rgb),0.48);
   box-shadow:
     0 20px 40px rgba(15,143,152,0.16),
     inset 0 0 0 1px rgba(255,255,255,0.78);
@@ -269,7 +269,7 @@ function handleGalleryWheel(event) {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(24,151,160,0.92);
+  background: rgba(var(--accent-rgb),0.92);
   color: white;
   box-shadow: 0 8px 18px rgba(47,72,88,0.16);
 }

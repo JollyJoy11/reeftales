@@ -157,7 +157,7 @@ const emit = defineEmits([
 }
 
 .notes-count {
-  border: 1px dashed rgba(24,151,160,0.4);
+  border: 1px dashed rgba(var(--accent-rgb),0.4);
   border-radius: 999px;
   padding: 5px 9px;
   color: var(--accent);

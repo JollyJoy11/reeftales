@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { Cropper } from 'vue-advanced-cropper'
 import { useI18n } from 'vue-i18n'
@@ -476,7 +476,7 @@ onMounted(() => {
               <span class="select-shell">
                 <select v-model="settingsForm.language">
                   <option value="English">{{ t('common.english') }}</option>
-                  <option value="中文">{{ t('common.chinese') }}</option>
+                  <option value="??">{{ t('common.chinese') }}</option>
                 </select>
                 <i class="bi bi-chevron-down"></i>
               </span>
@@ -492,6 +492,8 @@ onMounted(() => {
 <style scoped>
 .settings-page {
   min-height: calc(100vh - 80px);
+  width: 100%;
+  overflow-x: hidden;
   padding: 34px 0 56px;
   background:
     radial-gradient(circle at top left, rgba(169,216,214,0.28), transparent 32%),
@@ -716,6 +718,7 @@ onMounted(() => {
 
 .crop-panel {
   display: grid;
+  justify-items: center;
   gap: 14px;
   margin-top: 18px;
   padding: 16px;
@@ -731,6 +734,7 @@ onMounted(() => {
   justify-content: space-between;
   gap: 14px;
   align-items: flex-start;
+  width: min(100%, 1034px);
 }
 
 .crop-panel-heading span {
@@ -765,13 +769,21 @@ onMounted(() => {
 
 .crop-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
+  grid-template-columns: minmax(320px, 760px) 260px;
+  justify-content: center;
   gap: 14px;
-  align-items: stretch;
+  align-items: center;
+  width: 100%;
+  max-width: 1034px;
+  margin: 0 auto;
 }
 
 .profile-cropper {
-  height: 320px;
+  width: 100%;
+  max-width: 760px;
+  align-self: center;
+  justify-self: center;
+  height: 260px;
   overflow: hidden;
   border: 1px solid #eadfca;
   border-radius: 18px;
@@ -780,18 +792,23 @@ onMounted(() => {
 
 .crop-helper-card {
   display: grid;
-  align-content: start;
+  align-content: center;
+  justify-items: center;
   gap: 10px;
   min-width: 0;
-  padding: 14px;
-  border: 1px dashed var(--border);
+  min-height: 260px;
+  padding: 18px;
+  border: 1px solid rgba(var(--accent-rgb),0.22);
   border-radius: 18px;
-  background: var(--surface);
+  background: #fffdf8;
+  box-shadow:
+    0 16px 34px rgba(47,72,88,0.12),
+    inset 0 0 0 1px rgba(255,255,255,0.88);
 }
 
 .mini-preview {
-  width: 92px;
-  height: 92px;
+  width: 112px;
+  height: 112px;
   margin: 0 auto;
   overflow: hidden;
   border-radius: 50%;
@@ -978,7 +995,7 @@ select {
 }
 
 .switch-input:focus-visible + .switch-track {
-  outline: 3px solid rgba(24,151,160,0.24);
+  outline: 3px solid rgba(var(--accent-rgb),0.24);
   outline-offset: 3px;
 }
 
@@ -993,7 +1010,7 @@ select {
   background: var(--accent);
   color: #ffffff;
   font-weight: 900;
-  box-shadow: 0 10px 20px rgba(24,151,160,0.16);
+  box-shadow: 0 10px 20px rgba(var(--accent-rgb),0.16);
 }
 
 .save-btn:hover:not(:disabled) {
@@ -1013,9 +1030,28 @@ select {
 @media (max-width: 900px) {
   .settings-grid,
   .profile-editor,
-  .profile-fields,
+  .profile-fields {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .settings-grid,
+  .profile-editor {
+    justify-items: stretch;
+    text-align: left;
+  }
+
+  .profile-fields {
+    justify-items: stretch;
+    text-align: left;
+  }
+
   .crop-layout {
     grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    width: min(100%, 760px);
+    margin-inline: auto;
   }
 
   .profile-preview {
@@ -1025,6 +1061,21 @@ select {
   .crop-helper-card {
     grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
+    justify-items: center;
+    min-height: auto;
+    width: min(100%, 520px);
+    margin: 0 auto;
+    text-align: center;
+    background: #fffdf8;
+    border-color: rgba(var(--accent-rgb),0.28);
+    box-shadow:
+      0 14px 30px rgba(47,72,88,0.12),
+      inset 0 0 0 1px rgba(255,255,255,0.82);
+  }
+
+  .profile-cropper {
+    width: min(100%, 760px);
+    margin: 0 auto;
   }
 
   .mini-preview {
@@ -1033,12 +1084,23 @@ select {
 
   .crop-helper-card strong,
   .crop-helper-card small {
-    text-align: left;
+    text-align: center;
   }
 
   .crop-actions {
     grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .crop-layout {
+    grid-template-columns: minmax(320px, 620px) 240px;
+    justify-content: center;
+  }
+
+  .profile-cropper {
+    height: 250px;
   }
 }
 
@@ -1061,6 +1123,14 @@ select {
     padding: 18px;
   }
 
+  .settings-hero {
+    text-align: left;
+  }
+
+  .settings-hero p {
+    max-width: none;
+  }
+
   .crop-panel {
     padding: 12px;
     border-radius: 16px;
@@ -1068,6 +1138,10 @@ select {
 
   .crop-panel-heading {
     gap: 10px;
+  }
+
+  .crop-panel-heading > div {
+    min-width: 0;
   }
 
   .profile-cropper {
@@ -1078,6 +1152,8 @@ select {
   .crop-helper-card {
     grid-template-columns: 1fr;
     justify-items: center;
+    min-height: auto;
+    width: 100%;
   }
 
   .crop-helper-card strong,
@@ -1095,10 +1171,14 @@ select {
   .toggle-row {
     align-items: flex-start;
     flex-direction: column;
+    text-align: left;
+    width: 100%;
   }
 
-  .setting-row select {
+  .setting-row select,
+  .setting-row .select-shell {
     max-width: none;
+    width: 100%;
   }
 
   .main-save {

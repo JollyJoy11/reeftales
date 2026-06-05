@@ -200,7 +200,7 @@ function tripDateLabel(trip) {
   border-radius: 10px;
   background: var(--accent);
   color: white;
-  box-shadow: 0 10px 22px rgba(24,151,160,0.22);
+  box-shadow: 0 10px 22px rgba(var(--accent-rgb),0.22);
   transition: 0.18s ease;
 }
 
@@ -208,8 +208,8 @@ function tripDateLabel(trip) {
   background: var(--accent-strong);
   transform: translateY(-2px);
   box-shadow:
-    0 14px 26px rgba(24,151,160,0.24),
-    0 0 0 4px rgba(24,151,160,0.12);
+    0 14px 26px rgba(var(--accent-rgb),0.24),
+    0 0 0 4px rgba(var(--accent-rgb),0.12);
 }
 
 .sidebar-section {
@@ -327,7 +327,7 @@ function tripDateLabel(trip) {
 
 .mini-ticket.active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(24,151,160,0.1);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb),0.1);
 }
 
 .ticket-main {

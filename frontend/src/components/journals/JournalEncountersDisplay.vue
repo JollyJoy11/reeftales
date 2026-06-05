@@ -152,7 +152,7 @@ function sightingQuantity(sighting) {
 
 .encounter-heading span {
   flex: 0 0 auto;
-  border: 1px dashed rgba(24,151,160,0.42);
+  border: 1px dashed rgba(var(--accent-rgb),0.42);
   border-radius: 999px;
   padding: 4px 8px;
   color: var(--accent);

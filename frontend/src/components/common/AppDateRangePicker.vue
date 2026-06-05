@@ -497,7 +497,7 @@ onBeforeUnmount(() => {
 }
 
 .reef-date-picker :deep(.dp--range-between) {
-  background: rgba(24, 151, 160, 0.12) !important;
+  background: rgba(var(--accent-rgb),0.12) !important;
   color: #0f766e !important;
 }
 
@@ -506,7 +506,7 @@ onBeforeUnmount(() => {
 }
 
 .reef-date-picker :deep(.dp--cell-inner:hover) {
-  background-color: rgba(24, 151, 160, 0.08);
+  background-color: rgba(var(--accent-rgb),0.08);
   border-radius: 50% !important;
 }
 

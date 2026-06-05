@@ -12,6 +12,12 @@ gsap.registerPlugin(ScrollTrigger)
 
 let refreshTimer
 let loadRefreshHandler
+let preferencesRefreshHandler
+
+function refreshScrollLayout() {
+  ScrollTrigger.sort()
+  ScrollTrigger.refresh()
+}
 
 onMounted(async () => {
   await nextTick()
@@ -19,22 +25,25 @@ onMounted(async () => {
   // Delay long enough for async data sections (marine, community) to resolve
   // and render their real content before we refresh all scroll positions.
   refreshTimer = window.setTimeout(() => {
-    ScrollTrigger.sort()
-    ScrollTrigger.refresh()
+    refreshScrollLayout()
   }, 800)
 
-  loadRefreshHandler = () => {
-    ScrollTrigger.sort()
-    ScrollTrigger.refresh()
+  loadRefreshHandler = refreshScrollLayout
+  preferencesRefreshHandler = () => {
+    window.setTimeout(refreshScrollLayout, 60)
   }
 
   window.addEventListener('load', loadRefreshHandler, { once: true })
+  window.addEventListener('reef:layout-preferences-changed', preferencesRefreshHandler)
 })
 
 onBeforeUnmount(() => {
   window.clearTimeout(refreshTimer)
   if (loadRefreshHandler) {
     window.removeEventListener('load', loadRefreshHandler)
+  }
+  if (preferencesRefreshHandler) {
+    window.removeEventListener('reef:layout-preferences-changed', preferencesRefreshHandler)
   }
 })
 </script>

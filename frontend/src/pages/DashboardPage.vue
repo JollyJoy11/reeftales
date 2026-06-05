@@ -255,11 +255,16 @@ const nextSteps = computed(() => {
   }
 
   if (speciesChecklist.value.length < 3) {
-    steps.push(t('dashboard.moreSpeciesToUnlock', { count: 3 - speciesChecklist.value.length }))
+    steps.push(t('dashboard.moreSpeciesToUnlock', {
+      count: 3 - speciesChecklist.value.length,
+      badge: t('dashboard.achievementBadges.marineSpotter.title')
+    }))
   }
 
   if (!journals.value.some(journal => journal.visibility === 'public')) {
-    steps.push(t('dashboard.publishPublicJournal'))
+    steps.push(t('dashboard.publishPublicJournal', {
+      badge: t('dashboard.achievementBadges.communityVoice.title')
+    }))
   }
 
   return steps.slice(0, 3)
@@ -855,8 +860,8 @@ onMounted(loadDashboard)
                     <i :class="`bi ${badge.icon}`"></i>
                   </span>
 
-                  <h3>{{ badge.title }}</h3>
-                  <p>{{ badge.detail }}</p>
+                  <h3>{{ t(badge.titleKey) }}</h3>
+                  <p>{{ t(badge.detailKey) }}</p>
                   <small>{{ badge.unlocked ? t('dashboard.unlocked') : t('dashboard.keepExploring') }}</small>
                 </article>
               </div>
@@ -970,7 +975,7 @@ onMounted(loadDashboard)
   margin-top: 9px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(24, 151, 160, 0.16);
+  background: rgba(var(--accent-rgb),0.16);
 }
 
 .tier-track i {
@@ -1398,8 +1403,8 @@ onMounted(loadDashboard)
 
 .badge-card.unlocked {
   opacity: 1;
-  border-color: rgba(24, 151, 160, 0.34);
-  box-shadow: 0 0 0 4px rgba(24, 151, 160, 0.08);
+  border-color: rgba(var(--accent-rgb),0.34);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb),0.08);
 }
 
 .badge-card.unlocked small {

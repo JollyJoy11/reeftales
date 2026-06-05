@@ -21,71 +21,71 @@ export function calculateExplorerProgress({
   const badges = [
     {
       id: 'first_journey',
-      title: 'First Journey',
-      detail: 'Create your first journal entry',
+      titleKey: 'dashboard.achievementBadges.firstJourney.title',
+      detailKey: 'dashboard.achievementBadges.firstJourney.detail',
       icon: 'bi-journal-check',
       unlocked: finalJournalCount >= 1
     },
     {
       id: 'marine_spotter',
-      title: 'Marine Spotter',
-      detail: 'Log at least 3 marine species',
+      titleKey: 'dashboard.achievementBadges.marineSpotter.title',
+      detailKey: 'dashboard.achievementBadges.marineSpotter.detail',
       icon: 'bi-water',
       unlocked: finalSpeciesCount >= 3
     },
     {
       id: 'island_collector',
-      title: 'Island Collector',
-      detail: 'Save at least 3 islands',
+      titleKey: 'dashboard.achievementBadges.islandCollector.title',
+      detailKey: 'dashboard.achievementBadges.islandCollector.detail',
       icon: 'bi-bookmark-heart',
       unlocked: savedIslands.length >= 3
     },
     {
       id: 'memory_keeper',
-      title: 'Memory Keeper',
-      detail: 'Upload 5 photos or videos',
+      titleKey: 'dashboard.achievementBadges.memoryKeeper.title',
+      detailKey: 'dashboard.achievementBadges.memoryKeeper.detail',
       icon: 'bi-images',
       unlocked: totalMedia >= 5
     },
     {
       id: 'story_saver',
-      title: 'Story Saver',
-      detail: 'Save at least 3 journals',
+      titleKey: 'dashboard.achievementBadges.storySaver.title',
+      detailKey: 'dashboard.achievementBadges.storySaver.detail',
       icon: 'bi-bookmark-star',
       unlocked: savedJournals.length >= 3
     },
     {
       id: 'community_voice',
-      title: 'Community Voice',
-      detail: 'Publish at least 1 public journal',
+      titleKey: 'dashboard.achievementBadges.communityVoice.title',
+      detailKey: 'dashboard.achievementBadges.communityVoice.detail',
       icon: 'bi-megaphone',
       unlocked: finalPublicCount >= 1
     },
     {
       id: 'trip_planner',
-      title: 'Trip Planner',
-      detail: 'Create your first planned trip',
+      titleKey: 'dashboard.achievementBadges.tripPlanner.title',
+      detailKey: 'dashboard.achievementBadges.tripPlanner.detail',
       icon: 'bi-calendar-heart',
       unlocked: itineraries.length >= 1
     },
     {
       id: 'reef_archivist',
-      title: 'Reef Archivist',
-      detail: 'Create 5 journals',
+      titleKey: 'dashboard.achievementBadges.reefArchivist.title',
+      detailKey: 'dashboard.achievementBadges.reefArchivist.detail',
       icon: 'bi-archive',
       unlocked: finalJournalCount >= 5
     },
     {
       id: 'species_researcher',
-      title: 'Species Researcher',
-      detail: 'Save 3 AI species identifications',
+      titleKey: 'dashboard.achievementBadges.speciesResearcher.title',
+      detailKey: 'dashboard.achievementBadges.speciesResearcher.detail',
       icon: 'bi-search-heart',
       unlocked: aiSpeciesList.length >= 3
     },
     {
       id: 'island_hopper',
-      title: 'Island Hopper',
-      detail: 'Journal trips in 2 countries',
+      titleKey: 'dashboard.achievementBadges.islandHopper.title',
+      detailKey: 'dashboard.achievementBadges.islandHopper.detail',
       icon: 'bi-map',
       unlocked: visitedCountries >= 2
     }

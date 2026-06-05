@@ -32,7 +32,20 @@ const features = computed(() => [
 
 let ctx
 
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    document.body.classList.contains('reduced-motion-mode')
+}
+
 onMounted(() => {
+  if (prefersReducedMotion()) {
+    gsap.set('.feature-heading > *, .feature-card', {
+      clearProps: 'transform',
+      autoAlpha: 1
+    })
+    return
+  }
+
   ctx = gsap.context(() => {
     gsap.fromTo(
       '.feature-heading > *',
@@ -185,7 +198,7 @@ onBeforeUnmount(() => {
 }
 
 .feature-card:hover {
-  border-color: rgba(24,151,160,0.45);
+  border-color: rgba(var(--accent-rgb),0.45);
   box-shadow:
     0 24px 48px rgba(15, 143, 152, 0.16),
     inset 0 0 0 1px rgba(255,255,255,0.72);

@@ -141,7 +141,7 @@ function formatTime(value) {
 
 /* ── light theme ── */
 .reef-time-picker .dp--theme-light {
-  --dp-primary-color: #1897a0;
+  --dp-primary-color: var(--accent);
   --dp-primary-text-color: #ffffff;
   --dp-border-radius: 10px;
   --dp-menu-padding: 8px;
@@ -174,7 +174,7 @@ function formatTime(value) {
 
 /* ── dark theme ── */
 .reef-time-picker .dp--theme-dark {
-  --dp-primary-color: #26d2de;
+  --dp-primary-color: var(--accent);
   --dp-primary-text-color: #0b1120;
   --dp-background-color: #1f2b3f;
   --dp-text-color: #f8fafc;
@@ -183,12 +183,12 @@ function formatTime(value) {
   --dp-secondary-color: #2c384d;
   --dp-border-color: rgba(255,255,255,0.12);
   --dp-border-color-hover: rgba(255,255,255,0.22);
-  --dp-border-color-focus: #26d2de;
+  --dp-border-color-focus: var(--accent);
   --dp-icon-color: #9fb7ce;
   --dp-disabled-color: #2c384d;
   --dp-disabled-color-text: #64748b;
   --dp-scroll-bar-background: #253244;
-  --dp-scroll-bar-color: #26d2de;
+  --dp-scroll-bar-color: var(--accent);
   --dp-border-radius: 10px;
   --dp-menu-padding: 8px;
   --dp-time-font-size: 1.35rem;
