@@ -181,69 +181,70 @@ onBeforeUnmount(() => {
       <div class="journal-strip-shell">
         <div v-if="loading" class="journal-empty">{{ t('home.community.loading') }}</div>
 
-        <div
-          v-else-if="trackJournals.length"
-          ref="stripMaskRef"
-          class="journal-strip-mask"
-        >
-          <div class="journal-track" :class="{ scrolling: canAutoScroll }">
-            <article
-              v-for="(journal, index) in trackJournals"
-              :key="`${journal.id}-${index}`"
-              class="journal-preview-card"
-              :class="`tilt-${index % 4}`"
-            >
-              <span class="save-journal-pin" aria-hidden="true">
-                <i class="bi bi-bookmark-fill"></i>
-              </span>
-
-              <RouterLink :to="`/journal/${journal.id}`" class="journal-card-link">
-                <div class="journal-author-row">
-                  <span class="avatar-mark">{{ getInitial(journal) }}</span>
-                  <div>
-                    <strong>{{ journal.username || t('home.community.explorerFallback') }}</strong>
-                    <small>{{ formatDate(journal.created_at) }}</small>
-                  </div>
-                </div>
-
-                <span class="island-pill">
-                  <i class="bi bi-geo-alt"></i>
-                  {{ journal.island_name || t('home.community.journalFallback') }}
+        <template v-else-if="trackJournals.length">
+          <div
+            ref="stripMaskRef"
+            class="journal-strip-mask"
+          >
+            <div class="journal-track" :class="{ scrolling: canAutoScroll }">
+              <article
+                v-for="(journal, index) in trackJournals"
+                :key="`${journal.id}-${index}`"
+                class="journal-preview-card"
+                :class="`tilt-${index % 4}`"
+              >
+                <span class="save-journal-pin" aria-hidden="true">
+                  <i class="bi bi-bookmark-fill"></i>
                 </span>
 
-                <h3>{{ journal.title }}</h3>
-                <p class="journal-excerpt">{{ journal.content || t('home.community.excerptFallback') }}</p>
-
-                <div class="journal-card-footer">
-                  <div class="tag-row">
-                    <span v-for="tag in journalTags(journal)" :key="tag" class="mini-tag">{{ tag }}</span>
+                <RouterLink :to="`/journal/${journal.id}`" class="journal-card-link">
+                  <div class="journal-author-row">
+                    <span class="avatar-mark">{{ getInitial(journal) }}</span>
+                    <div>
+                      <strong>{{ journal.username || t('home.community.explorerFallback') }}</strong>
+                      <small>{{ formatDate(journal.created_at) }}</small>
+                    </div>
                   </div>
-                  <span class="read-link">{{ t('home.community.read') }} <i class="bi bi-arrow-right"></i></span>
-                </div>
-              </RouterLink>
-            </article>
-          </div>
-        </div>
 
-        <div
-          v-if="showManualControls"
-          class="journal-strip-controls"
-        >
-          <button
-            type="button"
-            :aria-label="t('home.community.previousJournals')"
-            @click="scrollJournalStrip(-1)"
+                  <span class="island-pill">
+                    <i class="bi bi-geo-alt"></i>
+                    {{ journal.island_name || t('home.community.journalFallback') }}
+                  </span>
+
+                  <h3>{{ journal.title }}</h3>
+                  <p class="journal-excerpt">{{ journal.content || t('home.community.excerptFallback') }}</p>
+
+                  <div class="journal-card-footer">
+                    <div class="tag-row">
+                      <span v-for="tag in journalTags(journal)" :key="tag" class="mini-tag">{{ tag }}</span>
+                    </div>
+                    <span class="read-link">{{ t('home.community.read') }} <i class="bi bi-arrow-right"></i></span>
+                  </div>
+                </RouterLink>
+              </article>
+            </div>
+          </div>
+
+          <div
+            v-if="showManualControls"
+            class="journal-strip-controls"
           >
-            <i class="bi bi-arrow-left"></i>
-          </button>
-          <button
-            type="button"
-            :aria-label="t('home.community.nextJournals')"
-            @click="scrollJournalStrip(1)"
-          >
-            <i class="bi bi-arrow-right"></i>
-          </button>
-        </div>
+            <button
+              type="button"
+              :aria-label="t('home.community.previousJournals')"
+              @click="scrollJournalStrip(-1)"
+            >
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <button
+              type="button"
+              :aria-label="t('home.community.nextJournals')"
+              @click="scrollJournalStrip(1)"
+            >
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </template>
 
         <div v-else class="journal-empty">
           {{ t('home.community.empty') }}
