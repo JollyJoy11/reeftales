@@ -647,11 +647,12 @@ nav{
   justify-content: center;
   border-radius: 50%;
   background: var(--surface);
-  border: 1px solid rgba(var(--accent-rgb),0.24);
+  border: 2px solid var(--surface);
+  outline: 1px solid rgba(var(--accent-rgb),0.42);
   color: var(--accent);
   font-weight: 900;
   text-decoration: none;
-  box-shadow: 0 8px 18px rgba(47,72,88,0.08);
+  box-shadow: 0 8px 18px rgba(47,72,88,0.16);
   overflow: hidden;
 }
 
@@ -688,6 +689,8 @@ nav{
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  border: 2px solid var(--surface);
+  outline: 1px solid rgba(var(--accent-rgb),0.36);
   background: var(--accent-soft);
   color: var(--accent);
   font-weight: 900;

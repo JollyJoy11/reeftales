@@ -163,9 +163,10 @@ watch(
               <section class="sidebar-card">
                 <h6><i class="bi bi-compass"></i> {{ t('community.trendingIslands') }}</h6>
 
-                <div
+                <RouterLink
                   v-for="(island, index) in trendingIslands"
-                  :key="island.name"
+                  :key="island.id"
+                  :to="`/discovery/island/${island.id}`"
                   class="trend-row"
                 >
                   <span class="trend-number">
@@ -176,7 +177,8 @@ watch(
                     <strong>{{ island.name }}</strong>
                     <small>{{ t('community.diariesShared', { count: island.diary_count }) }}</small>
                   </div>
-                </div>
+                  <i class="bi bi-arrow-right-short trend-arrow"></i>
+                </RouterLink>
 
                 <p v-if="!trendingIslands.length" class="sidebar-empty">
                   {{ t('community.noTrending') }}
@@ -418,13 +420,28 @@ watch(
 
 .trend-row {
   display: flex;
+  align-items: center;
   gap: 14px;
   padding: 8px 0;
   border-bottom: 1px solid #eadfca;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 12px;
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease,
+    padding-inline 0.18s ease;
 }
 
 .trend-row:last-child {
   border-bottom: none;
+}
+
+.trend-row:hover,
+.trend-row:focus-visible {
+  background: rgba(var(--accent-rgb),0.08);
+  padding-inline: 8px;
+  transform: translateX(2px);
 }
 
 .trend-number {
@@ -445,6 +462,22 @@ watch(
 .explorer-row strong,
 .explorer-row small {
   display: block;
+}
+
+.trend-row > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.trend-arrow {
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.trend-row:hover .trend-arrow,
+.trend-row:focus-visible .trend-arrow {
+  opacity: 1;
 }
 
 .trend-row strong,
@@ -470,7 +503,10 @@ watch(
   width: 42px;
   height: 42px;
   border-radius: 50%;
+  border: 2px solid var(--surface);
+  outline: 1px solid rgba(var(--accent-rgb),0.36);
   object-fit: cover;
+  box-shadow: 0 6px 14px rgba(47,72,88,0.12);
 }
 
 .avatar-fallback {
