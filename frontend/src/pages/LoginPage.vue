@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import Stamp from '@/components/Stamp.vue'
@@ -8,6 +9,7 @@ import { useToastStore } from '@/stores/toastStore'
 const router = useRouter()
 const authStore = useAuthStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const email = ref('')
 const password = ref('')
@@ -28,12 +30,12 @@ async function handleLogin() {
 
     await authStore.login(email.value, password.value)
 
-    toastStore.success('Login successful!')
+    toastStore.success(t('toast.loginSuccess'))
     const redirectPath = router.currentRoute.value.query.redirect || '/'
     router.push(redirectPath)
   } catch (error) {
     toastStore.danger(
-      error.response?.data?.message || 'Login failed. Please try again.'
+      error.response?.data?.message || t('toast.loginFailed')
     )
   } finally {
     loading.value = false

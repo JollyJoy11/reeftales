@@ -15,6 +15,7 @@ import CreateJournal from '../pages/CreateJournalPage.vue'
 import Planner from '../pages/TripPlannerPage.vue'
 import Settings from '../pages/SettingsPage.vue'
 import SpeciesDetail from '../pages/SpeciesDetailPage.vue'
+import i18n from '@/i18n'
 import { useToastStore } from '@/stores/toastStore'
 
 const routes = [
@@ -54,7 +55,7 @@ router.beforeEach((to) => {
 
   if (to.meta.requiresAuth && !token) {
     const toastStore = useToastStore()
-    toastStore.danger('Please log in to access this page.')
+    toastStore.danger(i18n.global.t('toast.authRequired'))
 
     return {
       path: '/login',

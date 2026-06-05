@@ -265,7 +265,7 @@ function toggleArrayValue(array, value, eventName) {
 <style scoped>
 .filter-panel {
   position: sticky;
-  top: 25px;
+  top: calc(var(--navbar-h) + 16px);
   overflow: visible;
   padding: 22px;
   border-radius: 18px;
@@ -480,7 +480,7 @@ function toggleArrayValue(array, value, eventName) {
 
 @media (min-width: 992px) {
   .filter-panel {
-    max-height: calc(100vh - 50px);
+    max-height: calc(100vh - var(--navbar-h) - 32px);
     display: flex;
     flex-direction: column;
   }

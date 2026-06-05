@@ -1,6 +1,7 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap');
 
 :root {
+  --navbar-h: 72px;
   --page-bg: #fffdf8;
   --surface: #ffffff;
   --surface-soft: #fbf9f1;
@@ -2313,39 +2314,39 @@ body.dark-mode .marine-content p {
   color: #cbd5e1;
 }
 
-body.dark-mode :global(.discovery-island-marker) {
+body.dark-mode .discovery-island-marker {
   background: #67e8f9;
   border-color: rgba(15,23,42,0.8);
   box-shadow: 0 8px 18px rgba(0,0,0,0.4);
   color: #071e26;
 }
 
-body.dark-mode :global(.reef-map-popup .leaflet-popup-content-wrapper) {
+body.dark-mode .reef-map-popup .leaflet-popup-content-wrapper {
   background: #1f2937;
   box-shadow: 0 14px 30px rgba(0,0,0,0.5);
 }
 
-body.dark-mode :global(.reef-popup-card) {
+body.dark-mode .reef-popup-card {
   color: #f8fafc;
 }
 
-body.dark-mode :global(.reef-popup-card img) {
+body.dark-mode .reef-popup-card img {
   opacity: 0.8;
 }
 
-body.dark-mode :global(.reef-popup-content span) {
+body.dark-mode .reef-popup-content span {
   color: #67e8f9;
 }
 
-body.dark-mode :global(.reef-popup-content strong) {
+body.dark-mode .reef-popup-content strong {
   color: #f8fafc;
 }
 
-body.dark-mode :global(.reef-popup-content small) {
+body.dark-mode .reef-popup-content small {
   color: #cbd5e1;
 }
 
-body.dark-mode :global(.reef-popup-action) {
+body.dark-mode .reef-popup-action {
   color: #67e8f9;
 }
 

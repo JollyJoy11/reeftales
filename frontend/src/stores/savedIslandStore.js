@@ -3,6 +3,7 @@ import {
   getSavedIslands,
   toggleSavedIsland
 } from '@/services/savedIslandService'
+import i18n from '@/i18n'
 import { useToastStore } from '@/stores/toastStore'
 
 export const useSavedIslandStore = defineStore('savedIslands', {
@@ -35,12 +36,12 @@ export const useSavedIslandStore = defineStore('savedIslands', {
 
       if (response.saved) {
         this.savedIslands.push(island)
-        toastStore.success('Island saved.')
+        toastStore.success(i18n.global.t('toast.islandSaved'))
       } else {
         this.savedIslands = this.savedIslands.filter(
           savedIsland => Number(savedIsland.id) !== Number(island.id)
         )
-        toastStore.success('Removed from saved islands.')
+        toastStore.success(i18n.global.t('toast.islandRemoved'))
       }
 
       return response.saved

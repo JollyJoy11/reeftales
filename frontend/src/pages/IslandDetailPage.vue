@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, RouterLink } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
 import WeatherWidget from '@/components/common/WeatherWidget.vue'
@@ -18,6 +19,7 @@ import { useToastStore } from '@/stores/toastStore'
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 const route = useRoute()
 const island = ref(null)
 const loading = ref(false)
@@ -140,14 +142,14 @@ function formatDateForQuery(date) {
 
 async function handleSaveIsland() {
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to save islands.')
+    toastStore.danger(t('toast.saveIslandLogin'))
     return
   }
 
   try {
     await savedIslandStore.toggle(island.value)
   } catch (error) {
-    toastStore.danger('Unable to update saved island.')
+    toastStore.danger(t('toast.saveIslandError'))
   }
 }
 

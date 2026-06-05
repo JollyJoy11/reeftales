@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import Stamp from '@/components/Stamp.vue'
@@ -8,6 +9,7 @@ import { useToastStore } from '@/stores/toastStore'
 const router = useRouter()
 const authStore = useAuthStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const username = ref('')
 const email = ref('')
@@ -84,7 +86,7 @@ async function handleRegister() {
 
     await authStore.register(username.value, email.value, password.value)
 
-    toastStore.success('Account created successfully! Please log in.')
+    toastStore.success(t('toast.registerSuccess'))
     router.push('/login')
   } catch (error) {
     errorMessage.value =

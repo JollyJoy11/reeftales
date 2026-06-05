@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -26,6 +27,7 @@ const router = useRouter()
 const route = useRoute()
 const toastStore = useToastStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const step = ref(1)
 const maxStep = ref(1)
@@ -74,12 +76,12 @@ const tripDayCount = computed(() => {
 
 function validateCurrentStep() {
   if (step.value === 1 && (!form.value.island_id || !form.value.title)) {
-    toastStore.danger('Please choose an island and add a journal title.')
+    toastStore.danger(t('toast.createJournalBasicsRequired'))
     return false
   }
 
   if (step.value === 2 && !form.value.content.trim()) {
-    toastStore.danger('Please write your story before continuing.')
+    toastStore.danger(t('toast.createJournalStoryRequired'))
     return false
   }
 
@@ -90,7 +92,7 @@ function validateCurrentStep() {
     })
 
     if (invalidEntry) {
-      toastStore.danger(`Timeline days must be between Day 1 and Day ${tripDayCount.value}.`)
+      toastStore.danger(t('toast.timelineDayRange', { count: tripDayCount.value }))
       return false
     }
   }

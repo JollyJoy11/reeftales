@@ -152,7 +152,8 @@ function tripDateLabel(trip) {
 <style scoped>
 .planned-trip-sidebar {
   position: sticky;
-  top: 30px;
+  top: calc(var(--navbar-h) + 16px);
+  max-height: calc(100vh - var(--navbar-h) - 32px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -161,7 +162,6 @@ function tripDateLabel(trip) {
   border-radius: 24px;
   background: var(--surface-soft);
   box-shadow: 0 16px 34px rgba(47,72,88,0.08);
-  max-height: calc(100vh - 60px);
 }
 
 .sidebar-header {

@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
 import { toggleJournalLike } from '@/services/journalService'
@@ -16,6 +17,7 @@ const props = defineProps({
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 const actionLoading = ref(false)
 const likeCount = ref(Number(props.journal.like_count || 0))
 const commentCount = computed(() => Number(props.journal.comment_count || 0))
@@ -70,7 +72,7 @@ const coverAlt = computed(() => {
 
 async function handleLike() {
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to like journals.')
+    toastStore.danger(t('toast.likeJournalLogin'))
     return
   }
 
@@ -82,7 +84,7 @@ async function handleLike() {
       ? likeCount.value + 1
       : Math.max(0, likeCount.value - 1)
   } catch {
-    toastStore.danger('Unable to update like.')
+    toastStore.danger(t('toast.likeJournalError'))
   } finally {
     actionLoading.value = false
   }
@@ -90,7 +92,7 @@ async function handleLike() {
 
 async function handleSave() {
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to save journals.')
+    toastStore.danger(t('toast.saveJournalLogin'))
     return
   }
 
@@ -98,9 +100,9 @@ async function handleSave() {
     actionLoading.value = true
     const response = await toggleSavedJournal(props.journal.id)
     hasSaved.value = response.saved
-    toastStore.success(response.saved ? 'Journal saved.' : 'Removed from saved journals.')
+    toastStore.success(response.saved ? t('toast.journalSaved') : t('toast.journalRemoved'))
   } catch {
-    toastStore.danger('Unable to update saved journal.')
+    toastStore.danger(t('toast.saveJournalError'))
   } finally {
     actionLoading.value = false
   }

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
 import { useToastStore } from '@/stores/toastStore'
 
@@ -32,6 +33,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:media', 'update:coverImage'])
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const isDragging = ref(false)
 const fileInput = ref(null)
@@ -218,19 +220,19 @@ async function processFiles(files) {
   emit('update:media', updated)
 
   if (skippedType) {
-    toastStore.danger('Some files were skipped. Please upload images or videos only.')
+    toastStore.danger(t('toast.uploadInvalidType'))
   }
 
   if (skippedLimit) {
-    toastStore.danger('Only 10 media files can be uploaded for one journal.')
+    toastStore.danger(t('toast.uploadLimit'))
   }
 
   if (skippedSize) {
-    toastStore.danger('Some files were skipped. Each file must be 10 MB or smaller.')
+    toastStore.danger(t('toast.uploadFileTooLarge'))
   }
 
   if (!files.length) {
-    toastStore.danger('No files were selected.')
+    toastStore.danger(t('toast.uploadEmpty'))
   }
 }
 

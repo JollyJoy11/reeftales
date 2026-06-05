@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 
 import Stamp from '@/components/Stamp.vue'
@@ -9,6 +10,7 @@ import { useToastStore } from '@/stores/toastStore'
 const route = useRoute()
 const router = useRouter()
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const password = ref('')
 const confirmPassword = ref('')
@@ -57,7 +59,7 @@ async function handleResetPassword() {
     loading.value = true
     await resetPassword(route.params.token, password.value)
 
-    toastStore.success('Password reset successfully. Please log in.')
+    toastStore.success(t('toast.passwordResetSuccess'))
     router.push('/login')
   } catch (error) {
     errorMessage.value =

@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, RouterLink } from 'vue-router'
 
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -19,6 +20,7 @@ import { useToastStore } from '@/stores/toastStore'
 const route = useRoute()
 const authStore = useAuthStore()
 const toastStore = useToastStore()
+const { t } = useI18n()
 
 const journal = ref(null)
 const loading = ref(true)
@@ -272,7 +274,7 @@ function selectMedia(mediaId) {
 
 async function handleLike() {
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to like journals.')
+    toastStore.danger(t('toast.likeJournalLogin'))
     return
   }
 
@@ -285,7 +287,7 @@ async function handleLike() {
       ? currentCount + 1
       : Math.max(0, currentCount - 1)
   } catch {
-    toastStore.danger('Unable to update like.')
+    toastStore.danger(t('toast.likeJournalError'))
   } finally {
     engagementLoading.value = false
   }
@@ -293,7 +295,7 @@ async function handleLike() {
 
 async function handleSave() {
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to save journals.')
+    toastStore.danger(t('toast.saveJournalLogin'))
     return
   }
 
@@ -301,9 +303,9 @@ async function handleSave() {
     engagementLoading.value = true
     const response = await toggleSavedJournal(journal.value.id)
     hasSaved.value = response.saved
-    toastStore.success(response.saved ? 'Journal saved.' : 'Removed from saved journals.')
+    toastStore.success(response.saved ? t('toast.journalSaved') : t('toast.journalRemoved'))
   } catch {
-    toastStore.danger('Unable to update saved journal.')
+    toastStore.danger(t('toast.saveJournalError'))
   } finally {
     engagementLoading.value = false
   }
@@ -313,12 +315,12 @@ async function handleComment() {
   const content = commentText.value.trim()
 
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to comment.')
+    toastStore.danger(t('toast.commentLogin'))
     return
   }
 
   if (!content) {
-    toastStore.danger('Please write a comment first.')
+    toastStore.danger(t('toast.commentRequired'))
     return
   }
 
@@ -330,7 +332,7 @@ async function handleComment() {
     hasLiked.value = Boolean(journal.value.is_liked || journal.value.liked)
     hasSaved.value = Boolean(journal.value.is_saved || journal.value.saved)
   } catch {
-    toastStore.danger('Unable to post comment.')
+    toastStore.danger(t('toast.commentError'))
   } finally {
     engagementLoading.value = false
   }

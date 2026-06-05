@@ -1,9 +1,11 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/authStore'
 import { useSavedIslandStore } from '@/stores/savedIslandStore'
 import { useToastStore } from '@/stores/toastStore'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
 const toastStore = useToastStore()
@@ -15,14 +17,14 @@ async function handleSave(event) {
   event.stopPropagation()
 
   if (!authStore.isLoggedIn) {
-    toastStore.danger('Please login to save islands.')
+    toastStore.danger(t('toast.saveIslandLogin'))
     return
   }
 
   try {
     await savedIslandStore.toggle(props.island)
   } catch (error) {
-    toastStore.danger('Unable to update saved island.')
+    toastStore.danger(t('toast.saveIslandError'))
   }
 }
 

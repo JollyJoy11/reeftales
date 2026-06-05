@@ -90,7 +90,10 @@ function selectPanel(panelId) {
 <style scoped>
 .dashboard-side-nav {
   position: sticky;
-  top: 96px;
+  top: calc(var(--navbar-h) + 24px);
+  max-height: calc(100vh - var(--navbar-h) - 48px);
+  display: flex;
+  flex-direction: column;
   border: 1px solid #eadfca;
   border-radius: 22px;
   background: rgba(255, 253, 248, 0.92);
@@ -106,6 +109,7 @@ function selectPanel(panelId) {
   display: grid;
   gap: 10px;
   padding: 16px;
+  overflow-y: auto;
 }
 
 .profile-mini {

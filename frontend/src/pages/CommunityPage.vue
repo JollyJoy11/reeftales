@@ -378,7 +378,7 @@ watch(
 
 .community-sidebar {
   position: sticky;
-  top: 24px;
+  top: calc(var(--navbar-h) + 16px);
   display: grid;
   gap: 18px;
 }
@@ -419,7 +419,7 @@ watch(
 .trend-row {
   display: flex;
   gap: 14px;
-  padding: 12px 0;
+  padding: 8px 0;
   border-bottom: 1px solid #eadfca;
 }
 
@@ -463,7 +463,7 @@ watch(
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 0;
+  padding: 6px 0;
 }
 
 .explorer-avatar {
