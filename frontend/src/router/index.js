@@ -18,6 +18,10 @@ import SpeciesDetail from '../pages/SpeciesDetailPage.vue'
 import i18n from '@/i18n'
 import { useToastStore } from '@/stores/toastStore'
 
+if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual'
+}
+
 const routes = [
   { path: '/', component: Home, meta: { title: 'Home' } },
 
@@ -47,7 +51,18 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: 88,
+        behavior: document.body.classList.contains('reduced-motion-mode') ? 'auto' : 'smooth'
+      }
+    }
+
+    return { top: 0, left: 0 }
+  }
 })
 
 router.beforeEach((to) => {
