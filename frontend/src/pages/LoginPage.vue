@@ -194,10 +194,32 @@ async function handleLogin() {
 
   .postcard-left {
     min-height: 220px;
+    padding: 92px 24px 28px;
   }
 
   .postcard-right {
     padding: 32px 24px;
+  }
+
+  .postcard-left :deep(.stamp) {
+    top: 18px;
+    right: 18px;
+    width: 72px;
+    height: 72px;
+    padding: 6px;
+    transform: rotate(10deg);
+  }
+}
+
+@media (max-width: 420px) {
+  .postcard-left {
+    min-height: 210px;
+    padding: 86px 20px 24px;
+  }
+
+  .postcard-left :deep(.stamp) {
+    width: 64px;
+    height: 64px;
   }
 }
 
