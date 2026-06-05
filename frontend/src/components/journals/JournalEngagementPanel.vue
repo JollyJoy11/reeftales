@@ -305,7 +305,7 @@ const emit = defineEmits([
 
 @media (max-width: 576px) {
   .traveler-notes-panel {
-    padding: 14px;
+    padding: 16px;
     border-radius: 16px;
   }
 
@@ -316,11 +316,12 @@ const emit = defineEmits([
 
   .engagement-actions {
     justify-content: flex-start;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 
   .comment-compose {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .comment-avatar {
@@ -328,16 +329,49 @@ const emit = defineEmits([
   }
 
   .comment-input-wrap {
-    grid-template-columns: 1fr;
-    border-radius: 16px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    border-radius: 999px;
+  }
+
+  .comment-input-wrap input {
+    min-height: 42px;
+    padding: 10px 12px;
   }
 
   .comment-input-wrap button {
-    min-height: 40px;
+    min-height: 42px;
+    padding: 0 14px;
+    white-space: nowrap;
+  }
+
+  .comment-list {
+    gap: 12px;
+    max-height: none;
+    margin-top: 16px;
+    padding-right: 0;
   }
 
   .comment-item {
-    grid-template-columns: 30px minmax(0, 1fr);
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .comment-item .comment-avatar {
+    display: grid;
+    width: 32px;
+    height: 32px;
+  }
+
+  .comment-item strong {
+    font-size: 0.88rem;
+  }
+
+  .comment-item p {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    line-height: 1.6;
   }
 }
 </style>

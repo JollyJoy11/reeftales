@@ -10,12 +10,17 @@ const router = express.Router()
 
 const uploadDir = path.join(__dirname, '..', 'uploads', 'journals')
 const useCloudinary = process.env.USE_CLOUDINARY === 'true'
+const hasCloudinaryConfig = Boolean(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+)
 const maxUploadSize = 10 * 1024 * 1024
 const maxUploadFiles = 10
 
 fs.mkdirSync(uploadDir, { recursive: true })
 
-if (useCloudinary) {
+if (useCloudinary && hasCloudinaryConfig) {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -98,6 +103,13 @@ function uploadToCloudinary(file) {
 
 router.post('/journal-media', protect, upload.array('files', maxUploadFiles), async (req, res) => {
   if (useCloudinary) {
+    if (!hasCloudinaryConfig) {
+      return res.status(500).json({
+        message: 'Cloudinary uploads are enabled but Cloudinary is not configured.',
+        details: 'Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET on the backend host.'
+      })
+    }
+
     try {
       const uploads = await Promise.all(
         (req.files || []).map(async file => {

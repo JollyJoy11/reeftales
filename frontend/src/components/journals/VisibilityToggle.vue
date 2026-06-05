@@ -46,7 +46,9 @@ const emit = defineEmits(['update:modelValue'])
 
 .visibility-switch {
   width: 58px;
+  min-width: 58px;
   height: 32px;
+  flex: 0 0 auto;
   border: none;
   border-radius: 999px;
   padding: 4px;
@@ -68,5 +70,21 @@ const emit = defineEmits(['update:modelValue'])
 
 .visibility-switch.active span {
   transform: translateX(26px);
+}
+
+@media (max-width: 575px) {
+  .visibility-toggle-box {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .visibility-toggle-box > div {
+    min-width: 0;
+  }
+
+  .visibility-toggle-box strong,
+  .visibility-toggle-box small {
+    overflow-wrap: anywhere;
+  }
 }
 </style>

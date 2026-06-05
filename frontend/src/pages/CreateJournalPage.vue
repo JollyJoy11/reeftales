@@ -602,6 +602,16 @@ onMounted(loadData)
 }
 
 @media (max-width: 768px) {
+  .journal-shell {
+    padding: 6px;
+    border-radius: 14px;
+  }
+
+  .journal-shell-inner {
+    padding: 18px;
+    border-radius: 10px;
+  }
+
   .journal-header {
     flex-direction: column;
   }
@@ -613,6 +623,21 @@ onMounted(loadData)
   .step-actions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .step-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 575px) {
+  .journal-shell-inner {
+    padding: 14px;
+  }
+
+  .step-card {
+    padding: 14px;
   }
 }
 </style>

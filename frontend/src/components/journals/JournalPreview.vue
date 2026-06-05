@@ -292,6 +292,9 @@ const coverPreviewAlt = computed(() => {
 }
 
 .preview-stamps span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   background: transparent;
   color: #1f4e5f;
   border: 1px dashed rgba(42,123,136,0.45);
@@ -299,6 +302,7 @@ const coverPreviewAlt = computed(() => {
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .included-panel {
@@ -339,9 +343,128 @@ const coverPreviewAlt = computed(() => {
 }
 
 @media (max-width: 768px) {
+  .journal-preview-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .preview-kicker {
+    margin-bottom: 14px;
+    font-size: 0.72rem;
+  }
+
+  .preview-polaroid {
+    width: min(100%, 360px);
+    padding: 10px 10px 18px;
+    transform: none;
+  }
+
+  .preview-polaroid img {
+    height: 180px;
+  }
+
+  .video-cover-badge {
+    top: 18px;
+    left: 18px;
+  }
+
+  .polaroid-caption {
+    margin-top: 8px;
+    font-size: 0.76rem;
+  }
+
+  .preview-narrative {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
   .preview-topline {
     align-items: flex-start;
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .preview-narrative h2 {
+    font-size: 1.45rem;
+    line-height: 1.18;
+  }
+
+  .story-block {
+    margin-top: 12px;
+  }
+
+  .story-preview {
+    line-clamp: 4;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .preview-stamps {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .preview-stamps span {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    font-size: 0.76rem;
+    white-space: nowrap;
+  }
+
+  .included-panel {
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .included-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .included-item {
+    flex: 0 0 auto;
+    width: auto;
+    justify-content: center;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 575px) {
+  .journal-preview-card {
+    padding: 14px;
+  }
+
+  .preview-polaroid img {
+    height: 155px;
+  }
+
+  .preview-narrative {
+    padding: 14px;
+  }
+
+  .island-name {
+    font-size: 0.88rem;
+  }
+
+  .mini-mood {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+  }
+
+  .preview-narrative h2 {
+    font-size: 1.28rem;
+  }
+
+  .story-preview {
+    line-clamp: 3;
   }
 }
 </style>

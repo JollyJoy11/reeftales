@@ -516,21 +516,91 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 575px) {
+  .community-section {
+    padding: 64px 0 86px;
+  }
+
+  .community-heading {
+    margin-bottom: 28px;
+  }
+
+  .community-heading h2 {
+    font-size: clamp(1.9rem, 10vw, 2.7rem);
+  }
+
   .journal-strip-mask {
-    mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      #000 28px,
-      #000 calc(100% - 28px),
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent 0,
-      #000 28px,
-      #000 calc(100% - 28px),
-      transparent 100%
-    );
+    overflow: visible;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .journal-track,
+  .journal-track.scrolling {
+    width: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 0;
+    animation: none;
+  }
+
+  .journal-preview-card {
+    width: 100%;
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .journal-preview-card:nth-child(n+4) {
+    display: none;
+  }
+
+  .journal-preview-card.tilt-1,
+  .journal-preview-card.tilt-2,
+  .journal-preview-card.tilt-3 {
+    margin-top: 0;
+  }
+
+  .journal-preview-card::before {
+    width: 58px;
+    height: 17px;
+    left: 24px;
+  }
+
+  .journal-preview-card::after {
+    display: none;
+  }
+
+  .journal-author-row {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 13px;
+  }
+
+  .avatar-mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .save-journal-pin {
+    top: 12px;
+    right: 12px;
+  }
+
+  .journal-card-link h3 {
+    margin: 14px 0 10px;
+    font-size: 1.18rem;
+  }
+
+  .journal-excerpt {
+    padding: 12px;
+    font-size: 0.86rem;
+    line-clamp: 3;
+  }
+
+  .journal-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
