@@ -4,20 +4,20 @@ import { useI18n } from 'vue-i18n'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AppStampFrame from '@/components/common/AppStampFrame.vue'
-import { getSpecies } from '@/services/speciesService'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionRef = ref(null)
-const species = ref([])
-const loading = ref(true)
 const { t } = useI18n()
 
-const displaySpecies = computed(() => species.value.slice(0, 4))
+const props = defineProps({
+  species: {
+    type: Array,
+    default: () => []
+  }
+})
 
-function shuffle(items) {
-  return [...items].sort(() => Math.random() - 0.5)
-}
+const displaySpecies = computed(() => props.species.slice(0, 4))
 
 function depthLabel(item) {
   if (item.min_depth == null || item.max_depth == null) return item.habitats || t('home.marine.profileFallback')
@@ -28,17 +28,6 @@ function speciesImage(item) {
   return item.image_url || '/images/island-placeholder.jpg'
 }
 
-async function loadMarineSpecies() {
-  try {
-    const data = await getSpecies()
-    species.value = shuffle(Array.isArray(data) ? data : []).slice(0, 4)
-  } catch {
-    species.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
 let ctx
 
 function prefersReducedMotion() {
@@ -47,7 +36,6 @@ function prefersReducedMotion() {
 }
 
 onMounted(async () => {
-  await loadMarineSpecies()
   await nextTick()
 
   if (prefersReducedMotion()) {
@@ -138,11 +126,7 @@ onBeforeUnmount(() => {
             </RouterLink>
           </div>
 
-          <div v-if="loading" class="species-empty">
-            {{ t('home.marine.loading') }}
-          </div>
-
-          <div v-else-if="displaySpecies.length" class="species-grid">
+          <div v-if="displaySpecies.length" class="species-grid">
             <article
               v-for="(item, index) in displaySpecies"
               :key="item.id"

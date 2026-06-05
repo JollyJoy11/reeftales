@@ -3,18 +3,22 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { getPublicJournals } from '@/services/journalService'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionRef = ref(null)
 const stripMaskRef = ref(null)
-const journals = ref([])
-const loading = ref(true)
 const reducedMotion = ref(false)
 const { t, locale } = useI18n()
 
-const visibleJournals = computed(() => journals.value.slice(0, 8))
+const props = defineProps({
+  journals: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const visibleJournals = computed(() => props.journals.slice(0, 8))
 const canBrowseJournals = computed(() => visibleJournals.value.length >= 4)
 const canAutoScroll = computed(() => canBrowseJournals.value && !reducedMotion.value)
 const showManualControls = computed(() => reducedMotion.value && visibleJournals.value.length > 1)
@@ -51,17 +55,6 @@ function journalTags(journal) {
     ...splitList(journal.activities),
     ...splitList(journal.species)
   ].filter(Boolean).slice(0, 2)
-}
-
-async function loadJournals() {
-  try {
-    const data = await getPublicJournals({ sort: 'newest' })
-    journals.value = Array.isArray(data) ? data : []
-  } catch {
-    journals.value = []
-  } finally {
-    loading.value = false
-  }
 }
 
 let ctx
@@ -107,7 +100,6 @@ onMounted(async () => {
     attributeFilter: ['class']
   })
 
-  await loadJournals()
   await nextTick()
 
   if (reducedMotion.value) {
@@ -179,9 +171,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="journal-strip-shell">
-        <div v-if="loading" class="journal-empty">{{ t('home.community.loading') }}</div>
-
-        <template v-else-if="trackJournals.length">
+        <template v-if="trackJournals.length">
           <div
             ref="stripMaskRef"
             class="journal-strip-mask"

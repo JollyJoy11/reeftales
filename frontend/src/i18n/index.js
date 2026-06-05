@@ -468,6 +468,7 @@ const messages = {
       activitySuitabilityHint: 'Based on rain, wind, wave height, and sea movement.'
     },
     home: {
+      loading: 'Preparing the reef stories...',
       hero: {
         eyebrow: 'Reef Tales home',
         title: 'Discover reef islands, plan the trip, then write the story.',
@@ -1016,6 +1017,7 @@ const messages = {
       activitySuitabilityHint: '根据降雨、风速、浪高和海流情况估算。'
     },
     home: {
+      loading: '正在准备珊瑚礁故事...',
       hero: {
         eyebrow: 'Reef Tales 首页',
         title: '探索珊瑚礁岛屿，规划旅程，再写下故事。',
