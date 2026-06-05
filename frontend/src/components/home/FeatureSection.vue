@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="feature-grid">
-        <article v-for="feature in features" :key="feature.title" class="feature-card">
+        <article v-for="feature in features" :key="feature.step" class="feature-card">
           <div class="feature-topline">
             <span class="step-num">{{ feature.step }}</span>
             <span class="icon-mark"><i :class="feature.icon"></i></span>

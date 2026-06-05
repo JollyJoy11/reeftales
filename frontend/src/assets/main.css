@@ -19,7 +19,23 @@
   --shadow-strong: rgba(47,72,88,0.18);
 }
 
+html,
+body,
+#app {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
+  min-width: 0;
   font-family: 'Poppins', sans-serif;
   background: var(--page-bg);
   color: var(--text-primary);

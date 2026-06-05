@@ -443,12 +443,15 @@ nav{
   position: sticky;
   top: 0;
   z-index: 1040;
+  width: 100%;
+  max-width: 100%;
   background: #efe7dc;
   border-bottom: 1px solid rgba(196,164,132,0.28);
   backdrop-filter: blur(14px);
 }
 
 .navbar > .container {
+  max-width: min(100%, 1320px);
   gap: 14px;
 }
 
