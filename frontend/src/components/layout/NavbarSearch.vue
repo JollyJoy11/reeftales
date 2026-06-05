@@ -160,14 +160,14 @@ watch(searchQuery, () => {
 <template>
   <div class="navbar-search" :class="`navbar-search--${variant}`">
     <div class="input-group navbar-search__box">
-      <span class="input-group-text border-end-0">
+      <span class="input-group-text">
         <i class="bi bi-search"></i>
       </span>
 
       <input
         ref="searchInputRef"
         v-model="searchQuery"
-        class="form-control border-start-0"
+        class="form-control"
         type="search"
         :placeholder="t('search.placeholder')"
         @focus="showSuggestions = true"
@@ -226,25 +226,41 @@ watch(searchQuery, () => {
 }
 
 .navbar-search__box {
-  width: 340px;
+  width: 290px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .navbar-search__box .form-control,
 .navbar-search__box .input-group-text {
   box-shadow: none;
-  border-color: var(--border) !important;
-  background: var(--surface);
+  border: 0 !important;
+  background: transparent;
   font-size: 14px;
+}
+
+.navbar-search__box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.12);
 }
 
 body.dark-mode .navbar-search__box .form-control,
 body.dark-mode .navbar-search__box .input-group-text {
-  background: #111827 !important;
-  border-color: rgba(103,232,249,0.42) !important;
+  background: transparent !important;
   color: #f8fafc !important;
 }
 
-body.dark-mode .navbar-search__box .form-control:focus {
+body.dark-mode .navbar-search__box {
+  background: #111827 !important;
+  border-color: rgba(103,232,249,0.42) !important;
+}
+
+body.dark-mode .navbar-search__box:focus-within {
   border-color: #67e8f9 !important;
   box-shadow: 0 0 0 3px rgba(103,232,249,0.16);
 }
