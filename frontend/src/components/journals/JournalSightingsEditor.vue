@@ -1,4 +1,6 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -11,6 +13,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const { t } = useI18n()
 
 function updateItem(index, key, value) {
   const updated = [...props.modelValue]
@@ -37,7 +40,7 @@ function removeEntry(index) {
 
 <template>
   <div>
-    <h5 class="section-title">Marine Sightings</h5>
+    <h5 class="section-title">{{ t('createJournal.marineSightings') }}</h5>
 
     <div
       v-for="(sighting, index) in modelValue"
@@ -56,19 +59,19 @@ function removeEntry(index) {
       <div class="paper-entry-header">
         <span class="encounter-label">
           <i class="bi bi-stars"></i>
-          Encounter #{{ index + 1 }}
+          {{ t('createJournal.encounterNumber', { number: index + 1 }) }}
         </span>
       </div>
 
       <div class="sighting-fields">
         <div class="field-medium">
-          <label class="form-label">Species</label>
+          <label class="form-label">{{ t('createJournal.species') }}</label>
           <select
             :value="sighting.species_id"
             class="form-select"
             @change="updateItem(index, 'species_id', $event.target.value)"
           >
-            <option value="">Choose species</option>
+            <option value="">{{ t('createJournal.chooseSpecies') }}</option>
             <option
               v-for="species in speciesList"
               :key="species.id"
@@ -76,12 +79,12 @@ function removeEntry(index) {
             >
               {{ species.name }}
             </option>
-            <option value="custom">Other species</option>
+            <option value="custom">{{ t('createJournal.otherSpecies') }}</option>
           </select>
         </div>
 
         <div class="field-small">
-          <label class="form-label">Quantity</label>
+          <label class="form-label">{{ t('createJournal.quantity') }}</label>
           <input
             :value="sighting.quantity"
             type="number"
@@ -92,23 +95,23 @@ function removeEntry(index) {
         </div>
 
         <div v-if="sighting.species_id === 'custom'" class="field-medium">
-          <label class="form-label">Custom species</label>
+          <label class="form-label">{{ t('createJournal.customSpecies') }}</label>
           <input
             :value="sighting.custom_species_name"
             type="text"
             class="form-control"
-            placeholder="e.g. Dolphin pod"
+            :placeholder="t('createJournal.customSpeciesPlaceholder')"
             @input="updateItem(index, 'custom_species_name', $event.target.value)"
           />
         </div>
 
         <div class="field-full">
-          <label class="form-label">Notes</label>
+          <label class="form-label">{{ t('createJournal.notes') }}</label>
           <textarea
             :value="sighting.notes"
             rows="2"
             class="form-control"
-            placeholder="Notes about the sighting..."
+            :placeholder="t('createJournal.sightingNotesPlaceholder')"
             @input="updateItem(index, 'notes', $event.target.value)"
           ></textarea>
         </div>
@@ -117,7 +120,7 @@ function removeEntry(index) {
 
     <button type="button" class="btn btn-outline-primary" @click="addEntry">
       <i class="bi bi-plus-circle"></i>
-      Add Sighting
+      {{ t('createJournal.addSighting') }}
     </button>
   </div>
 </template>

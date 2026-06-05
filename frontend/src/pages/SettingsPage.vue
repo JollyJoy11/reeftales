@@ -476,7 +476,7 @@ onMounted(() => {
               <span class="select-shell">
                 <select v-model="settingsForm.language">
                   <option value="English">{{ t('common.english') }}</option>
-                  <option value="??">{{ t('common.chinese') }}</option>
+                  <option value="中文">{{ t('common.chinese') }}</option>
                 </select>
                 <i class="bi bi-chevron-down"></i>
               </span>

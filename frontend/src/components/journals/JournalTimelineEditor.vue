@@ -1,7 +1,10 @@
 <script setup>
 import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
 import AppTimePicker from '@/components/common/AppTimePicker.vue'
+
+const { t } = useI18n()
 
 const draggableTimeline = computed({
   get() {
@@ -75,10 +78,10 @@ watch(
     <div class="section-heading">
       <div>
         <h5 class="section-title">
-          Trip Timeline ({{ maxDays }}-day Trip)
-          <span class="requirement-badge recommended">Recommended</span>
+          {{ t('createJournal.timelineTitle', { count: maxDays }) }}
+          <span class="requirement-badge recommended">{{ t('createJournal.recommended') }}</span>
         </h5>
-        <p>Add the activities you did by day so this island journal has useful trip context.</p>
+        <p>{{ t('createJournal.timelineIntro') }}</p>
       </div>
     </div>
 
@@ -95,7 +98,7 @@ watch(
           <button
             type="button"
             class="timeline-drag-handle"
-            title="Drag to reorder activity"
+            :title="t('createJournal.dragActivity')"
           >
             <i class="bi bi-grip-vertical"></i>
           </button>
@@ -111,17 +114,17 @@ watch(
 
           <div class="paper-entry-header">
             <div class="day-stamp">
-              Day {{ entry.day_number || 1 }}
+              {{ t('createJournal.dayNumber', { number: entry.day_number || 1 }) }}
             </div>
 
             <span class="entry-note-label">
-              Activity note #{{ index + 1 }}
+              {{ t('createJournal.activityNote', { number: index + 1 }) }}
             </span>
           </div>
 
           <div class="timeline-fields">
             <div class="field-small">
-              <label class="form-label">Day</label>
+              <label class="form-label">{{ t('createJournal.day') }}</label>
               <input
                 :value="entry.day_number"
                 type="number"
@@ -133,7 +136,7 @@ watch(
             </div>
 
             <div class="field-small">
-              <label class="form-label">Time</label>
+              <label class="form-label">{{ t('createJournal.time') }}</label>
               <AppTimePicker
                 :model-value="entry.activity_time"
                 @update:model-value="updateItem(index, 'activity_time', $event)"
@@ -141,13 +144,13 @@ watch(
             </div>
 
             <div class="field-medium">
-              <label class="form-label">Activity</label>
+              <label class="form-label">{{ t('createJournal.activity') }}</label>
               <select
                 :value="entry.activity_id"
                 class="form-select"
                 @change="updateItem(index, 'activity_id', $event.target.value)"
               >
-                <option value="">Choose activity</option>
+                <option value="">{{ t('createJournal.chooseActivity') }}</option>
                 <option
                   v-for="activity in activities"
                   :key="activity.id"
@@ -156,29 +159,29 @@ watch(
                   {{ activity.name }}
                 </option>
                 <option value="custom">
-                  Other activity
+                  {{ t('createJournal.otherActivity') }}
                 </option>
               </select>
             </div>
 
             <div v-if="entry.activity_id === 'custom'" class="field-medium">
-              <label class="form-label">Custom activity</label>
+              <label class="form-label">{{ t('createJournal.customActivity') }}</label>
               <input
                 :value="entry.custom_activity_name"
                 type="text"
                 class="form-control"
-                placeholder="e.g. Night diving"
+                :placeholder="t('createJournal.customActivityPlaceholder')"
                 @input="updateItem(index, 'custom_activity_name', $event.target.value)"
               />
             </div>
 
             <div class="field-full">
-              <label class="form-label">Notes</label>
+              <label class="form-label">{{ t('createJournal.notes') }}</label>
               <textarea
                 :value="entry.notes"
                 rows="2"
                 class="form-control"
-                placeholder="Notes about this activity..."
+                :placeholder="t('createJournal.activityNotesPlaceholder')"
                 @input="updateItem(index, 'notes', $event.target.value)"
               ></textarea>
             </div>
@@ -193,7 +196,7 @@ watch(
       @click="addEntry"
     >
       <i class="bi bi-plus-circle"></i>
-      Add Activity
+      {{ t('createJournal.addActivity') }}
     </button>
   </div>
 </template>

@@ -1,4 +1,6 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 defineProps({
   modelValue: {
     type: Boolean,
@@ -7,13 +9,14 @@ defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const { t } = useI18n()
 </script>
 
 <template>
   <div class="visibility-toggle-box">
     <div>
-      <strong>Public Journal</strong>
-      <small>Allow others to read your trip story</small>
+      <strong>{{ t('createJournal.publicJournal') }}</strong>
+      <small>{{ t('createJournal.publicJournalHint') }}</small>
     </div>
 
     <button

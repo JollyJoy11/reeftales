@@ -284,7 +284,7 @@ watch(
 
           <ul class="dropdown-menu dropdown-menu-end shadow border-0 nav-dropdown">
             <li><button class="dropdown-item" @click="changeLanguage('English')">{{ t('common.english') }}</button></li>
-            <li><button class="dropdown-item" @click="changeLanguage('??')">{{ t('common.chinese') }}</button></li>
+            <li><button class="dropdown-item" @click="changeLanguage('中文')">{{ t('common.chinese') }}</button></li>
           </ul>
         </li>
 

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, nextTick, onBeforeUnmount, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import L from 'leaflet'
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const { t } = useI18n()
 
 const mapEl = ref(null)
 const pickerEl = ref(null)
@@ -193,8 +195,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="island-map-picker">
     <label class="form-label fw-bold label-with-badge island-picker-label">
-      Select Island
-      <span class="requirement-badge required">Required</span>
+      {{ t('createJournal.selectIsland') }}
+      <span class="requirement-badge required">{{ t('createJournal.required') }}</span>
     </label>
 
     <div ref="pickerEl" class="island-search-picker">
@@ -202,7 +204,7 @@ onBeforeUnmount(() => {
         :value="islandSearch"
         type="search"
         class="form-control"
-        placeholder="Search island by name, country, or location..."
+        :placeholder="t('createJournal.islandSearchPlaceholder')"
         role="combobox"
         aria-autocomplete="list"
         :aria-expanded="isDropdownOpen"
@@ -234,7 +236,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div v-else-if="isDropdownOpen" class="island-search-empty">
-        No island found.
+        {{ t('createJournal.noIslandFound') }}
       </div>
     </div>
 
@@ -244,7 +246,7 @@ onBeforeUnmount(() => {
 
     <div v-if="selectedIsland" class="selected-island-badge">
       <i class="bi bi-geo-fill"></i>
-      <span>Selected island: </span>
+      <span>{{ t('createJournal.selectedIsland') }} </span>
       <strong>{{ selectedIsland.name }}</strong>
     </div>
   </div>

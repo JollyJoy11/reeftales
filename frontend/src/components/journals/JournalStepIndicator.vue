@@ -1,4 +1,7 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 const props = defineProps({
   step: {
     type: Number,
@@ -11,17 +14,18 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:step'])
+const { t } = useI18n()
 
-const steps = [
-  { number: 1, label: 'Basics', icon: 'bi bi-geo-alt' },
-  { number: 2, label: 'Story', icon: 'bi bi-journal-text' },
-  { number: 3, label: 'Timeline', icon: 'bi bi-clock-history' },
-  { number: 4, label: 'Media', icon: 'bi bi-images' },
-  { number: 5, label: 'Arrange', icon: 'bi bi-layout-wtf' },
-  { number: 6, label: 'Publish', icon: 'bi bi-send' }
-]
+const steps = computed(() => [
+  { number: 1, label: t('createJournal.steps.basics'), icon: 'bi bi-geo-alt' },
+  { number: 2, label: t('createJournal.steps.story'), icon: 'bi bi-journal-text' },
+  { number: 3, label: t('createJournal.steps.timeline'), icon: 'bi bi-clock-history' },
+  { number: 4, label: t('createJournal.steps.media'), icon: 'bi bi-images' },
+  { number: 5, label: t('createJournal.steps.arrange'), icon: 'bi bi-layout-wtf' },
+  { number: 6, label: t('createJournal.steps.publish'), icon: 'bi bi-send' }
+])
 
-const totalSteps = steps.length
+const totalSteps = computed(() => steps.value.length)
 
 function goToStep(item) {
   if (item.number > props.maxStep) return
@@ -32,11 +36,11 @@ function goToStep(item) {
 <template>
   <div class="step-indicator-wrap">
     <div class="mobile-step-summary">
-      <span>Step {{ step }} of {{ totalSteps }}</span>
+      <span>{{ t('createJournal.steps.summary', { step, total: totalSteps }) }}</span>
       <strong>{{ steps[step - 1]?.label }}</strong>
     </div>
 
-    <div class="step-indicator" aria-label="Journal creation steps">
+    <div class="step-indicator" :aria-label="t('createJournal.steps.ariaLabel')">
       <template
         v-for="(item, index) in steps"
         :key="item.number"

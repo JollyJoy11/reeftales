@@ -174,9 +174,9 @@ function handleLanguageChange(language) {
             <li>
               <button
                 class="dropdown-item"
-                :class="{ active: currentLanguage === '??' }"
+                :class="{ active: currentLanguage === '中文' }"
                 type="button"
-                @click="handleLanguageChange('??')"
+                @click="handleLanguageChange('中文')"
               >
                 {{ t('common.chinese') }}
               </button>

@@ -134,7 +134,7 @@ async function loadData() {
     activities.value = await getActivities()
     applyTripPrefill()
   } catch {
-    errorMessage.value = 'Failed to load journal form data.'
+    errorMessage.value = t('createJournal.loadError')
   }
 }
 
@@ -264,7 +264,7 @@ async function handleSubmit() {
     const response = await createJournal(payload)
     router.push(`/journal/${response.journalId}`)
   } catch (error) {
-    const message = error.response?.data?.message || 'Failed to publish journal.'
+    const message = error.response?.data?.message || t('createJournal.publishError')
     const details = error.response?.data?.details
     errorMessage.value = details ? `${message}: ${details}` : message
   } finally {
@@ -289,14 +289,14 @@ onMounted(loadData)
         <div class="journal-shell-inner">
           <div class="journal-header">
             <div>
-              <span>Logbook Entry</span>
-              <h1>Document your island adventure</h1>
-              <p>Build a scrapbook-style travel journal with dates, media, activities, marine sightings, and your own arranged memory board.</p>
+              <span>{{ t('createJournal.headerEyebrow') }}</span>
+              <h1>{{ t('createJournal.headerTitle') }}</h1>
+              <p>{{ t('createJournal.headerIntro') }}</p>
             </div>
 
             <RouterLink to="/community" class="cancel-journal-btn">
               <i class="bi bi-x-lg"></i>
-              Cancel
+              {{ t('createJournal.cancel') }}
             </RouterLink>
           </div>
 
@@ -307,8 +307,8 @@ onMounted(loadData)
 
           <div v-if="step === 1" class="step-card">
             <div class="section-heading">
-              <h5 class="section-title">Journal Basics</h5>
-              <p>Choose the island and title for this memory. Trip dates can be added if you know them.</p>
+              <h5 class="section-title">{{ t('createJournal.basicsTitle') }}</h5>
+              <p>{{ t('createJournal.basicsIntro') }}</p>
             </div>
 
             <div class="row g-4">
@@ -321,14 +321,14 @@ onMounted(loadData)
 
               <div class="col-12 col-lg-6">
                 <label class="form-label fw-bold label-with-badge">
-                  Journal Title
-                  <span class="requirement-badge required">Required</span>
+                  {{ t('createJournal.journalTitle') }}
+                  <span class="requirement-badge required">{{ t('createJournal.required') }}</span>
                 </label>
-                <input v-model="form.title" class="form-control mb-3" placeholder="Swimming with turtles at Sipadan..." />
+                <input v-model="form.title" class="form-control mb-3" :placeholder="t('createJournal.titlePlaceholder')" />
 
                 <AppDateRangePicker
                   v-model="form.trip_dates"
-                  label="Trip Duration"
+                  :label="t('createJournal.tripDuration')"
                 />
               </div>
             </div>
@@ -336,7 +336,7 @@ onMounted(loadData)
             <div class="step-actions mt-4">
               <span></span>
               <button class="btn btn-primary" @click="nextStep">
-                Continue
+                {{ t('createJournal.continue') }}
               </button>
             </div>
           </div>
@@ -344,28 +344,28 @@ onMounted(loadData)
           <div v-if="step === 2" class="step-card">
             <div class="section-heading">
               <h5 class="section-title">
-                Story & Mood
-                <span class="requirement-badge required">Required</span>
+                {{ t('createJournal.storyMoodTitle') }}
+                <span class="requirement-badge required">{{ t('createJournal.required') }}</span>
               </h5>
-              <p>Write the main story of your trip. The mood stamp simply sets the feeling of the journal.</p>
+              <p>{{ t('createJournal.storyMoodIntro') }}</p>
             </div>
 
             <MoodSelector v-model="form.mood" />
 
             <label class="form-label fw-bold mt-4 label-with-badge">
-              Your Story
-              <span class="requirement-badge required">Required</span>
+              {{ t('createJournal.yourStory') }}
+              <span class="requirement-badge required">{{ t('createJournal.required') }}</span>
             </label>
             <textarea
               v-model="form.content"
               rows="10"
               class="form-control"
-              placeholder="Write about your marine encounters, dive spots, food, people, beaches, or tips..."
+              :placeholder="t('createJournal.storyPlaceholder')"
             ></textarea>
 
             <div class="step-actions mt-4">
-              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-              <button class="btn btn-primary" @click="nextStep">Continue</button>
+              <button class="btn btn-outline-primary" @click="previousStep">{{ t('createJournal.back') }}</button>
+              <button class="btn btn-primary" @click="nextStep">{{ t('createJournal.continue') }}</button>
             </div>
           </div>
 
@@ -383,9 +383,9 @@ onMounted(loadData)
             />
 
             <div class="step-actions mt-4">
-              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-outline-primary" @click="previousStep">{{ t('createJournal.back') }}</button>
               <button class="btn btn-primary" @click="nextStep">
-                Continue
+                {{ t('createJournal.continue') }}
               </button>
             </div>
           </div>
@@ -401,8 +401,8 @@ onMounted(loadData)
             />
 
             <div class="step-actions mt-4">
-              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-              <button class="btn btn-primary" @click="nextStep">Arrange Layout</button>
+              <button class="btn btn-outline-primary" @click="previousStep">{{ t('createJournal.back') }}</button>
+              <button class="btn btn-primary" @click="nextStep">{{ t('createJournal.arrangeLayout') }}</button>
             </div>
           </div>
 
@@ -414,15 +414,15 @@ onMounted(loadData)
             />
 
             <div class="step-actions mt-4">
-              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
-              <button class="btn btn-primary" @click="nextStep">Review Journal</button>
+              <button class="btn btn-outline-primary" @click="previousStep">{{ t('createJournal.back') }}</button>
+              <button class="btn btn-primary" @click="nextStep">{{ t('createJournal.reviewJournal') }}</button>
             </div>
           </div>
 
           <div v-if="step === 6" class="step-card">
             <div class="section-heading">
-              <h5 class="section-title">Review & Publish</h5>
-              <p>Check the preview and choose public or private. Public journals can support island activity and species discovery.</p>
+              <h5 class="section-title">{{ t('createJournal.reviewTitle') }}</h5>
+              <p>{{ t('createJournal.reviewIntro') }}</p>
             </div>
 
             <JournalPreview
@@ -433,9 +433,9 @@ onMounted(loadData)
             <VisibilityToggle v-model="form.is_public" class="mt-3" />
 
             <div class="step-actions mt-4">
-              <button class="btn btn-outline-primary" @click="previousStep">Back</button>
+              <button class="btn btn-outline-primary" @click="previousStep">{{ t('createJournal.back') }}</button>
               <button class="btn btn-primary" :disabled="loading" @click="handleSubmit">
-                {{ loading ? 'Publishing...' : 'Publish Journal' }}
+                {{ loading ? t('createJournal.publishing') : t('createJournal.publishJournal') }}
               </button>
             </div>
           </div>
