@@ -495,7 +495,13 @@ onMounted(async () => {
                   max="11"
                   step="1"
                   class="month-slider"
+                  aria-label="Filter species occurrence map by month"
                 />
+
+                <div class="month-slider-labels" aria-hidden="true">
+                  <span>All records</span>
+                  <span>Dec</span>
+                </div>
 
                 <div class="season-chart">
                   <button
@@ -889,12 +895,6 @@ onMounted(async () => {
 
 .month-slider {
   width: 100%;
-  accent-color: var(--accent);
-  margin-bottom: 12px;
-}
-
-.month-slider {
-  width: 100%;
   height: 34px;
   margin: 4px 0 0;
   appearance: none;
@@ -938,6 +938,20 @@ onMounted(async () => {
   background: var(--surface-soft);
   border: 4px solid var(--accent);
   cursor: pointer;
+}
+
+.month-slider-labels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: -2px 0 12px;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.month-slider-labels span:last-child {
+  text-align: right;
 }
 
 .season-bar-item {
