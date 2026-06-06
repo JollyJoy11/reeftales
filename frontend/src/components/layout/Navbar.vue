@@ -460,7 +460,7 @@ nav{
   align-items: center;
   gap: 4px;
   font-family: 'Spectral', serif;
-  color: var(--accent);
+  color: var(--brand-reef-strong);
   font-size: 26px;
 }
 
@@ -726,7 +726,7 @@ nav{
 }
 
 .main-nav-item .nav-link.section-active {
-  color: #1ba7b1 !important;
+  color: var(--accent-strong) !important;
   position: relative;
   font-weight: 600;
 }
@@ -741,6 +741,11 @@ nav{
   position: relative;
   display: inline-block;
   transition: color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.main-nav-item .nav-link:hover,
+.main-nav-item .nav-link:focus-visible {
+  color: var(--accent-strong);
 }
 
 .nav-links-group {

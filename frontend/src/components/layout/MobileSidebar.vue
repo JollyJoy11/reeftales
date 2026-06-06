@@ -236,7 +236,7 @@ function handleLanguageChange(language) {
 .mobile-brand strong {
   display: block;
   font-family: 'Spectral', serif;
-  color: var(--accent);
+  color: var(--brand-reef-strong);
   font-size: 24px;
   line-height: 1;
 }

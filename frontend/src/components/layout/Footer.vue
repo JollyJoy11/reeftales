@@ -139,8 +139,8 @@ watch(
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,700&display=swap');
 
 footer.site-footer {
-  --footer-bg: #d1e8e5;
-  --wave-back-color: #c5e0dc;
+  --footer-bg: #dbf4f0;
+  --wave-back-color: #d3e4dc;
   --wave-mid-color: #8ad3cf;
   --wave-front-color: var(--footer-bg);
   --wave-back-opacity: 0.95;
@@ -241,7 +241,7 @@ footer.site-footer {
 .website-brand h4 {
   padding-top: 8px;
   font-family: 'Spectral', serif;
-  color: var(--accent);
+  color: var(--brand-reef-strong);
   font-size: 36px;
 }
 
