@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap');
 
 :root {
   --navbar-h: 72px;
@@ -202,12 +202,12 @@ body.dark-mode.high-contrast-mode.color-scheme-sunset {
 
 body.dark-mode .navbar,
 body.dark-mode .offcanvas,
-body.dark-mode footer {
+body.dark-mode footer:not(.site-footer) {
   background-color: #253244 !important;
   color: #f8fafc;
 }
 
-body.dark-mode footer{
+body.dark-mode footer:not(.site-footer){
   border-color: rgba(255,255,255,0.08) !important;
 }
 
@@ -2716,4 +2716,46 @@ body.dark-mode .logbook-tab.active {
 body.dark-mode .app-stamp-frame img {
   background: #07111f;
   border-color: rgba(226,232,240,0.22);
+}
+
+body.dark-mode footer.site-footer {
+  --footer-bg: #182735;
+  --wave-back-color: #2b4050;
+  --wave-mid-color: #2f7f87;
+  --wave-front-color: var(--footer-bg);
+  --wave-back-opacity: 0.95;
+  --wave-mid-opacity: 0.78;
+  --wave-front-opacity: 1;
+  background-color: transparent !important;
+  background-image:
+    linear-gradient(
+      180deg,
+      transparent 0,
+      transparent var(--footer-wave-height),
+      var(--footer-bg) var(--footer-wave-height),
+      var(--footer-bg) 100%
+    ) !important;
+  border-top-color: transparent !important;
+}
+
+body.dark-mode .footer-links a {
+  color: #d9eef0 !important;
+}
+
+body.dark-mode .footer-links a:hover {
+  color: #ffffff !important;
+}
+
+body.dark-mode footer.site-footer h6,
+body.dark-mode footer.site-footer .website-brand h4 {
+  color: #7dd8de !important;
+}
+
+body.dark-mode footer.site-footer .text-muted {
+  color: #c7e2e4 !important;
+}
+
+body.dark-mode footer.site-footer hr {
+  border-color: rgba(217, 238, 240, 0.18);
+  opacity: 1;
 }

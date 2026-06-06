@@ -59,8 +59,22 @@ watch(
 </script>
 
 <template>
-  <footer class="border-top py-5">
-    <div class="container">
+  <footer class="site-footer py-5">
+    <div class="footer-waves" aria-hidden="true">
+      <svg class="wave-svg wave-back" viewBox="0 0 1440 220" preserveAspectRatio="none">
+        <path d="M0,38 C180,8 360,8 540,38 C720,68 900,68 1080,38 C1260,8 1350,20 1440,38 L1440,220 L0,220 Z" />
+      </svg>
+
+      <svg class="wave-svg wave-mid" viewBox="0 0 1440 220" preserveAspectRatio="none">
+        <path d="M0,72 C220,24 420,28 640,72 C860,116 1040,108 1220,68 C1320,46 1380,50 1440,72 L1440,220 L0,220 Z" />
+      </svg>
+
+      <svg class="wave-svg wave-front" viewBox="0 0 1440 220" preserveAspectRatio="none">
+        <path d="M0,98 C220,58 420,66 620,98 C820,136 1020,136 1220,88 C1340,58 1400,70 1440,98 L1440,220 L0,220 Z" />
+      </svg>
+    </div>
+
+    <div class="container footer-content">
       <div class="row">
         <div class="col-md-4 mb-3">
           <div class="website-brand">
@@ -124,8 +138,95 @@ watch(
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,700&display=swap');
 
-footer {
-  background: #efe7dc;
+footer.site-footer {
+  --footer-bg: #cbe8e4;
+  --wave-back-color: #e2f4f0;
+  --wave-mid-color: #94d0d0;
+  --wave-front-color: var(--footer-bg);
+  --wave-back-opacity: 0.95;
+  --wave-mid-opacity: 0.82;
+  --wave-front-opacity: 1;
+  --footer-wave-height: 170px;
+  --footer-wave-overlap: 96px;
+
+  position: relative;
+  margin-top: calc(-1 * var(--footer-wave-overlap));
+  padding-top: calc(4rem + var(--footer-wave-height) - 42px) !important;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0,
+      transparent var(--footer-wave-height),
+      var(--footer-bg) var(--footer-wave-height),
+      var(--footer-bg) 100%
+    );
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.footer-waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--footer-wave-height);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wave-svg {
+  position: absolute;
+  left: -8%;
+  bottom: 0;
+  width: 116%;
+  height: 100%;
+  transform-origin: center bottom;
+}
+
+.wave-svg path {
+  transition: fill 0.3s ease;
+}
+
+.wave-back {
+  fill: var(--wave-back-color);
+  opacity: var(--wave-back-opacity);
+  animation: waveDriftBack 24s ease-in-out infinite;
+}
+
+.wave-mid {
+  fill: var(--wave-mid-color);
+  opacity: var(--wave-mid-opacity);
+  animation: waveDriftMid 30s ease-in-out infinite;
+}
+
+.wave-front {
+  fill: var(--wave-front-color);
+  opacity: var(--wave-front-opacity);
+  animation: waveDriftFront 36s ease-in-out infinite;
+}
+
+@keyframes waveDriftBack {
+  0% { transform: translateX(-6%) scaleX(1.08); }
+  50% { transform: translateX(6%) scaleX(1.1); }
+  100% { transform: translateX(-6%) scaleX(1.08); }
+}
+
+@keyframes waveDriftMid {
+  0% { transform: translateX(7%) scaleX(1.1); }
+  50% { transform: translateX(-7%) scaleX(1.07); }
+  100% { transform: translateX(7%) scaleX(1.1); }
+}
+
+@keyframes waveDriftFront {
+  0% { transform: translateX(-5%) scaleX(1.06); }
+  50% { transform: translateX(5%) scaleX(1.08); }
+  100% { transform: translateX(-5%) scaleX(1.06); }
+}
+
+.footer-content {
+  position: relative;
+  z-index: 5;
 }
 
 .website-brand {
@@ -134,7 +235,7 @@ footer {
   gap: 8px;
 }
 
-.website-brand h4{
+.website-brand h4 {
   padding-top: 8px;
   font-family: 'Spectral', serif;
   color: var(--accent);
@@ -148,16 +249,50 @@ footer {
 }
 
 .footer-links a {
-  color: #6b7280;
+  color: #244a58;
   text-decoration: none;
 }
 
 .footer-links a:hover {
-  color: #D66967;
+  color: var(--accent);
 }
 
 .form-select {
-  border-color: #C4A484;
-  background: var(--surface);
+  border: 1.5px solid rgba(var(--accent-rgb), 0.28);
+  background: #fffdf8;
+  color: var(--text-primary);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+footer.site-footer h6,
+footer.site-footer .text-muted {
+  color: #244a58 !important;
+}
+
+footer.site-footer hr {
+  border-color: rgba(var(--accent-rgb), 0.18);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-svg {
+    animation: none;
+  }
+}
+
+:global(body.reduced-motion-mode) .wave-svg {
+  animation: none !important;
+}
+
+@media (max-width: 767.98px) {
+  footer.site-footer {
+    --footer-wave-height: 120px;
+    --footer-wave-overlap: 70px;
+    padding-top: calc(3rem + var(--footer-wave-height) - 30px) !important;
+  }
+
+  .website-brand h4 {
+    font-size: 30px;
+  }
 }
 </style>
