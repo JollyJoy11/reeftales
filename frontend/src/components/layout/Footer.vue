@@ -139,9 +139,9 @@ watch(
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@1,700&display=swap');
 
 footer.site-footer {
-  --footer-bg: #cbe8e4;
-  --wave-back-color: #e2f4f0;
-  --wave-mid-color: #94d0d0;
+  --footer-bg: #d1e8e5;
+  --wave-back-color: #c5e0dc;
+  --wave-mid-color: #8ad3cf;
   --wave-front-color: var(--footer-bg);
   --wave-back-opacity: 0.95;
   --wave-mid-opacity: 0.82;
@@ -191,25 +191,28 @@ footer.site-footer {
 .wave-back {
   fill: var(--wave-back-color);
   opacity: var(--wave-back-opacity);
-  animation: waveDriftBack 24s ease-in-out infinite;
+  animation: waveDriftBack 34s ease-in-out infinite;
+  animation-delay: -8s;
 }
 
 .wave-mid {
   fill: var(--wave-mid-color);
   opacity: var(--wave-mid-opacity);
-  animation: waveDriftMid 30s ease-in-out infinite;
+  animation: waveDriftMid 26s ease-in-out infinite;
+  animation-delay: -13s;
 }
 
 .wave-front {
   fill: var(--wave-front-color);
   opacity: var(--wave-front-opacity);
-  animation: waveDriftFront 36s ease-in-out infinite;
+  animation: waveDriftFront 22s ease-in-out infinite;
+  animation-delay: -5s;
 }
 
 @keyframes waveDriftBack {
-  0% { transform: translateX(-6%) scaleX(1.08); }
-  50% { transform: translateX(6%) scaleX(1.1); }
-  100% { transform: translateX(-6%) scaleX(1.08); }
+  0% { transform: translateX(-5%) scaleX(1.08); }
+  50% { transform: translateX(5%) scaleX(1.1); }
+  100% { transform: translateX(-5%) scaleX(1.08); }
 }
 
 @keyframes waveDriftMid {
@@ -219,9 +222,9 @@ footer.site-footer {
 }
 
 @keyframes waveDriftFront {
-  0% { transform: translateX(-5%) scaleX(1.06); }
-  50% { transform: translateX(5%) scaleX(1.08); }
-  100% { transform: translateX(-5%) scaleX(1.06); }
+  0% { transform: translateX(-3.5%) scaleX(1.05); }
+  50% { transform: translateX(3.5%) scaleX(1.07); }
+  100% { transform: translateX(-3.5%) scaleX(1.05); }
 }
 
 .footer-content {
