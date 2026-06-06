@@ -20,14 +20,14 @@
   min-width: 0;
 }
 
-.main-layout-content > main::after {
+.main-layout-content::after {
   content: "";
   display: block;
   height: 132px;
 }
 
 @media (max-width: 767.98px) {
-  .main-layout-content > main::after {
+  .main-layout-content::after {
     height: 96px;
   }
 }

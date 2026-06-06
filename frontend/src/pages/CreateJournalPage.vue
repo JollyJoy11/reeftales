@@ -284,7 +284,7 @@ onMounted(loadData)
       @close="errorMessage = ''"
     />
 
-    <section class="container py-4">
+    <section class="container create-journal-page">
       <div class="journal-shell">
         <div class="journal-shell-inner">
           <div class="journal-header">
@@ -446,6 +446,11 @@ onMounted(loadData)
 </template>
 
 <style scoped>
+.create-journal-page {
+  padding-top: 1.5rem;
+  padding-bottom: clamp(150px, 18vw, 230px) !important;
+}
+
 .journal-shell {
   position: relative;
   padding: 10px;
@@ -602,6 +607,10 @@ onMounted(loadData)
 }
 
 @media (max-width: 768px) {
+  .create-journal-page {
+    padding-bottom: 190px !important;
+  }
+
   .journal-shell {
     padding: 6px;
     border-radius: 14px;
