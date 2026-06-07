@@ -192,3 +192,4 @@ The `backend/seed-images/` folder is ignored by Git because it is only temporary
 - The backend is hosted on Render and may take up to around 50 seconds to respond after periods of inactivity.
 - Uploaded files are ignored locally through `backend/src/uploads/`.
 - Hosted uploads should use Cloudinary because free backend filesystems are not persistent.
+- Some optional features depend on external API credentials. Without these keys, the core application can still run locally, but AI-based species identification, password reset email delivery, and Cloudinary-based hosted uploads may be unavailable.
