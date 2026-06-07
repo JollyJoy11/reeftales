@@ -62,15 +62,15 @@ watch(
   <footer class="site-footer py-5">
     <div class="footer-waves" aria-hidden="true">
       <svg class="wave-svg wave-back" viewBox="0 0 1440 220" preserveAspectRatio="none">
-        <path d="M0,38 C180,8 360,8 540,38 C720,68 900,68 1080,38 C1260,8 1350,20 1440,38 L1440,220 L0,220 Z" />
+        <path d="M0,8 C180,0 360,0 540,14 C720,30 900,30 1080,14 C1260,0 1350,2 1440,8 L1440,220 L0,220 Z" />
       </svg>
 
       <svg class="wave-svg wave-mid" viewBox="0 0 1440 220" preserveAspectRatio="none">
-        <path d="M0,72 C220,24 420,28 640,72 C860,116 1040,108 1220,68 C1320,46 1380,50 1440,72 L1440,220 L0,220 Z" />
+        <path d="M0,48 C220,12 420,16 640,48 C860,84 1040,78 1220,44 C1320,24 1380,28 1440,48 L1440,220 L0,220 Z" />
       </svg>
 
       <svg class="wave-svg wave-front" viewBox="0 0 1440 220" preserveAspectRatio="none">
-        <path d="M0,98 C220,58 420,66 620,98 C820,136 1020,136 1220,88 C1340,58 1400,70 1440,98 L1440,220 L0,220 Z" />
+        <path d="M0,82 C220,42 420,50 620,82 C820,118 1020,118 1220,72 C1340,42 1400,54 1440,82 L1440,220 L0,220 Z" />
       </svg>
     </div>
 
@@ -147,7 +147,7 @@ footer.site-footer {
   --wave-mid-opacity: 0.82;
   --wave-front-opacity: 1;
   --footer-wave-height: 170px;
-  --footer-wave-overlap: 96px;
+  --footer-wave-overlap: clamp(130px, 12vw, 190px);
 
   position: relative;
   margin-top: calc(-1 * var(--footer-wave-overlap));
@@ -289,8 +289,8 @@ footer.site-footer hr {
 
 @media (max-width: 767.98px) {
   footer.site-footer {
-    --footer-wave-height: 120px;
-    --footer-wave-overlap: 70px;
+    --footer-wave-height: 150px;
+    --footer-wave-overlap: 130px;
     padding-top: calc(3rem + var(--footer-wave-height) - 30px) !important;
   }
 

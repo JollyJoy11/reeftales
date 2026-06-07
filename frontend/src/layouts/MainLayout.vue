@@ -20,15 +20,19 @@
   min-width: 0;
 }
 
-.main-layout-content::after {
-  content: "";
-  display: block;
-  height: 132px;
+.main-layout-content > :last-child {
+  padding-bottom: max(
+    var(--page-footer-space, clamp(150px, 18vw, 230px)),
+    env(safe-area-inset-bottom)
+  ) !important;
 }
 
 @media (max-width: 767.98px) {
-  .main-layout-content::after {
-    height: 96px;
+  .main-layout-content > :last-child {
+    padding-bottom: max(
+      var(--page-footer-space-mobile, 170px),
+      env(safe-area-inset-bottom)
+    ) !important;
   }
 }
 </style>
