@@ -2782,3 +2782,24 @@ body.dark-mode footer.site-footer hr {
   border-color: rgba(217, 238, 240, 0.18);
   opacity: 1;
 }
+
+body.dark-mode .notification-heading {
+  border-bottom-color: rgba(226,232,240,0.16);
+}
+
+body.dark-mode .notification-heading strong,
+body.dark-mode .notification-copy strong {
+  color: #f8fafc !important;
+}
+
+body.dark-mode .notification-icon {
+  background: #142235;
+  border-color: rgba(var(--accent-rgb),0.24);
+  color: var(--accent);
+}
+
+body.dark-mode .notification-item:hover,
+body.dark-mode .notification-item.unread {
+  background: rgba(var(--accent-rgb),0.14) !important;
+  border-color: rgba(var(--accent-rgb),0.24);
+}

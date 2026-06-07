@@ -715,27 +715,6 @@ nav{
   box-shadow: 0 18px 42px rgba(0,0,0,0.34);
 }
 
-:global(body.dark-mode) .notification-heading {
-  border-bottom-color: rgba(226,232,240,0.16);
-}
-
-:global(body.dark-mode) .notification-heading strong,
-:global(body.dark-mode) .notification-copy strong {
-  color: #f8fafc !important;
-}
-
-:global(body.dark-mode) .notification-icon {
-  background: #142235;
-  border-color: rgba(var(--accent-rgb),0.24);
-  color: var(--accent);
-}
-
-:global(body.dark-mode) .notification-item:hover,
-:global(body.dark-mode) .notification-item.unread {
-  background: rgba(var(--accent-rgb),0.14) !important;
-  border-color: rgba(var(--accent-rgb),0.24);
-}
-
 .profile-trigger {
   width: 42px;
   height: 42px;
