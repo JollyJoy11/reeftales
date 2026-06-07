@@ -163,7 +163,7 @@ watch(
         />
 
         <div class="row g-4">
-          <aside class="col-12 col-lg-3">
+          <aside class="col-12 col-lg-4 col-xl-3">
             <DiscoveryFilters
               v-model:discoveryMode="discoveryMode"
               v-model:search="search"
@@ -176,7 +176,7 @@ watch(
             />
           </aside>
 
-          <main class="col-12 col-lg-9">
+          <main class="col-12 col-lg-8 col-xl-9">
             <LoadingState
               v-if="loading"
               :message="discoveryMode === 'islands' ? t('discovery.loadingIslands') : t('discovery.loadingSpecies')"

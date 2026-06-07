@@ -266,8 +266,11 @@ function toggleArrayValue(array, value, eventName) {
 .filter-panel {
   position: sticky;
   top: calc(var(--navbar-h) + 16px);
-  overflow: visible;
-  padding: 22px;
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding: 20px;
   border-radius: 18px;
   background: var(--surface-soft);
   border: 1px dashed var(--border);
@@ -293,6 +296,7 @@ function toggleArrayValue(array, value, eventName) {
   margin-bottom: 18px;
   padding-bottom: 18px;
   border-bottom: 1px solid rgba(216,205,187,0.72);
+  min-width: 0;
 }
 
 .filter-section:last-of-type {
@@ -306,6 +310,7 @@ function toggleArrayValue(array, value, eventName) {
 
 .mode-card {
   width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -317,6 +322,11 @@ function toggleArrayValue(array, value, eventName) {
   font-weight: 800;
   text-align: left;
   transition: 0.2s ease;
+}
+
+.mode-card span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .mode-card i {
@@ -340,6 +350,8 @@ function toggleArrayValue(array, value, eventName) {
 }
 
 .form-control {
+  width: 100%;
+  min-width: 0;
   border-color: var(--border);
   border-radius: 12px;
   background: rgba(255,255,255,0.72);
@@ -347,6 +359,13 @@ function toggleArrayValue(array, value, eventName) {
 
 .form-check {
   margin-bottom: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.form-check-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .form-check-input {
@@ -368,6 +387,8 @@ function toggleArrayValue(array, value, eventName) {
 
 .dual-range-slider {
   height: 34px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .slider-track {
@@ -386,6 +407,7 @@ function toggleArrayValue(array, value, eventName) {
 .thumb {
   position: absolute;
   width: 100%;
+  min-width: 0;
   pointer-events: none;
   appearance: none;
   background: none;
@@ -436,6 +458,17 @@ function toggleArrayValue(array, value, eventName) {
 
 .filter-content {
   margin-top: 18px;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.reset-filter-btn {
+  min-width: 0;
+}
+
+.reset-filter-btn .btn {
+  min-width: 0;
+  white-space: normal;
 }
 
 .filter-content::-webkit-scrollbar {
@@ -474,7 +507,8 @@ function toggleArrayValue(array, value, eventName) {
 
   .filter-panel {
     position: static;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 }
 
@@ -487,8 +521,10 @@ function toggleArrayValue(array, value, eventName) {
 
   .filter-content {
     display: block !important;
+    overflow-x: hidden;
     overflow-y: auto;
-    padding-right: 6px;
+    padding-right: 8px;
+    scrollbar-gutter: stable;
   }
 
   .reset-filter-btn {
@@ -501,6 +537,18 @@ function toggleArrayValue(array, value, eventName) {
         var(--surface-soft) 34%
       );
     padding-top: 12px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .filter-panel {
+    padding: 18px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .filter-panel {
+    padding: 22px;
   }
 }
 </style>
