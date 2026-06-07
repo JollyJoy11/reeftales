@@ -139,9 +139,14 @@ async function saveSettings(showSuccessToast = false) {
     localStorage.setItem('color_scheme', settingsForm.color_scheme)
     localStorage.setItem('language', settingsForm.language)
     setI18nLanguage(settingsForm.language)
+    const largeTextActive = Boolean(settingsForm.larger_text) || settingsForm.font_size === 'large'
+    const smallTextActive = settingsForm.font_size === 'small' && !largeTextActive
+
     document.body.classList.toggle('dark-mode', settingsForm.appearance_theme === 'dark')
-    document.body.classList.toggle('large-text-mode', Boolean(settingsForm.larger_text) || settingsForm.font_size === 'large')
-    document.body.classList.toggle('small-text-mode', settingsForm.font_size === 'small')
+    document.body.classList.toggle('large-text-mode', largeTextActive)
+    document.body.classList.toggle('small-text-mode', smallTextActive)
+    document.documentElement.classList.toggle('large-text-mode', largeTextActive)
+    document.documentElement.classList.toggle('small-text-mode', smallTextActive)
     document.body.classList.toggle('reduced-motion-mode', settingsForm.reduced_motion)
     document.body.classList.toggle('high-contrast-mode', settingsForm.high_contrast)
     applyColorScheme(settingsForm.color_scheme)

@@ -28,6 +28,18 @@ body {
   min-height: 100%;
 }
 
+html {
+  font-size: 100%;
+}
+
+html.large-text-mode {
+  font-size: 112.5%;
+}
+
+html.small-text-mode {
+  font-size: 93.75%;
+}
+
 #app {
   width: 100%;
   max-width: 100%;
@@ -64,11 +76,11 @@ body.color-scheme-sunset {
 }
 
 body.large-text-mode {
-  font-size: 1.08rem;
+  font-size: 1rem;
 }
 
 body.small-text-mode {
-  font-size: 0.94rem;
+  font-size: 1rem;
 }
 
 body.reduced-motion-mode *,

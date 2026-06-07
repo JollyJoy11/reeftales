@@ -12,6 +12,8 @@ function applyUserPreferences(user) {
   const theme = user?.appearance_theme || localStorage.getItem('theme') || 'light'
   const colorScheme = user?.color_scheme || localStorage.getItem('color_scheme') || 'teal'
   const colorSchemes = ['teal', 'sunset']
+  const largeTextActive = Boolean(user?.larger_text) || user?.font_size === 'large'
+  const smallTextActive = user?.font_size === 'small' && !largeTextActive
 
   localStorage.setItem('theme', theme)
   localStorage.setItem('color_scheme', colorScheme)
@@ -19,8 +21,10 @@ function applyUserPreferences(user) {
   setI18nLanguage(user?.language || localStorage.getItem('language') || 'English')
 
   document.body.classList.toggle('dark-mode', theme === 'dark')
-  document.body.classList.toggle('large-text-mode', Boolean(user?.larger_text) || user?.font_size === 'large')
-  document.body.classList.toggle('small-text-mode', user?.font_size === 'small')
+  document.body.classList.toggle('large-text-mode', largeTextActive)
+  document.body.classList.toggle('small-text-mode', smallTextActive)
+  document.documentElement.classList.toggle('large-text-mode', largeTextActive)
+  document.documentElement.classList.toggle('small-text-mode', smallTextActive)
   document.body.classList.toggle('reduced-motion-mode', Boolean(user?.reduced_motion))
   document.body.classList.toggle('high-contrast-mode', Boolean(user?.high_contrast))
   colorSchemes.forEach((scheme) =>

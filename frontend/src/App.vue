@@ -20,10 +20,14 @@ function applyStoredAppearance() {
   const fontSize = storedUser?.font_size || 'normal'
   const colorScheme = storedUser?.color_scheme || localStorage.getItem('color_scheme') || 'teal'
   const colorSchemes = ['teal', 'sunset']
+  const largeTextActive = Boolean(storedUser?.larger_text) || fontSize === 'large'
+  const smallTextActive = fontSize === 'small' && !largeTextActive
 
   document.body.classList.toggle('dark-mode', theme === 'dark')
-  document.body.classList.toggle('large-text-mode', Boolean(storedUser?.larger_text) || fontSize === 'large')
-  document.body.classList.toggle('small-text-mode', fontSize === 'small')
+  document.body.classList.toggle('large-text-mode', largeTextActive)
+  document.body.classList.toggle('small-text-mode', smallTextActive)
+  document.documentElement.classList.toggle('large-text-mode', largeTextActive)
+  document.documentElement.classList.toggle('small-text-mode', smallTextActive)
   document.body.classList.toggle('reduced-motion-mode', Boolean(storedUser?.reduced_motion))
   document.body.classList.toggle('high-contrast-mode', Boolean(storedUser?.high_contrast))
   colorSchemes.forEach((scheme) =>
