@@ -62,7 +62,8 @@ onMounted(async () => {
         trigger: sectionRef.value,
         start: 'top 74%',
         toggleActions: 'play none none none',
-        invalidateOnRefresh: true
+        invalidateOnRefresh: true,
+        once: true
       }
     })
 

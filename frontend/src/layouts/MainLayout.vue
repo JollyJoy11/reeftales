@@ -21,18 +21,12 @@
 }
 
 .main-layout-content > :last-child {
-  padding-bottom: max(
-    var(--page-footer-space, clamp(150px, 18vw, 230px)),
-    env(safe-area-inset-bottom)
-  ) !important;
+  padding-bottom: clamp(150px, 18vw, 230px) !important;
 }
 
 @media (max-width: 767.98px) {
   .main-layout-content > :last-child {
-    padding-bottom: max(
-      var(--page-footer-space-mobile, 170px),
-      env(safe-area-inset-bottom)
-    ) !important;
+    padding-bottom: 170px !important;
   }
 }
 </style>

@@ -58,7 +58,8 @@ onMounted(() => {
           trigger: sectionRef.value,
           start: 'top 78%',
           toggleActions: 'play none none none',
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          once: true
         },
         y: 0,
         autoAlpha: 1,
@@ -80,7 +81,8 @@ onMounted(() => {
           trigger: '.feature-grid',
           start: 'top 82%',
           toggleActions: 'play none none none',
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          once: true
         },
         autoAlpha: 1,
         y: 0,

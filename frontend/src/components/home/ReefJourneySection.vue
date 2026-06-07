@@ -125,7 +125,8 @@ onMounted(async () => {
           trigger: '.journey-route',
           start: 'top 82%',
           toggleActions: 'play none none none',
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          once: true
         },
         y: 0,
         autoAlpha: 1,

@@ -122,7 +122,8 @@ onMounted(async () => {
           trigger: sectionRef.value,
           start: 'top 78%',
           toggleActions: 'play none none none',
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          once: true
         },
         y: 0,
         autoAlpha: 1,
@@ -143,7 +144,8 @@ onMounted(async () => {
           trigger: '.journal-strip-shell',
           start: 'top 82%',
           toggleActions: 'play none none none',
-          invalidateOnRefresh: true
+          invalidateOnRefresh: true,
+          once: true
         },
         y: 0,
         autoAlpha: 1,
