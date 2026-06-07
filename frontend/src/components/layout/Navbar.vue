@@ -704,17 +704,6 @@ nav{
   font-weight: 800;
 }
 
-:global(body.dark-mode) .notification-dropdown {
-  background:
-    linear-gradient(180deg, rgba(31,43,63,0.98), rgba(24,39,53,0.96)),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 30px,
-      rgba(226,232,240,0.05) 31px
-    ) !important;
-  box-shadow: 0 18px 42px rgba(0,0,0,0.34);
-}
-
 .profile-trigger {
   width: 42px;
   height: 42px;
@@ -920,24 +909,6 @@ nav{
     width: 42px;
     height: 42px;
   }
-}
-
-:global(body.dark-mode) .mobile-menu-btn {
-  background: #17243a;
-  border-color: rgba(226,232,240,0.14);
-  color: #f8fafc;
-}
-
-:global(body.dark-mode) .mobile-menu-btn:hover,
-:global(body.dark-mode) .mobile-menu-btn:focus-visible,
-:global(body.dark-mode) .mobile-menu-btn[aria-expanded="true"] {
-  background: #253244;
-  border-color: rgba(103,232,249,0.34);
-  color: #e0faff;
-}
-
-:global(body.dark-mode) .mobile-menu-btn i {
-  color: #67e8f9;
 }
 </style>
 
