@@ -9,13 +9,13 @@ const email = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
-const devResetLink = ref('')
+const resetLink = ref('')
 
 async function handleForgotPassword() {
   try {
     errorMessage.value = ''
     successMessage.value = ''
-    devResetLink.value = ''
+    resetLink.value = ''
 
     if (!email.value) {
       errorMessage.value = 'Please enter your email address.'
@@ -26,7 +26,7 @@ async function handleForgotPassword() {
     const response = await requestPasswordReset(email.value)
 
     successMessage.value = response.message
-    devResetLink.value = response.resetLink || ''
+    resetLink.value = response.resetLink || ''
   } catch (error) {
     errorMessage.value =
       error.response?.data?.message || 'Unable to prepare password reset.'
@@ -75,11 +75,11 @@ async function handleForgotPassword() {
           </button>
         </form>
 
-        <div v-if="devResetLink" class="dev-reset-link">
-          <strong>Development reset link</strong>
-          <RouterLink :to="devResetLink.replace(/^https?:\/\/[^/]+/, '')">
+        <div v-if="resetLink" class="reset-link-card">
+          <strong>Password reset link</strong>
+          <a :href="resetLink">
             Open reset page
-          </RouterLink>
+          </a>
         </div>
 
         <div class="auth-links">
@@ -153,7 +153,7 @@ async function handleForgotPassword() {
   padding: 12px;
 }
 
-.dev-reset-link {
+.reset-link-card {
   display: grid;
   gap: 6px;
   margin-top: 14px;
@@ -164,11 +164,11 @@ async function handleForgotPassword() {
   font-size: 0.86rem;
 }
 
-.dev-reset-link strong {
+.reset-link-card strong {
   color: var(--text-primary);
 }
 
-.dev-reset-link a,
+.reset-link-card a,
 .auth-links a {
   color: #1f4e5f;
 }

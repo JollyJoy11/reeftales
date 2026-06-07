@@ -21,6 +21,58 @@ function hashResetToken(token) {
     .digest('hex')
 }
 
+function isEnabled(value) {
+  return ['1', 'true', 'yes', 'on'].includes(String(value || '').toLowerCase())
+}
+
+function getHostname(value) {
+  try {
+    return new URL(value).hostname
+  } catch {
+    return ''
+  }
+}
+
+function isLocalUrl(value) {
+  const hostname = getHostname(value)
+  return ['localhost', '127.0.0.1', '::1'].includes(hostname)
+}
+
+function getRequestOrigin(req) {
+  const origin = req.get('origin')
+  if (origin) return origin
+
+  const referer = req.get('referer')
+  if (!referer) return ''
+
+  try {
+    const url = new URL(referer)
+    return `${url.protocol}//${url.host}`
+  } catch {
+    return ''
+  }
+}
+
+function getFrontendUrl(req) {
+  const configuredUrl =
+    process.env.FRONTEND_URL ||
+    process.env.PUBLIC_FRONTEND_URL ||
+    process.env.CLIENT_URL ||
+    ''
+  const requestOrigin = getRequestOrigin(req)
+
+  if (
+    process.env.NODE_ENV === 'production' &&
+    configuredUrl &&
+    isLocalUrl(configuredUrl) &&
+    requestOrigin
+  ) {
+    return requestOrigin
+  }
+
+  return configuredUrl || requestOrigin || 'http://localhost:5173'
+}
+
 function isStrongPassword(password) {
   return (
     typeof password === 'string' &&
@@ -227,19 +279,28 @@ async function forgotPassword(req, res) {
 
     await savePasswordResetToken(user.id, tokenHash, expiresAt)
 
-    const frontendUrl =
-      process.env.FRONTEND_URL ||
-      req.get('origin') ||
-      'http://localhost:5173'
-
+    const frontendUrl = getFrontendUrl(req)
     const resetLink = `${frontendUrl.replace(/\/$/, '')}/reset-password/${resetToken}`
 
-    const emailResult = await sendPasswordResetEmail({
-      to: user.email,
-      resetLink
-    })
+    let emailResult = { sent: false, reason: 'Email was not attempted.' }
 
-    if (!emailResult.sent && process.env.NODE_ENV !== 'production') {
+    try {
+      emailResult = await sendPasswordResetEmail({
+        to: user.email,
+        resetLink
+      })
+    } catch (emailError) {
+      console.error('Password reset email failed:', emailError)
+      emailResult = {
+        sent: false,
+        reason: 'Email delivery failed.'
+      }
+    }
+
+    if (
+      !emailResult.sent &&
+      (process.env.NODE_ENV !== 'production' || isEnabled(process.env.RETURN_PASSWORD_RESET_LINK))
+    ) {
       response.resetLink = resetLink
     }
 
