@@ -330,8 +330,8 @@ watch(
                   <i :class="notification.type === 'journal_like' ? 'bi bi-heart' : 'bi bi-chat-dots'"></i>
                 </span>
 
-                <span>
-                  {{ notificationText(notification) }}
+                <span class="notification-copy">
+                  <strong>{{ notificationText(notification) }}</strong>
                   <small>{{ new Date(notification.created_at).toLocaleDateString() }}</small>
                 </span>
               </RouterLink>
@@ -569,11 +569,18 @@ nav{
 }
 
 .notification-dropdown {
-  width: 330px;
-  padding: 10px;
+  width: min(360px, calc(100vw - 28px));
+  padding: 12px;
   border: 1px dashed var(--border) !important;
-  border-radius: 18px;
-  background: var(--surface);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255,253,248,0.98), rgba(251,249,241,0.96)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 30px,
+      rgba(196,164,132,0.10) 31px
+    );
+  box-shadow: 0 18px 42px rgba(47,72,88,0.16);
 }
 
 .notification-heading {
@@ -581,20 +588,32 @@ nav{
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 8px 10px;
+  padding: 8px 10px 12px;
   border-bottom: 1px dashed var(--border);
+  margin-bottom: 8px;
 }
 
 .notification-heading strong {
   color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 900;
 }
 
 .notification-heading button {
   border: none;
   background: transparent;
-  color: var(--accent);
-  font-size: 0.78rem;
+  color: var(--accent-strong);
+  font-size: 0.8rem;
   font-weight: 900;
+  padding: 4px 0;
+  white-space: nowrap;
+}
+
+.notification-heading button:hover,
+.notification-heading button:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .notification-empty {
@@ -606,37 +625,115 @@ nav{
 }
 
 .notification-item {
+  position: relative;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 10px;
-  padding: 10px 8px;
-  border-radius: 12px;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: 16px;
   color: var(--text-primary);
-  font-size: 0.86rem;
-  font-weight: 700;
   text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.notification-dropdown li:has(.notification-item) + li:has(.notification-item) {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(var(--accent-rgb),0.18);
 }
 
 .notification-item:hover,
 .notification-item.unread {
-  background: var(--accent-soft);
+  background: rgba(var(--accent-rgb),0.10);
+  border-color: rgba(var(--accent-rgb),0.18);
+}
+
+.notification-item:hover {
+  box-shadow: 0 10px 22px rgba(47,72,88,0.10);
+  transform: translateY(-1px);
+}
+
+.notification-item.unread::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.13);
 }
 
 .notification-icon {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--surface);
+  background: #ffffff;
   color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  box-shadow: 0 7px 15px rgba(47,72,88,0.08);
+}
+
+.notification-copy {
+  min-width: 0;
+  padding-right: 12px;
+}
+
+.notification-copy strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 850;
+  line-height: 1.35;
 }
 
 .notification-item small {
   display: block;
-  margin-top: 3px;
+  margin-top: 4px;
   color: var(--text-secondary);
   font-size: 0.74rem;
+  font-weight: 800;
+}
+
+:global(body.dark-mode) .notification-dropdown {
+  background:
+    linear-gradient(180deg, rgba(31,43,63,0.98), rgba(24,39,53,0.96)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 30px,
+      rgba(226,232,240,0.05) 31px
+    ) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,0.34);
+}
+
+:global(body.dark-mode) .notification-heading {
+  border-bottom-color: rgba(226,232,240,0.16);
+}
+
+:global(body.dark-mode) .notification-heading strong,
+:global(body.dark-mode) .notification-copy strong {
+  color: #f8fafc !important;
+}
+
+:global(body.dark-mode) .notification-icon {
+  background: #142235;
+  border-color: rgba(var(--accent-rgb),0.24);
+  color: var(--accent);
+}
+
+:global(body.dark-mode) .notification-item:hover,
+:global(body.dark-mode) .notification-item.unread {
+  background: rgba(var(--accent-rgb),0.14) !important;
+  border-color: rgba(var(--accent-rgb),0.24);
 }
 
 .profile-trigger {
