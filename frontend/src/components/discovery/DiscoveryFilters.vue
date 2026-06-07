@@ -268,8 +268,7 @@ function toggleArrayValue(array, value, eventName) {
   top: calc(var(--navbar-h) + 16px);
   width: 100%;
   min-width: 0;
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
   padding: 20px;
   border-radius: 18px;
   background: var(--surface-soft);
@@ -507,8 +506,7 @@ function toggleArrayValue(array, value, eventName) {
 
   .filter-panel {
     position: static;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
   }
 }
 

@@ -98,30 +98,28 @@ export function calculateExplorerProgress({
     Math.floor(finalSpeciesCount / 3) +
     finalPublicCount
 
-  let tier = {
-    name: 'New Tide Explorer',
-    progress: 0,
-    next: 'Island Voyager I'
-  }
+  const tierThresholds = [
+    { name: 'New Tide Explorer', min: 0, next: 'Island Voyager I', nextMin: 3 },
+    { name: 'Island Voyager I', min: 3, next: 'Reef Explorer II', nextMin: 7 },
+    { name: 'Reef Explorer II', min: 7, next: 'Ocean Explorer III', nextMin: 12 },
+    { name: 'Ocean Explorer III', min: 12, next: 'Legend Explorer', nextMin: 18 },
+    { name: 'Legend Explorer', min: 18, next: 'Legend Explorer', nextMin: 18 }
+  ]
 
-  if (score >= 12) {
-    tier = {
-      name: 'Ocean Explorer III',
-      progress: 92,
-      next: 'Legend Explorer'
-    }
-  } else if (score >= 7) {
-    tier = {
-      name: 'Reef Explorer II',
-      progress: 68,
-      next: 'Ocean Explorer III'
-    }
-  } else if (score >= 3) {
-    tier = {
-      name: 'Island Voyager I',
-      progress: 38,
-      next: 'Reef Explorer II'
-    }
+  const activeTier = [...tierThresholds]
+    .reverse()
+    .find(item => score >= item.min) || tierThresholds[0]
+
+  const pointsInTier = Math.max(0, score - activeTier.min)
+  const pointsNeeded = Math.max(1, activeTier.nextMin - activeTier.min)
+  const progress = activeTier.min === activeTier.nextMin
+    ? 100
+    : Math.min(99, Math.round((pointsInTier / pointsNeeded) * 100))
+
+  const tier = {
+    name: activeTier.name,
+    progress,
+    next: activeTier.next
   }
 
   return {
