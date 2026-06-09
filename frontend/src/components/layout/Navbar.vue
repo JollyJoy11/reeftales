@@ -13,7 +13,7 @@ import {
 import MobileSidebar from '@/components/layout/MobileSidebar.vue'
 import NavbarSearch from '@/components/layout/NavbarSearch.vue'
 import { calculateExplorerProgress } from '@/utils/explorerProgress'
-import { setI18nLanguage } from '@/i18n'
+import { normalizeLanguage } from '@/i18n'
 
 const authStore = useAuthStore()
 const savedIslandStore = useSavedIslandStore()
@@ -22,7 +22,7 @@ const router = useRouter()
 const { t } = useI18n()
 
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
-const currentLanguage = ref(localStorage.getItem('language') || 'English')
+const currentLanguage = ref(normalizeLanguage(localStorage.getItem('language') || 'English'))
 const journalSummary = ref({
   journal_count: 0,
   species_count: 0,
@@ -168,9 +168,7 @@ function applyTheme(theme) {
 }
 
 function applyLanguage(language) {
-  currentLanguage.value = language
-  localStorage.setItem('language', language)
-  setI18nLanguage(language)
+  currentLanguage.value = authStore.setLanguage(language)
 }
 
 function settingsPayload(overrides = {}) {
@@ -185,7 +183,7 @@ function settingsPayload(overrides = {}) {
     notify_likes: user.notify_likes !== 0,
     notify_comments: user.notify_comments !== 0,
     default_journal_visibility: user.default_journal_visibility || 'public',
-    language: user.language || currentLanguage.value || 'English',
+    language: currentLanguage.value || user.language || 'English',
     ...overrides
   }
 }
@@ -213,7 +211,7 @@ async function changeLanguage(language) {
 
 onMounted(() => {
   applyTheme(authStore.user?.appearance_theme || localStorage.getItem('theme') || currentTheme.value)
-  applyLanguage(authStore.user?.language || localStorage.getItem('language') || currentLanguage.value)
+  applyLanguage(localStorage.getItem('language') || authStore.user?.language || currentLanguage.value)
   loadProfileStats()
   loadNotifications()
 })
@@ -236,7 +234,7 @@ watch(
 watch(
   () => authStore.user?.language,
   language => {
-    applyLanguage(language || localStorage.getItem('language') || 'English')
+    applyLanguage(localStorage.getItem('language') || language || 'English')
   }
 )
 </script>

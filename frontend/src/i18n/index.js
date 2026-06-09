@@ -1,6 +1,14 @@
 import { createI18n } from 'vue-i18n'
 
-const savedLanguage = localStorage.getItem('language') || 'English'
+const savedLanguage = normalizeLanguage(localStorage.getItem('language') || 'English')
+
+export function normalizeLanguage(language) {
+  if (language === 'zh' || language === '中文' || language === 'ä¸­æ–‡') {
+    return '中文'
+  }
+
+  return 'English'
+}
 
 export const languageToLocale = {
   English: 'en',
@@ -1257,9 +1265,11 @@ const i18n = createI18n({
 })
 
 export function setI18nLanguage(language) {
-  const locale = languageToLocale[language] || 'en'
+  const normalizedLanguage = normalizeLanguage(language)
+  const locale = languageToLocale[normalizedLanguage] || 'en'
   i18n.global.locale.value = locale
   localStorage.setItem('language', localeToLanguage[locale] || 'English')
+  return localeToLanguage[locale] || 'English'
 }
 
 export default i18n

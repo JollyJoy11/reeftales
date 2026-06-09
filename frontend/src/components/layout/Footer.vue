@@ -2,17 +2,15 @@
 import { useI18n } from 'vue-i18n'
 import { ref, watch } from 'vue'
 
-import { setI18nLanguage } from '@/i18n'
+import { normalizeLanguage } from '@/i18n'
 import { useAuthStore } from '@/stores/authStore'
 
 const authStore = useAuthStore()
 const { t } = useI18n()
-const currentLanguage = ref(authStore.user?.language || localStorage.getItem('language') || 'English')
+const currentLanguage = ref(normalizeLanguage(localStorage.getItem('language') || authStore.user?.language || 'English'))
 
 function applyLanguage(language) {
-  currentLanguage.value = language
-  localStorage.setItem('language', language)
-  setI18nLanguage(language)
+  currentLanguage.value = authStore.setLanguage(language)
 }
 
 function settingsPayload(overrides = {}) {
@@ -27,7 +25,7 @@ function settingsPayload(overrides = {}) {
     notify_likes: user.notify_likes !== 0,
     notify_comments: user.notify_comments !== 0,
     default_journal_visibility: user.default_journal_visibility || 'public',
-    language: user.language || currentLanguage.value || 'English',
+    language: currentLanguage.value || user.language || 'English',
     ...overrides
   }
 }
@@ -52,7 +50,7 @@ async function changeLanguage(event) {
 watch(
   () => authStore.user?.language,
   language => {
-    applyLanguage(language || localStorage.getItem('language') || 'English')
+    applyLanguage(localStorage.getItem('language') || language || 'English')
   },
   { immediate: true }
 )

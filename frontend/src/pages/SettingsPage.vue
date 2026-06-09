@@ -8,7 +8,7 @@ import MainLayout from '@/layouts/MainLayout.vue'
 import { uploadJournalMedia } from '@/services/journalService'
 import { useAuthStore } from '@/stores/authStore'
 import { useToastStore } from '@/stores/toastStore'
-import { setI18nLanguage } from '@/i18n'
+import { normalizeLanguage, setI18nLanguage } from '@/i18n'
 
 const authStore = useAuthStore()
 const toastStore = useToastStore()
@@ -38,7 +38,7 @@ const settingsForm = reactive({
   notify_likes: authStore.user?.notify_likes !== 0,
   notify_comments: authStore.user?.notify_comments !== 0,
   default_journal_visibility: authStore.user?.default_journal_visibility || 'public',
-  language: authStore.user?.language || localStorage.getItem('language') || 'English'
+  language: normalizeLanguage(localStorage.getItem('language') || authStore.user?.language || 'English')
 })
 
 const autoSaveReady = ref(false)
@@ -134,9 +134,15 @@ async function saveProfile() {
 async function saveSettings(showSuccessToast = false) {
   try {
     savingSettings.value = true
-    await authStore.saveSettings(settingsForm)
+    const normalizedLanguage = normalizeLanguage(settingsForm.language)
+    const savedUser = await authStore.saveSettings({
+      ...settingsForm,
+      language: normalizedLanguage
+    })
+
     localStorage.setItem('theme', settingsForm.appearance_theme)
     localStorage.setItem('color_scheme', settingsForm.color_scheme)
+    settingsForm.language = normalizeLanguage(savedUser?.language || normalizedLanguage)
     localStorage.setItem('language', settingsForm.language)
     setI18nLanguage(settingsForm.language)
     const largeTextActive = Boolean(settingsForm.larger_text) || settingsForm.font_size === 'large'
@@ -154,8 +160,8 @@ async function saveSettings(showSuccessToast = false) {
     if (showSuccessToast) {
       toastStore.success(t('settings.settingsSaved'))
     }
-  } catch {
-    toastStore.danger(t('settings.settingsError'))
+  } catch (error) {
+    toastStore.danger(error.response?.data?.message || error.message || t('settings.settingsError'))
   } finally {
     savingSettings.value = false
   }
@@ -168,6 +174,17 @@ watch(
     await saveSettings(false)
   },
   { deep: true }
+)
+
+watch(
+  () => authStore.user?.language,
+  language => {
+    const nextLanguage = normalizeLanguage(localStorage.getItem('language') || language || settingsForm.language)
+
+    if (settingsForm.language !== nextLanguage) {
+      settingsForm.language = nextLanguage
+    }
+  }
 )
 
 onMounted(() => {

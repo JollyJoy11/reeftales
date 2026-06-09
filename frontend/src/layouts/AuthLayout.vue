@@ -1,11 +1,12 @@
 ﻿<script setup>
 import { ref, onMounted, useSlots } from 'vue'
 import { useRouter } from 'vue-router'
+import { normalizeLanguage, setI18nLanguage } from '@/i18n'
 
 const router = useRouter()
 const slots = useSlots()
 const currentTheme = ref(localStorage.getItem('theme') || 'light')
-const currentLanguage = ref(localStorage.getItem('language') || 'English')
+const currentLanguage = ref(normalizeLanguage(localStorage.getItem('language') || 'English'))
 
 function toggleTheme() {
   currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
@@ -18,8 +19,7 @@ function goBack() {
 }
 
 function changeLanguage(language) {
-  currentLanguage.value = language
-  localStorage.setItem('language', language)
+  currentLanguage.value = setI18nLanguage(language)
 }
 
 onMounted(() => {

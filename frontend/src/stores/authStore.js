@@ -6,7 +6,7 @@ import {
   updateProfile,
   updateSettings
 } from '@/services/authService'
-import { setI18nLanguage } from '@/i18n'
+import { normalizeLanguage, setI18nLanguage } from '@/i18n'
 
 function applyUserPreferences(user) {
   const theme = user?.appearance_theme || localStorage.getItem('theme') || 'light'
@@ -17,8 +17,10 @@ function applyUserPreferences(user) {
 
   localStorage.setItem('theme', theme)
   localStorage.setItem('color_scheme', colorScheme)
-  localStorage.setItem('language', user?.language || localStorage.getItem('language') || 'English')
-  setI18nLanguage(user?.language || localStorage.getItem('language') || 'English')
+  const language = normalizeLanguage(user?.language || localStorage.getItem('language') || 'English')
+
+  localStorage.setItem('language', language)
+  setI18nLanguage(language)
 
   document.body.classList.toggle('dark-mode', theme === 'dark')
   document.body.classList.toggle('large-text-mode', largeTextActive)
@@ -34,6 +36,12 @@ function applyUserPreferences(user) {
   window.requestAnimationFrame?.(() => {
     window.dispatchEvent(new CustomEvent('reef:layout-preferences-changed'))
   })
+}
+
+function saveStoredUser(user) {
+  if (!user) return
+
+  localStorage.setItem('user', JSON.stringify(user))
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -55,41 +63,76 @@ export const useAuthStore = defineStore('auth', {
       const res = await loginUser(email, password)
 
       this.token = res.token
-      this.user = res.user
+      this.user = {
+        ...res.user,
+        language: normalizeLanguage(res.user?.language || localStorage.getItem('language') || 'English')
+      }
 
       localStorage.setItem('token', this.token)
-      localStorage.setItem('user', JSON.stringify(this.user))
+      saveStoredUser(this.user)
       applyUserPreferences(this.user)
     },
 
     async register(username, email, password) {
-      const res = await registerUser(username, email, password)
+      await registerUser(username, email, password)
     },
 
     async loadCurrentUser() {
       if (!this.token) return null
 
       const user = await getCurrentUser()
-      this.user = user
-      localStorage.setItem('user', JSON.stringify(user))
-      applyUserPreferences(user)
-      return user
+      const language = normalizeLanguage(localStorage.getItem('language') || user?.language || 'English')
+
+      this.user = {
+        ...user,
+        language
+      }
+      saveStoredUser(this.user)
+      applyUserPreferences(this.user)
+      return this.user
     },
 
     async saveProfile(data) {
       const user = await updateProfile(data)
-      this.user = user
-      localStorage.setItem('user', JSON.stringify(user))
-      applyUserPreferences(user)
-      return user
+      const language = normalizeLanguage(this.user?.language || localStorage.getItem('language') || user?.language || 'English')
+
+      this.user = {
+        ...user,
+        language
+      }
+      saveStoredUser(this.user)
+      applyUserPreferences(this.user)
+      return this.user
     },
 
     async saveSettings(data) {
-      const user = await updateSettings(data)
-      this.user = user
-      localStorage.setItem('user', JSON.stringify(user))
-      applyUserPreferences(user)
-      return user
+      const settings = {
+        ...data,
+        language: normalizeLanguage(data.language || this.user?.language || localStorage.getItem('language') || 'English')
+      }
+      const user = await updateSettings(settings)
+
+      this.user = {
+        ...user,
+        language: normalizeLanguage(settings.language || user?.language)
+      }
+      saveStoredUser(this.user)
+      applyUserPreferences(this.user)
+      return this.user
+    },
+
+    setLanguage(language) {
+      const normalizedLanguage = setI18nLanguage(language)
+
+      if (this.user) {
+        this.user = {
+          ...this.user,
+          language: normalizedLanguage
+        }
+        saveStoredUser(this.user)
+      }
+
+      return normalizedLanguage
     },
 
     logout() {

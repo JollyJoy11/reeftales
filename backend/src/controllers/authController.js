@@ -25,6 +25,12 @@ function isEnabled(value) {
   return ['1', 'true', 'yes', 'on'].includes(String(value || '').toLowerCase())
 }
 
+function normalizeLanguage(language) {
+  return ['zh', '中文', 'ä¸­æ–‡'].includes(language)
+    ? '中文'
+    : 'English'
+}
+
 function getHostname(value) {
   try {
     return new URL(value).hostname
@@ -244,15 +250,13 @@ async function updateSettings(req, res) {
       default_journal_visibility: ['public', 'private'].includes(req.body.default_journal_visibility)
         ? req.body.default_journal_visibility
         : 'public',
-      language: ['English', '中文'].includes(req.body.language)
-        ? req.body.language
-        : 'English'
+      language: normalizeLanguage(req.body.language)
     })
 
     res.json(user)
   } catch (error) {
     console.error(error)
-    res.status(500).json({ message: 'Failed to update settings' })
+    res.status(500).json({ message: error.message || 'Failed to update settings' })
   }
 }
 
